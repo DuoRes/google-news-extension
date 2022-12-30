@@ -1,7 +1,7 @@
 {
-  "name": "cronjobs",
+  "name": "chrome-extension",
   "version": "1.0.0",
-  "description": "Scheduled Jobs for LifeWiki Backend",
+  "description": "Chrome Extension for tracking user activities and logging to database",
   "main": "dist/index.js",
   "scripts": {
     "test": "NODE_ENV=test jest --detectOpenHandles",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DryHuo/CronJobs.git"
+    "url": "git+https://github.com/nociza/chrome-extension.git"
   },
   "author": "nociza",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DryHuo/CronJobs/issues"
+    "url": "https://github.com/nociza/chrome-extension/issues"
   },
-  "homepage": "https://github.com/DryHuo/CronJobs#readme",
+  "homepage": "https://github.com/nociza/chrome-extension#readme",
   "dependencies": {
     "express": "^4.18.2",
     "moment": "^2.29.4",
