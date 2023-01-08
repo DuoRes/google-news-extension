@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moment from "moment";
 
 const EventSchema = new mongoose.Schema({
   user: {
@@ -20,7 +21,7 @@ const EventSchema = new mongoose.Schema({
   },
   timestamp: {
     type: Date,
-    default: Date.now(),
+    default: moment().format("YYYY-MM-DD:HH"),
   },
 });
 

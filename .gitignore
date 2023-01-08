@@ -3,6 +3,9 @@ backend/.env
 backend/dist/
 backend/.DS_Store
 
+frontend/node_modules/
+frontend/.DS_Store
+
 vpn/.DS_Store
 vpn/node_modules
 vpn/temp

@@ -1,0 +1,14 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Chrome extension to track user behavior on Google News",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nociza",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.2"
+  }
+}
