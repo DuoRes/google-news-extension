@@ -9,6 +9,13 @@
     "default_icon": "hello_extensions.png"
   },
   "background": {
-    "service_worker": "index.js"
-  }
+    "service_worker": "background/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "js": ["content/content.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
 }
