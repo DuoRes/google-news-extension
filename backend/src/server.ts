@@ -13,7 +13,7 @@ console.log("after connectDB");
 const app = express();
 app.use(express.json());
 app.get("/", (req, res) => {
-  res.send("Cron Jobs are waiting");
+  res.send("Hello from Mingduo!");
 });
 
 // Use Routes
