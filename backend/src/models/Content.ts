@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moment from "moment";
 
 const ContentSchema = new mongoose.Schema({
   title: {
@@ -11,18 +12,23 @@ const ContentSchema = new mongoose.Schema({
   publishTimestamp: {
     type: Date,
   },
-  consumedBy: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  consumptionEvents: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Event",
-    },
-  ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  contentRanking: {
+    type: Number,
+  },
+  percentageRead: {
+    type: Number,
+  },
+  timeSpent: {
+    type: Number,
+  },
+  timestamp: {
+    type: Date,
+    default: moment().format("YYYY-MM-DD:HH"),
+  },
 });
 
 const Content = mongoose.model("Content", ContentSchema);

@@ -25,3 +25,4 @@ vpn/report/*
 vpn/.log
 vpn/debug.log
 vpn/tests/screenshots/extension/*
+.DS_Store
