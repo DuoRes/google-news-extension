@@ -3,7 +3,7 @@ import Config from "./config";
 import { connectDB } from "./utils/db";
 
 // Link Routes
-import collector from "./routes/collection";
+import collector from "./routes/collector";
 
 console.log("before connectDB");
 (async () => connectDB())();

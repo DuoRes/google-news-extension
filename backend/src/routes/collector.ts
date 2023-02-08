@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 });
 
 // create a new content
-router.post("/content", async (req, res) => {
+router.post("/contents", async (req, res) => {
   try {
     const content = await Content.create({
       title: req.body.title,
