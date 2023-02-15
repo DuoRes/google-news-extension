@@ -4,6 +4,7 @@ const link = document.querySelector("link");
 
 const getGoogleNewsRecommendation = () => {
   if (!document.URL.includes("news.google.com")) {
+    console.log("This is not a google news page");
     return;
   }
 
@@ -39,6 +40,7 @@ const getGoogleNewsRecommendation = () => {
         press,
       });
     });
+    console.log("Here are the contents to send to Backend", contents);
     return sendToBackend(contents);
   });
 };
