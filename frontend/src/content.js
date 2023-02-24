@@ -58,7 +58,14 @@ const logPageContents = () => {
     .then((res) => res.json())
     .then((data) => console.log(data))
     .catch((err) => console.log(err));
-  document.addEventListener("click", () => {});
+  // Listen for clicks on news articles
+  document.addEventListener("click", function (event) {
+    if (event.target.closest(".ipQwMb")) {
+      // This is a news article, let's track it
+      var articleUrl = event.target.closest("a").href;
+      chrome.runtime.sendMessage({ type: "trackArticle", url: articleUrl });
+    }
+  });
 };
 
 const logReadingProgress = () => {
