@@ -15,6 +15,3 @@ Thank you for agreeing to take part in this study conducted by UC Berkeley. Plea
 ## Browse Google News
 
 TODO[Mingduo]: add instructions
-
-markdown: kramdown
-remote_theme: poole/hyde
