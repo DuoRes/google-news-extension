@@ -1,2 +1,3 @@
+# Configuration for Jekyll
 markdown: kramdown
-remote_theme: poole/hyde
+theme: jekyll-theme-cayman
