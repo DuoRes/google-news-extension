@@ -1,6 +1,3 @@
 module.exports = {
-  name: "DryHuo - Development",
-  mail: {
-    host: "prod-mail-server",
-  },
+  name: "chrome-extension-production",
 };
