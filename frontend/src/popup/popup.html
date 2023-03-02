@@ -1,7 +1,64 @@
+<!DOCTYPE html>
 <html lang="en">
 
+<head>
+    <title>News Reader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            margin: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input[type="email"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
 <body>
-    <h1>News Tracker by Mingduo</h1>
+    <h1>News Reader</h1>
+    <form>
+        <label for="email">Email address:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit" id="login">Login</button>
+    </form>
     <script src="popup.js"></script>
 </body>
 
