@@ -6,7 +6,7 @@
   "permissions": ["scripting", "storage", "activeTab", "tabs"],
   "action": {
     "default_popup": "src/popup/popup.html",
-    "default_icon": "assets/news_icon.jpg"
+    "default_icon": "src/assets/news_icon.jpg"
   },
   "background": {
     "service_worker": "src/background.js",
