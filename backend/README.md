@@ -1,5 +1,3 @@
-# CronJobs for LifeWiki
-This repo hosts all the recurrent batch jobs that's executed independent of server functionalities. 
+# Backend For Chrome Extension
 
-## Dependencies
-This repo is dependent on the repository `git@github.com:DryHuo/Backend.git` for getting mongoose schemas for `User` and `Post`.
+This is the backend for the chrome extension. It is a simple node.js server that uses express and MongoDB.
