@@ -25,29 +25,9 @@
             text-align: center;
         }
 
-        form {
-            margin: 20px;
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            text-align: left;
-        }
-
-        input[type="identifier"] {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
         button[type="submit"] {
             display: block;
+            margin-top: 10%;
             width: 100%;
             padding: 10px;
             border: none;
@@ -62,13 +42,11 @@
 <body>
     <h1>News Reader</h1>
     <p>
-        Thank you for participating in our research! Please enter your unique participant ID to begin.
+        Thank you for participating in our research, you have successfully logged in. Click the "redirect" button below
+        to redirect to Google News when you're ready!
     </p>
-    <form>
-        <label for="identifier">Click here to redirect to Google News when you're ready!</label>
-        <button type="submit" id="login">Redirect</button>
-    </form>
-    <script src="popup.js"></script>
+    <button type="submit" id="redirect">Redirect</button>
+    <script src="logged_in.js"></script>
 </body>
 
 </html>

@@ -1,23 +1,29 @@
 // Keep track of the current article being read
 var currentArticle = null;
 
-// Listen for messages from the content script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+// Listen for messages from everything
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log(message);
-  if (message.type === "trackArticle") {
-    // The user clicked on a news article, let's track it
-    currentArticle = { url: message.url, startTime: new Date() };
-  } else if (message.type === "login") {
-    // Store the user's email address
-    chrome.storage.local.set({ identifier: message.identifier }, function () {
-      console.log("Identifier Token saved:", message.identifier);
+  switch (message.type) {
+    case "trackArticle":
+      // track a new article
+      currentArticle = {
+        url: message.url,
+        startTime: new Date(),
+      };
+      break;
+    case "redirect":
+      // redirect to a specific url
+      await chrome.tabs.query(
+        { active: true, currentWindow: true },
+        function (tabs) {
+          var currentTabId = tabs[0].id;
+          chrome.tabs.update(currentTabId, { url: message.redirect });
+        }
+      );
 
-      login(message.identifier).then((data) => {
-        console.log(data);
-      });
-
-      sendResponse({ success: true });
-    });
+      sendResponse({ redirect: "success" });
+      break;
   }
 });
 
