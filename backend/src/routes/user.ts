@@ -5,15 +5,19 @@ import User from "../models/User";
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    const user = await User.create({
-      email: req.body.email,
-      name: req.body.name,
-    });
-    return res.status(201).json(user);
-  } catch (err) {
-    return res.status(400).send("Error creating new user: " + err);
+    const token = req.body.token;
+    const user = await User.findOne({ token });
+    if (!user) {
+      const newUser = await User.create({ token });
+      return res.send(newUser);
+    }
+    console.log("user", user);
+    return res.send(user);
+  } catch (error) {
+    console.trace(error);
+    return res.status(500).send(error);
   }
 });
 

@@ -4,10 +4,9 @@ import { connectDB } from "./utils/db";
 
 // Link Routes
 import collector from "./routes/collector";
+import user from "./routes/user";
 
-console.log("before connectDB");
 (async () => connectDB())();
-console.log("after connectDB");
 
 // Startup Express and Connect MongoDB
 const app = express();
@@ -18,5 +17,6 @@ app.get("/", (req, res) => {
 
 // Use Routes
 app.use("/collect", collector);
+app.use("/user", user);
 
 export default app;

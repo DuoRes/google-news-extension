@@ -1,4 +1,5 @@
-const BACKEND_URL = "http://localhost:6000/api/v1/collect/contents";
+const BACKEND_URL = "http://localhost:8080/collect/contents";
+
 const article = document.querySelector("article");
 const link = document.querySelector("link");
 

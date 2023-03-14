@@ -36,7 +36,7 @@
             text-align: left;
         }
 
-        input[type="identifier"] {
+        input[type="text"] {
             display: block;
             width: 100%;
             padding: 10px;
@@ -64,12 +64,13 @@
     <p>
         Thank you for participating in our research! Please enter your unique participant ID to begin.
     </p>
-    <form>
-        <label for="identifier">ID:</label>
-        <input type="identifier" id="identifier" name="identifier" required>
+    <form id="login-form">
+        <label for="text">ID:</label>
+        <input type="text" id="identifier" name="identifier" required>
         <button type="submit" id="login">Login</button>
     </form>
-    <script src="popup.js"></script>
+
+    <script type="module" src="popup.js"></script>
 </body>
 
 </html>
