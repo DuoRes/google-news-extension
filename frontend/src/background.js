@@ -1,3 +1,5 @@
+const BACKEND_URL = "http://localhost:8080/";
+
 // Keep track of the current article being read
 var currentArticle = null;
 
@@ -23,6 +25,20 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       );
 
       sendResponse({ redirect: "success" });
+      break;
+    case "logPageContents":
+      console.log("test");
+      const result = await fetch(BACKEND_URL + "collect/contents", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: message.contents,
+      });
+
+      console.log(result);
+
+      sendResponse({ result: result });
       break;
   }
 });

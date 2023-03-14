@@ -3,7 +3,13 @@
   "name": "Chrome Extension",
   "description": "Chrome extension to track user behavior on Google News",
   "version": "1.0",
-  "permissions": ["scripting", "storage", "activeTab", "tabs"],
+  "permissions": [
+    "scripting",
+    "storage",
+    "activeTab",
+    "tabs",
+    "*://news.google.*"
+  ],
   "action": {
     "default_popup": "src/popup/popup.html",
     "default_icon": "src/assets/news_icon.jpg"

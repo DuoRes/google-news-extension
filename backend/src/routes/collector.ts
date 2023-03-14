@@ -32,6 +32,7 @@ router.post("/contents", async (req, res) => {
     });
     return res.status(201).json(content);
   } catch (err) {
+    console.trace(err);
     return res.status(400).send("Error collecting activity: " + err);
   }
 });

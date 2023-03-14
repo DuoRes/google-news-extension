@@ -27,13 +27,16 @@ document
 
     if (response._id) {
       document.location.href = "logged_in.html";
+      await chrome.storage.local.set({ user_id: response._id }, function () {
+        console.log("User saved:", response);
+      });
     } else {
       alert("Login Failed, please try again.");
     }
   });
 
 // if chrome storage has identifier, redirect to logged_in.html
-chrome.storage.local.get(["identifier"], function (result) {
+chrome.storage.local.get(["user_id"], function (result) {
   if (result.identifier) {
     document.location.href = "logged_in.html";
   }

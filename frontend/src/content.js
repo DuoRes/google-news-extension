@@ -1,5 +1,3 @@
-const BACKEND_URL = "http://localhost:8080/collect/contents";
-
 const article = document.querySelector("article");
 const link = document.querySelector("link");
 
@@ -8,7 +6,7 @@ const redirectToForYou = () => {
     "https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen";
 };
 
-const logPageContents = () => {
+const logPageContents = async () => {
   const contents = [];
   // get all components of the section wrapper
   const sections = document.querySelectorAll(".Ccj79");
@@ -49,24 +47,13 @@ const logPageContents = () => {
     });
   });
   console.log(contents);
-  fetch(BACKEND_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(contents),
-  })
-    .then((res) => res.json())
-    .then((data) => console.log(data))
-    .catch((err) => console.log(err));
-  // Listen for clicks on news articles
-  document.addEventListener("click", function (event) {
-    if (event.target.closest(".ipQwMb")) {
-      // This is a news article, let's track it
-      var articleUrl = event.target.closest("a").href;
-      chrome.runtime.sendMessage({ type: "trackArticle", url: articleUrl });
-    }
+
+  const result = await chrome.runtime.sendMessage({
+    type: "logPageContents",
+    contents: JSON.stringify(contents),
   });
+
+  console.log(result);
 };
 
 const logReadingProgress = () => {
@@ -111,8 +98,26 @@ const redirectPopup = () => {
   return;
 };
 
-if (document.URL.includes("news.google.com")) {
-  logPageContents();
-} else if (chrome.runtime.onMessage.hasListener(logReadingProgress)) {
-  logReadingProgress();
-}
+chrome.storage.local.get(["user_id"], (result) => {
+  if (result.user_id) {
+    console.log("User ID: " + result.user_id);
+    if (
+      document.URL.includes("news.google.com") &&
+      document.URL.includes("foryou")
+    ) {
+      logPageContents();
+      // Listen for clicks on news articles
+      document.addEventListener("click", function (event) {
+        if (event.target.closest(".ipQwMb")) {
+          // This is a news article, let's track it
+          var articleUrl = event.target.closest("a").href;
+          chrome.runtime.sendMessage({ type: "trackArticle", url: articleUrl });
+        }
+      });
+    } else {
+      redirectPopup();
+    }
+  } else {
+    console.log("User ID not found.");
+  }
+});
