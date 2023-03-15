@@ -15,3 +15,7 @@ const RecommendationSchema = new mongoose.Schema({
     type: Date,
   },
 });
+
+const Recommendation = mongoose.model("Recommendation", RecommendationSchema);
+
+export default Recommendation;

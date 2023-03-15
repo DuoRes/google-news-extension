@@ -6,9 +6,13 @@ const ContentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   pressName: { type: String },
   content: { type: String },
   url: { type: String },
+  displayImageURI: {
+    type: String,
+  },
   publishTimestamp: {
     type: Date,
   },
@@ -16,8 +20,8 @@ const ContentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  contentRanking: {
-    type: Number,
+  ranking: {
+    type: String,
   },
   percentageRead: {
     type: Number,

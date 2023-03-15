@@ -27,13 +27,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       sendResponse({ redirect: "success" });
       break;
     case "logPageContents":
-      console.log("test");
+      console.log(message.contents);
       const result = await fetch(BACKEND_URL + "collect/contents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: message.contents,
+        body: {
+          contents: message.contents,
+          token: await getToken(),
+        },
       });
 
       console.log(result);
@@ -62,3 +65,17 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     currentArticle = null;
   }
 });
+
+/******************************************************************************
+ *                           Helper Functions                                 *
+ ******************************************************************************/
+
+const getToken = async () => {
+  const token = await chrome.storage.local.get(
+    ["identifier"],
+    function (result) {
+      return result.identifier;
+    }
+  );
+  return token;
+};
