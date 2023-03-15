@@ -28,15 +28,15 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       break;
     case "logPageContents":
       console.log(message.contents);
-      const result = await fetch(BACKEND_URL + "collect/contents", {
+      const result = await fetch(BACKEND_URL + "collect/recommendations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: {
+        body: JSON.stringify({
           contents: message.contents,
           token: await getToken(),
-        },
+        }),
       });
 
       console.log(result);

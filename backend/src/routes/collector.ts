@@ -40,7 +40,7 @@ router.post("/contents", async (req, res) => {
 
 router.post("/recommendations", async (req, res) => {
   try {
-    const user = User.findOne({ token: req.body.token });
+    const user = await User.findOne({ token: req.body.token }).exec();
     const contents = JSON.parse(req.body.contents);
     const contentDocuments = [];
     contents.forEach(async (content) => {
@@ -52,18 +52,25 @@ router.post("/recommendations", async (req, res) => {
         publishTimestamp: content.timestamp,
         displayImageURI: content.image,
         user: user,
-        timestamp: moment().format("YYYY-MM-DD:HH"),
+        timestamp: moment().toDate(),
       });
       contentDocuments.push(newContent);
     });
     const recommendation = await Recommendation.create({
       user: user,
       contents: contentDocuments,
-      timestamp: moment().format("YYYY-MM-DD:HH"),
+      timestamp: moment().toDate(),
     });
-    const result = await User.findOneAndUpdate(user, {
-      $push: { recommendations: recommendation },
-    });
+    const result = await User.updateOne(
+      {
+        token: req.body.token,
+      },
+      {
+        $push: {
+          recommendations: recommendation,
+        },
+      }
+    );
 
     return res.status(201).json(result);
   } catch (err) {

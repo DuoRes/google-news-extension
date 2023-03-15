@@ -14,7 +14,7 @@ const ContentSchema = new mongoose.Schema({
     type: String,
   },
   publishTimestamp: {
-    type: Date,
+    type: String,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,7 +31,7 @@ const ContentSchema = new mongoose.Schema({
   },
   timestamp: {
     type: Date,
-    default: moment().format("YYYY-MM-DD:HH"),
+    default: moment().toDate(),
   },
 });
 
