@@ -41,6 +41,10 @@ router.post("/contents", async (req, res) => {
 router.post("/recommendations", async (req, res) => {
   try {
     const user = await User.findOne({ token: req.body.token }).exec();
+    if (!user) {
+      return res.status(400).send("User not found");
+    }
+
     const contents = JSON.parse(req.body.contents);
     const contentDocuments = [];
     contents.forEach(async (content) => {
