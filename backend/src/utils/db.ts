@@ -8,7 +8,7 @@ const dbDebugger = debug("app:db");
 // Db Work: dbDebugger('')
 
 export const connectDB = async () => {
-  console.log("Connecting to MongoDB...");
+  console.log("Connecting to MongoDB URI: ", Config.mongoDbUri);
   await mongoose
     .connect(Config.mongoDbUri)
     .then(() => {

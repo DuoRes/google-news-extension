@@ -6,7 +6,7 @@ const redirectToForYou = () => {
     "https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen";
 };
 
-const logPageContents = async () => {
+const logPageContents = async (user_id) => {
   const contents = [];
   // get all components of the section wrapper
   const sections = document.querySelectorAll(".Ccj79");
@@ -51,6 +51,7 @@ const logPageContents = async () => {
   const result = await chrome.runtime.sendMessage({
     type: "logPageContents",
     contents: JSON.stringify(contents),
+    user_id: user_id,
   });
 
   console.log(result);
@@ -105,7 +106,7 @@ chrome.storage.local.get(["user_id"], (result) => {
       document.URL.includes("news.google.com") &&
       document.URL.includes("foryou")
     ) {
-      logPageContents();
+      logPageContents(result.user_id);
       // Listen for clicks on news articles
       document.addEventListener("click", function (event) {
         if (event.target.closest(".ipQwMb")) {

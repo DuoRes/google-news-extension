@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         },
         body: JSON.stringify({
           contents: message.contents,
-          token: await getToken(),
+          user_id: message.user_id,
         }),
       });
 

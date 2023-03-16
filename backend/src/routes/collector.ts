@@ -40,7 +40,8 @@ router.post("/contents", async (req, res) => {
 
 router.post("/recommendations", async (req, res) => {
   try {
-    const user = await User.findOne({ token: req.body.token }).exec();
+    console.log("req.body", req.body);
+    const user = await User.findById(req.body.user_id).exec();
     if (!user) {
       return res.status(400).send("User not found");
     }
