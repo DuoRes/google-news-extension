@@ -1,6 +1,6 @@
 # client
 
-> a chrome extension tools built with Vite + Vanilla-ts, and Manifest v3
+> a chrome extension tools built with Vite + Vanilla-js, and Manifest v3
 
 ## Installing
 

@@ -1,10 +1,9 @@
 import './index.css'
 
 const crx = 'create-chrome-ext'
-
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+document.querySelector('#app').innerHTML = `
   <main>
-  <h3>Popup Page!</h3>
+  <h3>Options Page!</h3>
 
   <h6>v 0.0.0</h6>
 
