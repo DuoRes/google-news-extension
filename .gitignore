@@ -6,6 +6,8 @@ backend/.DS_Store
 frontend/node_modules/
 frontend/.DS_Store
 
+client/node_modules/
+
 vpn/.DS_Store
 vpn/node_modules
 vpn/temp
