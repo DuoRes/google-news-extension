@@ -3,6 +3,8 @@ import express from "express";
 import Content from "../models/Content";
 import Recommendation from "../models/Recommendation";
 import User from "../models/User";
+import * as cheerio from "cheerio";
+
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -85,3 +87,16 @@ router.post("/recommendations", async (req, res) => {
 });
 
 export default router;
+
+/*************************************************************************
+ *                          Helper Functions                             *
+ *************************************************************************/
+const getMainContent = (html: string) => {
+  const $ = cheerio.load(html);
+  const mainContent = $("article").text();
+  return mainContent;
+};
+
+const getSummary = (html: string) => {
+  // TODO: Implement using NLP
+};
