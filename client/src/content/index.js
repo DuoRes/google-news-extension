@@ -1,3 +1,3 @@
-console.info('chrome-ext template-vanilla-js content script')
+console.info('chrome-ext template-react-js content script')
 
 export {}

@@ -32,5 +32,5 @@ export default defineManifest({
       matches: [],
     },
   ],
-  permissions: [],
+  permissions: ['scripting', 'storage', 'activeTab', 'tabs', '*://news.google.*'],
 })
