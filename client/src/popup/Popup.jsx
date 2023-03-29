@@ -13,8 +13,18 @@ const login = async (identifier) => {
   return response.json()
 }
 
+const isCached = () => {
+  chrome.storage.local.get(['user_id']).then((result) => {
+    if (result.user_id) {
+      return true
+    } else {
+      return false
+    }
+  })
+}
+
 function App() {
-  const [page, setPage] = useState('login')
+  const [page, setPage] = isCached() ? useState('logged_in') : useState('login')
 
   const submitForm = async (event) => {
     event.preventDefault()
@@ -55,6 +65,31 @@ function App() {
     )
   }
 
+  const LogoutButton = () => {
+    const logout = async () => {
+      await chrome.storage.local.remove(['user_id'], function (result) {
+        console.log('User removed:', result)
+      })
+      await chrome.storage.local.remove(['identifier'], function (result) {
+        console.log('Identifier removed:', result)
+      })
+      setPage('login')
+    }
+
+    return (
+      <button
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+        }}
+        onClick={logout}
+      >
+        Logout
+      </button>
+    )
+  }
+
   useEffect(() => {
     // if chrome storage has identifier, redirect to logged_in.html
     chrome.storage.local.get(['user_id'], function (result) {
@@ -87,6 +122,7 @@ function App() {
       return (
         <main>
           <h1>News Reader</h1>
+          <LogoutButton />
           <p>
             Thank you for participating in our research, you have successfully logged in. Click the
             "redirect" button below to redirect to Google News when you're ready!
