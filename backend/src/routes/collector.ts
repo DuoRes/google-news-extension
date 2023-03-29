@@ -51,6 +51,13 @@ router.post("/recommendations", async (req, res) => {
     const contents = JSON.parse(req.body.contents);
     const contentDocuments = [];
     contents.forEach(async (content) => {
+      const existingContent = await Content.findOne({
+        url: content.link,
+      }).exec();
+      if (existingContent) {
+        contentDocuments.push(existingContent);
+        return;
+      }
       const newContent = await Content.create({
         ranking: content.index,
         title: content.title,
@@ -63,6 +70,16 @@ router.post("/recommendations", async (req, res) => {
       });
       contentDocuments.push(newContent);
     });
+
+    const existingRecommendation = await Recommendation.findOne({
+      user: user,
+      contents: {
+        $all: contentDocuments,
+      },
+    }).exec();
+    if (existingRecommendation) {
+      return res.status(226).send("Recommendation hasn't changed");
+    }
     const recommendation = await Recommendation.create({
       user: user,
       contents: contentDocuments,
