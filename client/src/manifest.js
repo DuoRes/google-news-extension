@@ -1,9 +1,9 @@
 import { defineManifest } from '@crxjs/vite-plugin'
 
 export default defineManifest({
-  name: 'create-chrome-ext',
-  description: '',
-  version: '0.0.0',
+  name: 'News Research Tracker',
+  description: 'Chrome extension to track participant behavior on Google News',
+  version: '0.1.0',
   manifest_version: 3,
   icons: {
     16: 'img/logo-16.png',
