@@ -28,3 +28,30 @@ vpn/.log
 vpn/debug.log
 vpn/tests/screenshots/extension/*
 .DS_Store
+.git (Ignored Item Conflict)/config
+.git (Ignored Item Conflict)/description
+.git (Ignored Item Conflict)/FETCH_HEAD
+.git (Ignored Item Conflict)/HEAD
+.git (Ignored Item Conflict)/index
+.git (Ignored Item Conflict)/packed-refs
+.git (Ignored Item Conflict)/hooks/applypatch-msg.sample
+.git (Ignored Item Conflict)/hooks/commit-msg.sample
+.git (Ignored Item Conflict)/hooks/fsmonitor-watchman.sample
+.git (Ignored Item Conflict)/hooks/post-update.sample
+.git (Ignored Item Conflict)/hooks/pre-applypatch.sample
+.git (Ignored Item Conflict)/hooks/pre-commit.sample
+.git (Ignored Item Conflict)/hooks/pre-merge-commit.sample
+.git (Ignored Item Conflict)/hooks/pre-push.sample
+.git (Ignored Item Conflict)/hooks/pre-rebase.sample
+.git (Ignored Item Conflict)/hooks/pre-receive.sample
+.git (Ignored Item Conflict)/hooks/prepare-commit-msg.sample
+.git (Ignored Item Conflict)/hooks/push-to-checkout.sample
+.git (Ignored Item Conflict)/hooks/update.sample
+.git (Ignored Item Conflict)/info/exclude
+.git (Ignored Item Conflict)/logs/HEAD
+.git (Ignored Item Conflict)/logs/refs/heads/master
+.git (Ignored Item Conflict)/logs/refs/remotes/origin/HEAD
+.git (Ignored Item Conflict)/objects/pack/pack-1edf9908fc41a721ddb2cee734d2e913ae6f6d7e.idx
+.git (Ignored Item Conflict)/objects/pack/pack-1edf9908fc41a721ddb2cee734d2e913ae6f6d7e.pack
+.git (Ignored Item Conflict)/refs/heads/master
+.git (Ignored Item Conflict)/refs/remotes/origin/HEAD
