@@ -13,18 +13,8 @@ const login = async (identifier) => {
   return response.json()
 }
 
-const isCached = () => {
-  chrome.storage.local.get(['user_id']).then((result) => {
-    if (result.user_id) {
-      return true
-    } else {
-      return false
-    }
-  })
-}
-
 function App() {
-  const [page, setPage] = isCached() ? useState('logged_in') : useState('login')
+  const [page, setPage] = useState('')
 
   const submitForm = async (event) => {
     event.preventDefault()
@@ -91,15 +81,25 @@ function App() {
   }
 
   useEffect(() => {
-    // if chrome storage has identifier, redirect to logged_in.html
-    chrome.storage.local.get(['user_id'], function (result) {
-      if (result.identifier) {
+    const isCached = async () => {
+      const result = await chrome.storage.local.get(['user_id'])
+      if (result.user_id) {
+        console.log('user_id cached', result.user_id)
+        return true
+      }
+      return false
+    }
+
+    isCached().then((cached) => {
+      if (cached) {
         setPage('logged_in')
-        console.log('Identifier Token retrieved:', result.identifier)
+      } else {
+        setPage('login')
       }
     })
   }, [])
 
+  console.log('page', page)
   switch (page) {
     case 'login':
       return (
@@ -110,7 +110,7 @@ function App() {
             begin.
           </p>
           <form id="login-form">
-            <label for="text">ID:</label>
+            <label>ID:</label>
             <input type="text" id="identifier" name="identifier" required />
             <button type="submit" id="login" onClick={submitForm}>
               Login
