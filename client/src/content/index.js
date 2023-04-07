@@ -120,4 +120,13 @@ chrome.storage.local.get(['user_id'], (result) => {
   }
 })
 
+// add a click event listener on all hyperlink elements
+document.addEventListener('click', function (event) {
+  // check if the clicked element is a hyperlink
+  if (event.target.tagName === 'A') {
+    // send a message to the background script with the URL of the clicked hyperlink
+    chrome.runtime.sendMessage({ type: 'linkClicked', url: event.target.href })
+  }
+})
+
 export {}
