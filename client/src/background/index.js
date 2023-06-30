@@ -18,7 +18,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     case 'redirect':
       // redirect to a specific url
       await chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        var currentTabId = tabs[0].id
+        var currentTabId = tabs[0] ? tabs[0].id : null
         chrome.tabs.update(currentTabId, { url: message.redirect })
       })
 
@@ -41,7 +41,27 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       sendResponse({ result: result })
       break
+    case 'chat':
+      console.log(message)
+      const token = await getToken()
+      const chatResult = await fetch(BACKEND_URL + 'chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          message: message.message,
+          user_id: message.user_id,
+        }),
+      })
+
+      console.log(chatResult)
+
+      sendResponse({ result: chatResult })
+      break
   }
+  return true
 })
 
 // Listen for tab updates
@@ -60,6 +80,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     // Reset the current article
     currentArticle = null
   }
+  return true
 })
 
 /******************************************************************************

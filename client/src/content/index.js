@@ -18,8 +18,9 @@ const logPageContents = async (user_id) => {
   sections.forEach((section, s_idx) => {
     const prominentArticle = section.querySelector('.IBr9hb')
     const articles = section.querySelectorAll('.UwIKyb')
+    console.log(articles[0].querySelector('.JtKRv').innerText)
     if (prominentArticle) {
-      const title = prominentArticle.querySelector('.WwrzSb').ariaLabel
+      const title = prominentArticle.querySelector('.JtKRv').innerText
       const link = prominentArticle.querySelector('.WwrzSb').href
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
@@ -34,7 +35,7 @@ const logPageContents = async (user_id) => {
       })
     }
     articles.forEach((article, a_idx) => {
-      const title = article.querySelector('.WwrzSb').ariaLabel
+      const title = article.querySelector('.JtKRv').innerText
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
@@ -99,11 +100,75 @@ const redirectPopup = () => {
   return
 }
 
+// Function to create a chat box
+const createChatBox = () => {
+  // Create chat box elements
+  const chatBox = document.createElement('div')
+  const chatBoxInput = document.createElement('input')
+  const chatBoxButton = document.createElement('button')
+
+  // Style chat box
+  chatBox.style.position = 'fixed'
+  chatBox.style.bottom = '0'
+  chatBox.style.right = '0'
+  chatBox.style.width = '300px'
+  chatBox.style.height = '400px'
+  chatBox.style.backgroundColor = '#f0f0f0'
+  chatBox.style.overflowY = 'auto'
+  chatBox.style.padding = '10px'
+  chatBox.style.boxSizing = 'border-box'
+
+  // Style input field
+  chatBoxInput.style.width = '100%'
+  chatBoxInput.style.boxSizing = 'border-box'
+  chatBoxInput.id = 'chatbox-input'
+
+  // Style send button
+  chatBoxButton.style.width = '100%'
+  chatBoxButton.innerText = 'Send'
+  chatBoxButton.id = 'chatbox-button'
+
+  // Append elements to chat box
+  chatBox.appendChild(chatBoxInput)
+  chatBox.appendChild(chatBoxButton)
+
+  // Add chat box to top of the page
+  document.body.prepend(chatBox)
+
+  console.log('Chat box created')
+
+  // Set up event handler for the Send button
+  document.getElementById('chatbox-button').addEventListener('click', async () => {
+    const message = document.getElementById('chatbox-input').value
+    const user_id = result.user_id // This should be replaced with the actual user_id from your script
+
+    const response = await chrome.runtime.sendMessage({
+      type: 'chat',
+      message: message,
+      user_id: user_id,
+    })
+
+    const chatBox = document.querySelector('div')
+    const messagePara = document.createElement('p')
+    messagePara.textContent = 'You: ' + message
+    chatBox.appendChild(messagePara)
+
+    const responsePara = document.createElement('p')
+    responsePara.textContent = 'Bot: ' + response.result
+    chatBox.appendChild(responsePara)
+
+    // Clear the input field
+    document.getElementById('chatbox-input').value = ''
+  })
+}
+
 chrome.storage.local.get(['user_id'], (result) => {
+  console.log('User ID: ' + result.user_id)
   if (result.user_id) {
     console.log('User ID: ' + result.user_id)
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
       logPageContents(result.user_id)
+      createChatBox()
       // Listen for clicks on news articles
       document.addEventListener('click', function (event) {
         if (event.target.closest('.ipQwMb')) {
@@ -113,7 +178,8 @@ chrome.storage.local.get(['user_id'], (result) => {
         }
       })
     } else {
-      redirectPopup()
+      console.log('This is not a Google News page: ' + document.URL)
+      // redirectPopup()
     }
   } else {
     console.log('User ID not found.')
@@ -128,5 +194,3 @@ document.addEventListener('click', function (event) {
     chrome.runtime.sendMessage({ type: 'linkClicked', url: event.target.href })
   }
 })
-
-export {}
