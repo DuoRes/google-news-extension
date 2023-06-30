@@ -105,6 +105,7 @@ const createChatBox = () => {
   const chatBox = document.createElement('div')
   const chatBoxInput = document.createElement('input')
   const chatBoxButton = document.createElement('button')
+  const toggleButton = document.createElement('button')
 
   // Style chat box
   chatBox.style.position = 'fixed'
@@ -142,7 +143,34 @@ const createChatBox = () => {
   chatBoxButton.innerText = 'Send'
   chatBoxButton.id = 'chatbox-button'
 
+  // Style toggle button
+  toggleButton.style.width = '100%'
+  toggleButton.style.backgroundColor = '#ddd'
+  toggleButton.style.color = 'black'
+  toggleButton.style.border = 'none'
+  toggleButton.style.padding = '10px 0'
+  toggleButton.style.borderRadius = '5px'
+  toggleButton.style.cursor = 'pointer'
+  toggleButton.style.fontSize = '14px'
+  toggleButton.innerText = 'Minimize'
+  toggleButton.id = 'toggle-button'
+
+  // Toggle chat box visibility
+  toggleButton.addEventListener('click', () => {
+    if (chatBoxInput.style.display !== 'none') {
+      chatBoxInput.style.display = 'none'
+      chatBox.style.height = '54px'
+      toggleButton.innerText = 'Open Chat Box'
+    } else {
+      chatBoxInput.style.display = 'block'
+      chatBoxButton.style.display = 'block'
+      chatBox.style.height = '400px'
+      toggleButton.innerText = 'Minimize'
+    }
+  })
+
   // Append elements to chat box
+  chatBox.appendChild(toggleButton)
   chatBox.appendChild(chatBoxInput)
   chatBox.appendChild(chatBoxButton)
   return chatBox // return the created chat box
