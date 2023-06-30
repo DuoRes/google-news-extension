@@ -100,7 +100,6 @@ const redirectPopup = () => {
   return
 }
 
-// Function to create a chat box
 const createChatBox = () => {
   // Create chat box elements
   const chatBox = document.createElement('div')
@@ -117,6 +116,7 @@ const createChatBox = () => {
   chatBox.style.overflowY = 'auto'
   chatBox.style.padding = '10px'
   chatBox.style.boxSizing = 'border-box'
+  chatBox.zIndex = '9999'
 
   // Style input field
   chatBoxInput.style.width = '100%'
@@ -131,36 +131,11 @@ const createChatBox = () => {
   // Append elements to chat box
   chatBox.appendChild(chatBoxInput)
   chatBox.appendChild(chatBoxButton)
-
-  // Add chat box to top of the page
-  document.body.prepend(chatBox)
-
-  console.log('Chat box created')
-
-  // Set up event handler for the Send button
-  document.getElementById('chatbox-button').addEventListener('click', async () => {
-    const message = document.getElementById('chatbox-input').value
-    const user_id = result.user_id // This should be replaced with the actual user_id from your script
-
-    const response = await chrome.runtime.sendMessage({
-      type: 'chat',
-      message: message,
-      user_id: user_id,
-    })
-
-    const chatBox = document.querySelector('div')
-    const messagePara = document.createElement('p')
-    messagePara.textContent = 'You: ' + message
-    chatBox.appendChild(messagePara)
-
-    const responsePara = document.createElement('p')
-    responsePara.textContent = 'Bot: ' + response.result
-    chatBox.appendChild(responsePara)
-
-    // Clear the input field
-    document.getElementById('chatbox-input').value = ''
-  })
+  return chatBox // return the created chat box
 }
+
+const pageBodyNode = document.querySelector('.afJ4ge')
+const referenceForYouNode = document.querySelector('.AUWEld')
 
 chrome.storage.local.get(['user_id'], (result) => {
   console.log('User ID: ' + result.user_id)
@@ -168,7 +143,34 @@ chrome.storage.local.get(['user_id'], (result) => {
     console.log('User ID: ' + result.user_id)
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
       logPageContents(result.user_id)
-      createChatBox()
+      const chatBox = createChatBox()
+      pageBodyNode.insertBefore(chatBox, referenceForYouNode)
+
+      console.log(chatBox)
+
+      document.getElementById('chatbox-button').addEventListener('click', async () => {
+        const message = document.getElementById('chatbox-input').value
+        const user_id = result.user_id // This should be replaced with the actual user_id from your script
+
+        const response = await chrome.runtime.sendMessage({
+          type: 'chat',
+          message: message,
+          user_id: user_id,
+        })
+
+        const chatBox = document.querySelector('div')
+        const messagePara = document.createElement('p')
+        messagePara.textContent = 'You: ' + message
+        chatBox.appendChild(messagePara)
+
+        const responsePara = document.createElement('p')
+        responsePara.textContent = 'Bot: ' + response.result
+        chatBox.appendChild(responsePara)
+
+        // Clear the input field
+        document.getElementById('chatbox-input').value = ''
+      })
+
       // Listen for clicks on news articles
       document.addEventListener('click', function (event) {
         if (event.target.closest('.ipQwMb')) {
