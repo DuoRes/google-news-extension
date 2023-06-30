@@ -56,6 +56,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }),
       })
 
+      if (chatResult.status !== 200) {
+        console.log('Error: ' + chatResult.status)
+        sendResponse({ result: 'Error: ' + chatResult.status })
+        break
+      }
+
       console.log(chatResult)
 
       sendResponse({ result: chatResult })

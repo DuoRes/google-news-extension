@@ -114,17 +114,16 @@ chrome.storage.local.get(['user_id'], (result) => {
       const chatBox = createChatBox()
       pageBodyNode.insertBefore(chatBox, referenceForYouNode)
 
-      console.log(chatBox)
-
       document.getElementById('chatbox-button').addEventListener('click', async () => {
         const message = document.getElementById('chatbox-input').value
-        const user_id = result.user_id // This should be replaced with the actual user_id from your script
+        const user_id = result.user_id
 
         const response = await chrome.runtime.sendMessage({
           type: 'chat',
           message: message,
           user_id: user_id,
         })
+        console.log(response)
 
         const chatBox = document.querySelector('div')
         const messagePara = document.createElement('p')
