@@ -108,23 +108,37 @@ const createChatBox = () => {
 
   // Style chat box
   chatBox.style.position = 'fixed'
-  chatBox.style.bottom = '0'
-  chatBox.style.right = '0'
+  chatBox.style.bottom = '10px'
+  chatBox.style.right = '10px'
   chatBox.style.width = '300px'
   chatBox.style.height = '400px'
-  chatBox.style.backgroundColor = '#f0f0f0'
+  chatBox.style.backgroundColor = 'white'
   chatBox.style.overflowY = 'auto'
   chatBox.style.padding = '10px'
   chatBox.style.boxSizing = 'border-box'
-  chatBox.zIndex = '9999'
+  chatBox.style.zIndex = '9999'
+  chatBox.style.borderRadius = '10px'
+  chatBox.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)'
 
   // Style input field
-  chatBoxInput.style.width = '100%'
+  chatBoxInput.style.width = 'calc(100% - 10px)'
+  chatBoxInput.style.padding = '5px'
   chatBoxInput.style.boxSizing = 'border-box'
+  chatBoxInput.style.borderRadius = '5px'
+  chatBoxInput.style.border = '1px solid #ddd'
+  chatBoxInput.style.marginTop = '10px'
   chatBoxInput.id = 'chatbox-input'
 
   // Style send button
   chatBoxButton.style.width = '100%'
+  chatBoxButton.style.backgroundColor = '#317efb'
+  chatBoxButton.style.color = 'white'
+  chatBoxButton.style.border = 'none'
+  chatBoxButton.style.padding = '10px 0'
+  chatBoxButton.style.marginTop = '10px'
+  chatBoxButton.style.borderRadius = '5px'
+  chatBoxButton.style.cursor = 'pointer'
+  chatBoxButton.style.fontSize = '14px'
   chatBoxButton.innerText = 'Send'
   chatBoxButton.id = 'chatbox-button'
 
