@@ -42,31 +42,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       sendResponse({ result: result })
       break
     case 'chat':
-      console.log(message)
-      const token = await getToken()
-      const chatResult = await fetch(BACKEND_URL + 'chat/left', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          message: message.message,
-          user_id: message.user_id,
-        }),
-      })
-
-      console.log(chatResult)
-
-      if (chatResult.status !== 200) {
-        console.log('Error: ' + chatResult.status)
-        sendResponse({ result: 'Error: ' + chatResult.status })
-        break
-      }
-
-      console.log(chatResult)
-
-      sendResponse({ result: chatResult })
+      handleChat(sendResponse, message.message)
       break
   }
   return true
@@ -101,5 +77,22 @@ const getToken = async () => {
   })
   return token
 }
+
+const handleChat = async (sendResponse, message) => {
+  const token = await getToken()
+  const chatResult = await fetch(BACKEND_URL + 'chat/left', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+    body: JSON.stringify({
+      message: message,
+    }),
+  }).then((res) => res.text())
+  console.log(chatResult)
+  sendResponse({ response: chatResult })
+}
+
 
 export {}

@@ -51,6 +51,7 @@ router.post("/left", async (req, res) => {
     try {
       const message = req.body.message;
       console.log("Message", message);
+      return res.status(200).send("Hello from NewsGPT!");
       const userMessage = { role: OpenAIRoles.User, content: message };
       const response = await openai.createChatCompletion({
         messages: [LEFT_PREPROMPT, userMessage],
