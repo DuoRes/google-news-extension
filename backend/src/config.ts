@@ -6,6 +6,7 @@ interface Config {
   emailPrivateKey: string;
   accessToken: string;
   mongoDbUri: string;
+  openaiApiKey: string;
 }
 
 const config: Config = {
@@ -13,6 +14,7 @@ const config: Config = {
   emailPrivateKey: process.env.EMAIL_PRIV_KEY,
   accessToken: process.env.ACCESS_TOKEN,
   mongoDbUri: nodeConfig.get<string>("db"),
+  openaiApiKey: process.env.OPENAI_API_KEY,
 };
 
 export default config;

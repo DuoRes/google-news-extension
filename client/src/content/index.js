@@ -117,6 +117,7 @@ chrome.storage.local.get(['user_id'], (result) => {
       document.getElementById('chatbox-button').addEventListener('click', async () => {
         const message = document.getElementById('chatbox-input').value
         const user_id = result.user_id
+        console.log(message)
 
         const response = await chrome.runtime.sendMessage({
           type: 'chat',

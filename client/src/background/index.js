@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     case 'chat':
       console.log(message)
       const token = await getToken()
-      const chatResult = await fetch(BACKEND_URL + 'chat', {
+      const chatResult = await fetch(BACKEND_URL + 'chat/gpt-3', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,6 +55,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           user_id: message.user_id,
         }),
       })
+
+      console.log(chatResult)
 
       if (chatResult.status !== 200) {
         console.log('Error: ' + chatResult.status)
