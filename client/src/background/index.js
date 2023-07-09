@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     case 'chat':
       console.log(message)
       const token = await getToken()
-      const chatResult = await fetch(BACKEND_URL + 'chat/gpt-3', {
+      const chatResult = await fetch(BACKEND_URL + 'chat/left', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

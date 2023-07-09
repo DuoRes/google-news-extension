@@ -5,6 +5,7 @@ import { connectDB } from "./utils/db";
 // Link Routes
 import collector from "./routes/collector";
 import user from "./routes/user";
+import chat from "./routes/chat";
 
 (async () => connectDB())();
 
@@ -18,5 +19,6 @@ app.get("/", (req, res) => {
 // Use Routes
 app.use("/collect", collector);
 app.use("/user", user);
+app.use("/chat", chat);
 
 export default app;

@@ -1,5 +1,5 @@
 import express from "express";
-import Config from "../config.js";
+import Config from "../config";
 import {
   Configuration,
   OpenAIApi,
@@ -26,9 +26,9 @@ router.get("/", (req, res) => {
   res.send("Hello from NewsGPT!");
 });
 
-router.post("/right/:message", async (req, res) => {
+router.post("/right", async (req, res) => {
   try {
-    const message = req.params.message;
+    const message = req.body.message;
     const userMessage = { role: OpenAIRoles.User, content: message };
     const response = await openai.createChatCompletion({
       messages: [RIGHT_PREPROMPT, userMessage],
@@ -37,7 +37,7 @@ router.post("/right/:message", async (req, res) => {
     });
     return res.status(200).send(response.data);
   } catch (error: any) {
-    console.error(error);
+    console.trace(error);
     return res
       .status(500)
       .send(
@@ -47,9 +47,10 @@ router.post("/right/:message", async (req, res) => {
   }
 });
 
-router.post("/left/:message", async (req, res) => {
+router.post("/left", async (req, res) => {
     try {
-      const message = req.params.message;
+      const message = req.body.message;
+      console.log("Message", message);
       const userMessage = { role: OpenAIRoles.User, content: message };
       const response = await openai.createChatCompletion({
         messages: [LEFT_PREPROMPT, userMessage],
@@ -58,7 +59,7 @@ router.post("/left/:message", async (req, res) => {
       });
       return res.status(200).send(response.data);
     } catch (error: any) {
-      console.error(error);
+      console.trace(error);
       return res
         .status(500)
         .send(
