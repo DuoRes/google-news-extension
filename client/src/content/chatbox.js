@@ -19,16 +19,16 @@ export function createChatBox() {
   chatBox.style.borderRadius = '10px'
   chatBox.style.display = 'flex'
   chatBox.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)'
-  chatBox.style.flexDirection = 'column-reverse'
+  chatBox.style.flexDirection = 'column'
   chatBox.id = 'chatbox'
 
   // Style input field
-  chatBoxInput.style.width = 'calc(100% - 10px)'
   chatBoxInput.style.padding = '5px'
   chatBoxInput.style.boxSizing = 'border-box'
   chatBoxInput.style.borderRadius = '5px'
   chatBoxInput.style.border = '1px solid #ddd'
-  chatBoxInput.style.marginTop = '10px'
+  chatBoxInput.style.marginTop = '5px'
+  chatBoxInput.style.marginBottom = '5px'
   chatBoxInput.id = 'chatbox-input'
 
   // Style send button
@@ -55,6 +55,13 @@ export function createChatBox() {
   toggleButton.style.fontSize = '14px'
   toggleButton.innerText = 'Minimize'
   toggleButton.id = 'toggle-button'
+
+  // loading animation
+  const loadingSpinner = document.createElement('div')
+  loadingSpinner.style.display = 'none' // Initially hidden
+  loadingSpinner.innerText = 'Loading...' // Or replace with your own animation
+  loadingSpinner.id = 'loading-spinner'
+  chatBox.appendChild(loadingSpinner)
 
   // Toggle chat box visibility
   toggleButton.addEventListener('click', () => {

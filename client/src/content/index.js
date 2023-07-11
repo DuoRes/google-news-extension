@@ -154,20 +154,23 @@ document.addEventListener('click', function (event) {
 })
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log(request.result)
+  document.getElementById('loading-spinner').style.display = 'block'
   const chatBox = document.getElementById('chatbox')
+  const sendButton = document.getElementById('chatbox-button')
 
   // Append the bot's response
   const botBubble = createMessageBubble('Bot', request.result)
-  chatBox.appendChild(botBubble)
+  chatBox.insertBefore(botBubble, sendButton)
 
   // Append the user's message
   const userMessage = document.getElementById('chatbox-input').value
   const userBubble = createMessageBubble('You', userMessage)
-  chatBox.appendChild(userBubble)
+  chatBox.insertBefore(userBubble, sendButton)
 
   // Clear the input field
   document.getElementById('chatbox-input').value = ''
+
+  document.getElementById('loading-spinner').style.display = 'none'
 
   // Scroll to the bottom of the chat box
   chatBox.scrollTop = chatBox.scrollHeight
