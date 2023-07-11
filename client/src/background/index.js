@@ -4,6 +4,21 @@ import { BACKEND_URL } from '../config'
 // Keep track of the current article being read
 var currentArticle = null
 
+// Debug
+chrome.runtime.onConnect.addListener((port) => {
+  console.log('Connected ..')
+  port.onMessage.addListener((msg) => {
+    console.log(msg)
+  })
+
+  port.onDisconnect.addListener((p) => {
+    console.log('disconnected ', p)
+    if (p.error) {
+      console.log(`Disconnected due to an error: ${p.error.message}`)
+    }
+  })
+})
+
 // Listen for messages from everything
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log(message)
@@ -42,7 +57,26 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       sendResponse({ result: result })
       break
     case 'chat':
-      handleChat(sendResponse, message.message)
+      fetch(BACKEND_URL + 'chat/left', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message.message,
+          user_id: message.user_id,
+        }),
+      })
+        .then((response) => response.text())
+        .then((chatResult) => {
+          console.log(chatResult)
+          chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { result: chatResult })
+          })
+        })
+        .catch((error) => {
+          console.log('Error: ' + error)
+        })
       break
   }
   return true
@@ -77,22 +111,5 @@ const getToken = async () => {
   })
   return token
 }
-
-const handleChat = async (sendResponse, message) => {
-  const token = await getToken()
-  const chatResult = await fetch(BACKEND_URL + 'chat/left', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    },
-    body: JSON.stringify({
-      message: message,
-    }),
-  }).then((res) => res.text())
-  console.log(chatResult)
-  sendResponse({ response: chatResult })
-}
-
 
 export {}

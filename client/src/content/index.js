@@ -125,18 +125,6 @@ chrome.storage.local.get(['user_id'], (result) => {
           user_id: user_id,
         })
         console.log(response)
-
-        const chatBox = document.querySelector('div')
-        const messagePara = document.createElement('p')
-        messagePara.textContent = 'You: ' + message
-        chatBox.appendChild(messagePara)
-
-        const responsePara = document.createElement('p')
-        responsePara.textContent = 'Bot: ' + response.result
-        chatBox.appendChild(responsePara)
-
-        // Clear the input field
-        document.getElementById('chatbox-input').value = ''
       })
 
       // Listen for clicks on news articles
@@ -163,4 +151,19 @@ document.addEventListener('click', function (event) {
     // send a message to the background script with the URL of the clicked hyperlink
     chrome.runtime.sendMessage({ type: 'linkClicked', url: event.target.href })
   }
+})
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  console.log(request.result)
+  const chatBox = document.querySelector('chatbox')
+  const messagePara = document.createElement('p')
+  messagePara.textContent = 'You: ' + message
+  chatBox.appendChild(messagePara)
+
+  const responsePara = document.createElement('p')
+  responsePara.textContent = 'Bot: ' + response.result
+  chatBox.appendChild(responsePara)
+
+  // Clear the input field
+  document.getElementById('chatbox-input').value = ''
 })

@@ -18,6 +18,7 @@ const createChatBox = () => {
   chatBox.style.zIndex = '9999'
   chatBox.style.borderRadius = '10px'
   chatBox.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)'
+  chatBox.id = 'chatbox'
 
   // Style input field
   chatBoxInput.style.width = 'calc(100% - 10px)'
