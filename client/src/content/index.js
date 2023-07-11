@@ -156,14 +156,15 @@ document.addEventListener('click', function (event) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request.result)
   const chatBox = document.getElementById('chatbox')
-  // Append the user's message
-  const userMessage = document.getElementById('chatbox-input').value
-  const userBubble = createMessageBubble('You', userMessage)
-  chatBox.appendChild(userBubble)
 
   // Append the bot's response
   const botBubble = createMessageBubble('Bot', request.result)
   chatBox.appendChild(botBubble)
+
+  // Append the user's message
+  const userMessage = document.getElementById('chatbox-input').value
+  const userBubble = createMessageBubble('You', userMessage)
+  chatBox.appendChild(userBubble)
 
   // Clear the input field
   document.getElementById('chatbox-input').value = ''
