@@ -1,4 +1,4 @@
-const createChatBox = () => {
+export function createChatBox() {
   // Create chat box elements
   const chatBox = document.createElement('div')
   const chatBoxInput = document.createElement('input')
@@ -17,7 +17,9 @@ const createChatBox = () => {
   chatBox.style.boxSizing = 'border-box'
   chatBox.style.zIndex = '9999'
   chatBox.style.borderRadius = '10px'
+  chatBox.style.display = 'flex'
   chatBox.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)'
+  chatBox.style.flexDirection = 'column-reverse'
   chatBox.id = 'chatbox'
 
   // Style input field
@@ -73,6 +75,24 @@ const createChatBox = () => {
   chatBox.appendChild(chatBoxInput)
   chatBox.appendChild(chatBoxButton)
   return chatBox // return the created chat box
+}
+
+export function createMessageBubble(sender, message) {
+  const messageBubble = document.createElement('div')
+  messageBubble.style.backgroundColor = sender === 'Bot' ? '#317efb' : '#ddd'
+  messageBubble.style.color = sender === 'Bot' ? 'white' : 'black'
+  messageBubble.style.padding = '10px'
+  messageBubble.style.marginTop = '10px'
+  messageBubble.style.borderRadius = '10px'
+  messageBubble.style.wordBreak = 'break-word' // To prevent long words from overflowing
+
+  const messageText = document.createElement('p')
+  messageText.style.margin = '0'
+  messageText.innerText = `${sender}: ${message}`
+
+  messageBubble.appendChild(messageText)
+
+  return messageBubble
 }
 
 export default createChatBox

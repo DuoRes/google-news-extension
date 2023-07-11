@@ -1,6 +1,6 @@
 console.info('content script')
 
-import createChatBox from './chatbox'
+import { createChatBox, createMessageBubble } from './chatbox'
 
 const article = document.querySelector('article')
 const link = document.querySelector('link')
@@ -155,15 +155,19 @@ document.addEventListener('click', function (event) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(request.result)
-  const chatBox = document.querySelector('chatbox')
-  const messagePara = document.createElement('p')
-  messagePara.textContent = 'You: ' + message
-  chatBox.appendChild(messagePara)
+  const chatBox = document.getElementById('chatbox')
+  // Append the user's message
+  const userMessage = document.getElementById('chatbox-input').value
+  const userBubble = createMessageBubble('You', userMessage)
+  chatBox.appendChild(userBubble)
 
-  const responsePara = document.createElement('p')
-  responsePara.textContent = 'Bot: ' + response.result
-  chatBox.appendChild(responsePara)
+  // Append the bot's response
+  const botBubble = createMessageBubble('Bot', request.result)
+  chatBox.appendChild(botBubble)
 
   // Clear the input field
   document.getElementById('chatbox-input').value = ''
+
+  // Scroll to the bottom of the chat box
+  chatBox.scrollTop = chatBox.scrollHeight
 })
