@@ -5,10 +5,11 @@ import {
   OpenAIApi,
   ChatCompletionRequestMessageRoleEnum as OpenAIRoles,
 } from "openai";
+import { parse } from "path";
 
 const router = express.Router();
 
-const MODEL = "gpt-3.5";
+const MODEL = "gpt-3.5-turbo";
 const LEFT_PREPROMPT = {
   role: OpenAIRoles.System,
   content: `You are a rightwing news reporter who knows all the recent news events. Answer the following questions about the news.`,
@@ -21,6 +22,15 @@ const RIGHT_PREPROMPT = {
 const openai = new OpenAIApi(
   new Configuration({ apiKey: Config.openaiApiKey })
 );
+
+const parseResponse = (response: any) => {
+  const choices = response.data.choices;
+  const lastChoice = choices[choices.length - 1];
+  const text = lastChoice.message.content;
+  const splitText = text.split("\n");
+  const answer = splitText[splitText.length - 1];
+  return answer;
+};
 
 router.get("/", (req, res) => {
   res.send("Hello from NewsGPT!");
@@ -35,9 +45,9 @@ router.post("/right", async (req, res) => {
       model: MODEL,
       max_tokens: 150,
     });
-    return res.status(200).send(response.data);
+    return res.status(200).send(parseResponse(response));
   } catch (error: any) {
-    console.trace(error);
+    console.trace(error.message);
     return res
       .status(500)
       .send(
@@ -57,9 +67,9 @@ router.post("/left", async (req, res) => {
       model: MODEL,
       max_tokens: 150,
     });
-    return res.status(200).send(response.data);
+    return res.status(200).send(parseResponse(response));
   } catch (error: any) {
-    console.trace(error);
+    console.trace(error.message);
     return res
       .status(500)
       .send(
