@@ -1,18 +1,14 @@
 const chatBoxStyles = {
-  position: 'fixed',
-  bottom: '10px',
-  right: '10px',
   width: '300px',
   height: '400px',
   backgroundColor: 'white',
   overflowY: 'auto',
   padding: '10px',
   boxSizing: 'border-box',
-  zIndex: '9999',
   borderRadius: '10px',
   display: 'flex',
-  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
   flexDirection: 'column',
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
 }
 
 const inputStyles = {
@@ -22,6 +18,7 @@ const inputStyles = {
   border: '1px solid #ddd',
   marginTop: '5px',
   marginBottom: '5px',
+  flex: 1,
 }
 
 const buttonStyles = {
@@ -45,6 +42,19 @@ const toggleButtonStyles = {
   border: 'none',
   padding: '10px 0',
   marginTop: '10px',
+}
+
+const containerStyles = {
+  position: 'fixed',
+  bottom: '10px',
+  right: '10px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'stretch',
+  width: '300px',
+  height: 'auto',
+  borderRadius: '10px',
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0)',
 }
 
 export function createChatBox() {
@@ -82,21 +92,30 @@ export function createChatBox() {
   toggleButton.addEventListener('click', () => {
     if (chatBoxInput.style.display !== 'none') {
       chatBoxInput.style.display = 'none'
-      chatBox.style.height = '54px'
+      chatBoxButton.style.display = 'none'
+      chatBox.style.display = 'none'
+      container.style.height = '47px'
       toggleButton.innerText = 'Open Chat Box'
     } else {
       chatBoxInput.style.display = 'block'
       chatBoxButton.style.display = 'block'
-      chatBox.style.height = '400px'
+      chatBox.style.display = 'flex'
+      container.style.height = '400px'
       toggleButton.innerText = 'Minimize'
     }
   })
 
-  // Append elements to chat box
-  chatBox.appendChild(toggleButton)
-  chatBox.appendChild(chatBoxInput)
-  chatBox.appendChild(chatBoxButton)
-  return chatBox // return the created chat box
+  // Create container div
+  const container = document.createElement('div')
+  Object.assign(container.style, containerStyles)
+
+  // Append elements to container
+  container.appendChild(chatBox)
+  container.appendChild(chatBoxInput)
+  container.appendChild(chatBoxButton)
+  container.appendChild(toggleButton)
+
+  return container // return the created container
 }
 
 export function createMessageBubble(sender, message) {
