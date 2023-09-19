@@ -54,7 +54,6 @@ const containerStyles = {
   width: '300px',
   height: 'auto',
   borderRadius: '10px',
-  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0)',
 }
 
 export function createChatBox() {
@@ -63,6 +62,7 @@ export function createChatBox() {
   const chatBoxInput = document.createElement('input')
   const chatBoxButton = document.createElement('button')
   const toggleButton = document.createElement('button')
+  const buttonContainer = document.createElement('div')
 
   // Style chat box
   Object.assign(chatBox.style, chatBoxStyles)
@@ -110,10 +110,12 @@ export function createChatBox() {
   Object.assign(container.style, containerStyles)
 
   // Append elements to container
+  buttonContainer.appendChild(chatBoxButton)
+  buttonContainer.appendChild(toggleButton)
+  Object.assign(buttonContainer.style, { display: 'flex', justifyContent: 'space-between' })
   container.appendChild(chatBox)
   container.appendChild(chatBoxInput)
-  container.appendChild(chatBoxButton)
-  container.appendChild(toggleButton)
+  container.appendChild(buttonContainer)
 
   return container // return the created container
 }
