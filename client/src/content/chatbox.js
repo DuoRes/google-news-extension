@@ -1,3 +1,52 @@
+const chatBoxStyles = {
+  position: 'fixed',
+  bottom: '10px',
+  right: '10px',
+  width: '300px',
+  height: '400px',
+  backgroundColor: 'white',
+  overflowY: 'auto',
+  padding: '10px',
+  boxSizing: 'border-box',
+  zIndex: '9999',
+  borderRadius: '10px',
+  display: 'flex',
+  boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+  flexDirection: 'column',
+}
+
+const inputStyles = {
+  padding: '5px',
+  boxSizing: 'border-box',
+  borderRadius: '5px',
+  border: '1px solid #ddd',
+  marginTop: '5px',
+  marginBottom: '5px',
+}
+
+const buttonStyles = {
+  width: '100%',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  fontSize: '14px',
+}
+
+const chatBoxButtonStyles = {
+  backgroundColor: '#317efb',
+  color: 'white',
+  border: 'none',
+  padding: '10px 0',
+  marginTop: '10px',
+}
+
+const toggleButtonStyles = {
+  backgroundColor: '#ddd',
+  color: 'black',
+  border: 'none',
+  padding: '10px 0',
+  marginTop: '10px',
+}
+
 export function createChatBox() {
   // Create chat box elements
   const chatBox = document.createElement('div')
@@ -6,53 +55,19 @@ export function createChatBox() {
   const toggleButton = document.createElement('button')
 
   // Style chat box
-  chatBox.style.position = 'fixed'
-  chatBox.style.bottom = '10px'
-  chatBox.style.right = '10px'
-  chatBox.style.width = '300px'
-  chatBox.style.height = '400px'
-  chatBox.style.backgroundColor = 'white'
-  chatBox.style.overflowY = 'auto'
-  chatBox.style.padding = '10px'
-  chatBox.style.boxSizing = 'border-box'
-  chatBox.style.zIndex = '9999'
-  chatBox.style.borderRadius = '10px'
-  chatBox.style.display = 'flex'
-  chatBox.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.1)'
-  chatBox.style.flexDirection = 'column'
-  chatBox.id = 'chatbox'
+  Object.assign(chatBox.style, chatBoxStyles)
 
   // Style input field
-  chatBoxInput.style.padding = '5px'
-  chatBoxInput.style.boxSizing = 'border-box'
-  chatBoxInput.style.borderRadius = '5px'
-  chatBoxInput.style.border = '1px solid #ddd'
-  chatBoxInput.style.marginTop = '5px'
-  chatBoxInput.style.marginBottom = '5px'
+  Object.assign(chatBoxInput.style, inputStyles)
   chatBoxInput.id = 'chatbox-input'
 
   // Style send button
-  chatBoxButton.style.width = '100%'
-  chatBoxButton.style.backgroundColor = '#317efb'
-  chatBoxButton.style.color = 'white'
-  chatBoxButton.style.border = 'none'
-  chatBoxButton.style.padding = '10px 0'
-  chatBoxButton.style.marginTop = '10px'
-  chatBoxButton.style.borderRadius = '5px'
-  chatBoxButton.style.cursor = 'pointer'
-  chatBoxButton.style.fontSize = '14px'
+  Object.assign(chatBoxButton.style, buttonStyles, chatBoxButtonStyles)
   chatBoxButton.innerText = 'Send'
   chatBoxButton.id = 'chatbox-button'
 
   // Style toggle button
-  toggleButton.style.width = '100%'
-  toggleButton.style.backgroundColor = '#ddd'
-  toggleButton.style.color = 'black'
-  toggleButton.style.border = 'none'
-  toggleButton.style.padding = '10px 0'
-  toggleButton.style.borderRadius = '5px'
-  toggleButton.style.cursor = 'pointer'
-  toggleButton.style.fontSize = '14px'
+  Object.assign(toggleButton.style, buttonStyles, toggleButtonStyles)
   toggleButton.innerText = 'Minimize'
   toggleButton.id = 'toggle-button'
 
