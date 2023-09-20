@@ -11,21 +11,22 @@ const chatBoxStyles = {
   display: 'flex',
   flexDirection: 'column',
   boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+  flexDirection: 'column-reverse',
 }
 
 const inputStyles = {
-  padding: '10px',
+  padding: '15px',
   boxSizing: 'border-box',
   borderRadius: '10px',
   borderTopLeftRadius: '0px',
   borderTopRightRadius: '0px',
-  boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.1)',
-  flex: 1,
+  border: 'none',
+  backgroundColor: '#eee',
 }
 
 const buttonStyles = {
   width: '100%',
-  borderRadius: '5px',
+  borderRadius: '10px',
   cursor: 'pointer',
   fontSize: '14px',
 }
@@ -100,6 +101,8 @@ export function createChatBox() {
       chatBox.style.display = 'none'
       container.style.height = '47px'
       toggleButton.innerText = 'Open Chat Box'
+      toggleButton.style.borderTopRightRadius = '10px'
+      toggleButton.style.borderBottomRightRadius = '10px'
     } else {
       chatBoxInput.style.display = 'block'
       chatBoxButton.style.display = 'block'
