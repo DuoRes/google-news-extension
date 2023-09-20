@@ -6,18 +6,20 @@ const chatBoxStyles = {
   padding: '10px',
   boxSizing: 'border-box',
   borderRadius: '10px',
+  borderBottomLeftRadius: '0px',
+  borderBottomRightRadius: '0px',
   display: 'flex',
   flexDirection: 'column',
   boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
 }
 
 const inputStyles = {
-  padding: '5px',
+  padding: '10px',
   boxSizing: 'border-box',
-  borderRadius: '5px',
-  border: '1px solid #ddd',
-  marginTop: '5px',
-  marginBottom: '5px',
+  borderRadius: '10px',
+  borderTopLeftRadius: '0px',
+  borderTopRightRadius: '0px',
+  boxShadow: '0px 0px 1px rgba(0, 0, 0, 0.1)',
   flex: 1,
 }
 
@@ -66,10 +68,12 @@ export function createChatBox() {
 
   // Style chat box
   Object.assign(chatBox.style, chatBoxStyles)
+  chatBox.id = 'chatbox'
 
   // Style input field
   Object.assign(chatBoxInput.style, inputStyles)
   chatBoxInput.id = 'chatbox-input'
+  chatBoxInput.placeholder = 'Type a message...'
 
   // Style send button
   Object.assign(chatBoxButton.style, buttonStyles, chatBoxButtonStyles)
@@ -99,6 +103,10 @@ export function createChatBox() {
     } else {
       chatBoxInput.style.display = 'block'
       chatBoxButton.style.display = 'block'
+      toggleButton.style.borderTopRightRadius = '0'
+      toggleButton.style.borderBottomRightRadius = '0'
+      chatBoxButton.style.borderBottomLeftRadius = '0'
+      chatBoxButton.style.borderTopLeftRadius = '0'
       chatBox.style.display = 'flex'
       container.style.height = '400px'
       toggleButton.innerText = 'Minimize'
@@ -110,8 +118,9 @@ export function createChatBox() {
   Object.assign(container.style, containerStyles)
 
   // Append elements to container
-  buttonContainer.appendChild(chatBoxButton)
   buttonContainer.appendChild(toggleButton)
+  buttonContainer.appendChild(chatBoxButton)
+
   Object.assign(buttonContainer.style, { display: 'flex', justifyContent: 'space-between' })
   container.appendChild(chatBox)
   container.appendChild(chatBoxInput)
