@@ -22,7 +22,7 @@ export default defineManifest({
   },
   content_scripts: [
     {
-      matches: ['*://news.google.com/*'],
+      matches: ['*://news.google.com/*', '*://duo.up.railway.app/*', '*://localhost/*'],
       js: ['src/content/index.js'],
     },
   ],
