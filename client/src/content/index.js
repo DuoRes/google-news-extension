@@ -18,11 +18,31 @@ const logPageContents = async (user_id) => {
     redirectToForYou()
   }
   sections.forEach((section, s_idx) => {
+    const oneArticle = section.querySelector('.IFHyqb')
+    if (oneArticle) {
+      // only one article in this section
+      const title = oneArticle.querySelector('.JtKRv').innerText
+      const link = oneArticle.querySelector('.WwrzSb').href
+      const timestamp = oneArticle.querySelector('.hvbAAd').innerText
+      const press = oneArticle.querySelector('.vr1PYe').innerText
+      const img = oneArticle.querySelector('.Quavad').srcset.split(' ')[0]
+      contents.push({
+        index: s_idx + 1 + '.1',
+        title,
+        link,
+        timestamp,
+        press,
+        img,
+      })
+      return
+    }
+
+    // get all articles in this section
     const prominentArticle = section.querySelector('.IBr9hb')
     const articles = section.querySelectorAll('.UwIKyb')
-    console.log(articles[0].querySelector('.JtKRv').innerText)
     if (prominentArticle) {
-      const title = prominentArticle.querySelector('.JtKRv').innerText
+      // console.log(prominentArticle.querySelector('.gPFEn').innerText)
+      const title = prominentArticle.querySelector('.gPFEn').innerText
       const link = prominentArticle.querySelector('.WwrzSb').href
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
@@ -37,7 +57,7 @@ const logPageContents = async (user_id) => {
       })
     }
     articles.forEach((article, a_idx) => {
-      const title = article.querySelector('.JtKRv').innerText
+      const title = article.querySelector('.gPFEn').innerText
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
