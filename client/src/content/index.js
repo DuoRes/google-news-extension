@@ -81,6 +81,29 @@ const logPageContents = async (user_id) => {
   console.log(result)
 }
 
+const disableLinks = async () => {
+  const links = document.querySelectorAll('a')
+
+  links.forEach((link) => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault() // Disable the link
+      // Send a message to the background script
+      await chrome.runtime.sendMessage(
+        {
+          type: 'linkClicked',
+          href: e.target.href,
+          id: e.target.id,
+          class: e.target.className,
+          target: e.target,
+        },
+        (response) => {
+          //location.reload()
+        },
+      )
+    })
+  })
+}
+
 const logReadingProgress = () => {
   document.addEventListener('scroll', () => {
     const scrollHeight = document.documentElement.scrollHeight
@@ -131,6 +154,8 @@ chrome.storage.local.get(['user_id'], (result) => {
     console.log('User ID: ' + result.user_id)
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
       logPageContents(result.user_id)
+      disableLinks()
+
       const chatBox = createChatBox()
       pageBodyNode.insertBefore(chatBox, referenceForYouNode)
 
@@ -178,14 +203,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   const chatBox = document.getElementById('chatbox')
   console.log(request.result)
 
-  // Append the bot's response
-  const botBubble = createMessageBubble('Bot', request.result)
-  chatBox.insertBefore(botBubble, chatBox.firstChild)
-
   // Append the user's message
   const userMessage = document.getElementById('chatbox-input').value
   const userBubble = createMessageBubble('You', userMessage)
   chatBox.insertBefore(userBubble, chatBox.firstChild)
+
+  // Append the bot's response
+  const botBubble = createMessageBubble('Bot', request.result)
+  chatBox.insertBefore(botBubble, chatBox.firstChild)
 
   // Clear the input field
   document.getElementById('chatbox-input').value = ''

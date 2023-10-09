@@ -12,12 +12,28 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  activities: [
+  recommendations: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Event",
+      ref: "Recommendation",
     },
   ],
+  chats: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Chat",
+    },
+  ],
+
+  // Experiment fields
+  displayChatBox: {
+    type: Boolean,
+    default: true,
+  },
+  stance: {
+    type: String, // "left" or "right"
+    default: "neutral",
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

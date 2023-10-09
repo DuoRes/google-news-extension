@@ -1,6 +1,6 @@
 const chatBoxStyles = {
   width: '300px',
-  height: '400px',
+  height: '516px',
   backgroundColor: 'white',
   overflowY: 'auto',
   padding: '10px',
