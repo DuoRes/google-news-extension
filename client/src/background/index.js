@@ -46,6 +46,22 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       console.log('Class:', message.class)
       console.log('target:', message.target)
 
+      const res = await fetch(BACKEND_URL + 'collect/link-clicked', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          link: message.href,
+          id: message.id,
+          class: message.class,
+          target: message.target,
+          user_id: message.user_id,
+        }),
+      })
+
+      console.log(res)
+
       sendResponse({ linkClicked: 'success' })
       break
     case 'logPageContents':

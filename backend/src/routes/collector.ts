@@ -111,10 +111,11 @@ router.post("/link-clicked", async (req, res) => {
 
     const link = req.body.link;
     // find the content with the user and link
-    const content = Content.findOne({
+    const content = await Content.findOne({
       user: user,
       url: link,
     }).exec();
+    console.log(content);
 
     if (!content) {
       return res.status(400).send("Content not found");

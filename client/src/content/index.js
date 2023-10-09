@@ -81,7 +81,7 @@ const logPageContents = async (user_id) => {
   console.log(result)
 }
 
-const disableLinks = async () => {
+const disableLinks = async (user_id) => {
   const links = document.querySelectorAll('a')
 
   links.forEach((link) => {
@@ -95,9 +95,10 @@ const disableLinks = async () => {
           id: e.target.id,
           class: e.target.className,
           target: e.target,
+          user_id: user_id,
         },
         (response) => {
-          //location.reload()
+          location.reload()
         },
       )
     })
@@ -154,7 +155,7 @@ chrome.storage.local.get(['user_id'], (result) => {
     console.log('User ID: ' + result.user_id)
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
       logPageContents(result.user_id)
-      disableLinks()
+      disableLinks(result.user_id)
 
       const chatBox = createChatBox()
       pageBodyNode.insertBefore(chatBox, referenceForYouNode)
