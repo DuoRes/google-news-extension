@@ -3,7 +3,7 @@ import { defineManifest } from '@crxjs/vite-plugin'
 export default defineManifest({
   name: 'News Research Tracker',
   description: 'Chrome extension to track participant behavior on Google News',
-  version: '0.1.0',
+  version: '0.1.1',
   manifest_version: 3,
   icons: {
     16: 'img/logo-16.png',
@@ -22,7 +22,7 @@ export default defineManifest({
   },
   content_scripts: [
     {
-      matches: ['http://*/*', 'https://*/*'],
+      matches: ['*://news.google.com/*', '*://duo.up.railway.app/*', '*://localhost/*'],
       js: ['src/content/index.js'],
     },
   ],
@@ -32,5 +32,5 @@ export default defineManifest({
       matches: [],
     },
   ],
-  permissions: ['scripting', 'storage', 'activeTab', 'tabs'],
+  permissions: ['storage', 'activeTab'],
 })

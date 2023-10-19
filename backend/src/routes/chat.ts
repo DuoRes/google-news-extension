@@ -5,69 +5,90 @@ import {
   OpenAIApi,
   ChatCompletionRequestMessageRoleEnum as OpenAIRoles,
 } from "openai";
-import { parse } from "path";
+import Recommendation from "../models/Recommendation";
+import Chat from "../models/Chat";
+import User from "../models/User";
 
 const router = express.Router();
 
 const MODEL = "gpt-3.5-turbo";
-const LEFT_PREPROMPT = {
-  role: OpenAIRoles.System,
-  content: `You are a rightwing news reporter who knows all the recent news events. Answer the following questions about the news.`,
-};
-const RIGHT_PREPROMPT = {
-  role: OpenAIRoles.System,
-  content: `You are a leftwing news reporter who knows all the recent news events. Answer the following questions about the news.`,
-};
+const MAX_TOKENS = 300;
+const COMMON_PROMPT = `Answer the following questions about the news. Be succinct and to the point. You should aim to give all the information in one go and not rely on back and forth questions.`;
 
 const openai = new OpenAIApi(
   new Configuration({ apiKey: Config.openaiApiKey })
 );
 
-const parseResponse = (response: any) => {
-  const choices = response.data.choices;
-  const lastChoice = choices[choices.length - 1];
-  const text = lastChoice.message.content;
-  const splitText = text.split("\n");
-  const answer = splitText[splitText.length - 1];
-  return answer;
+const parseResponse = async (response: any, user: any) => {
+  const messages = response.data.messages || response.data.choices;
+  console.log(messages);
+  try {
+    const chat = await Chat.create({
+      user: user,
+      messages: messages,
+    });
+    await user.chats.push(chat);
+    await user.save();
+  } catch (err) {
+    console.trace(err);
+  }
+  console.log(messages);
+  const lastMessage = messages[messages.length - 1];
+  const text = lastMessage.message.content;
+  return text;
+};
+
+const context = async (stance: string) => {
+  try {
+    const latestRec = await Recommendation.findOne(
+      {},
+      {},
+      { sort: { timestamp: -1 } }
+    )
+      .populate("contents")
+      .exec();
+    if (stance === "left") {
+      return {
+        role: OpenAIRoles.System,
+        content: `You are a leftwing news reporter who knows all the recent news events from the headlines attached. You should try to display the information in a left-wing reporter fashion. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
+      };
+    } else if (stance === "right") {
+      return {
+        role: OpenAIRoles.System,
+        content: `You are a rightwing news reporter who knows all the recent news events from the headlines attached. You should try to display the information in a right-wing reporter fashion. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
+      };
+    } else {
+      return {
+        role: OpenAIRoles.System,
+        content: `You are a news reporter who knows all the recent news events from the headlines attached. You should try to display the information in a neutral fashion. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
+      };
+    }
+  } catch (err) {
+    console.trace(err);
+  }
 };
 
 router.get("/", (req, res) => {
   res.send("Hello from NewsGPT!");
 });
 
-router.post("/right", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
+    console.log(req.body);
+    const user = await User.findById(req.body.user_id).exec();
+    if (!user) {
+      return res.status(400).send("User not found");
+    }
+    const stance = user.stance;
+    const preprompt = await context(stance || "neutral");
     const message = req.body.message;
     const userMessage = { role: OpenAIRoles.User, content: message };
     const response = await openai.createChatCompletion({
-      messages: [RIGHT_PREPROMPT, userMessage],
+      messages: [preprompt, userMessage],
       model: MODEL,
-      max_tokens: 150,
+      max_tokens: MAX_TOKENS,
     });
-    return res.status(200).send(parseResponse(response));
-  } catch (error: any) {
-    console.trace(error.message);
-    return res
-      .status(500)
-      .send(
-        "Sorry about that! NewsGPT's having a bad day. It's having troubles with " +
-          error.message
-      );
-  }
-});
-
-router.post("/left", async (req, res) => {
-  try {
-    const message = req.body.message;
-    console.log("Message", message);
-    const userMessage = { role: OpenAIRoles.User, content: message };
-    const response = await openai.createChatCompletion({
-      messages: [LEFT_PREPROMPT, userMessage],
-      model: MODEL,
-      max_tokens: 150,
-    });
-    return res.status(200).send(parseResponse(response));
+    return res.status(200).send(await parseResponse(response, user));
   } catch (error: any) {
     console.trace(error.message);
     return res

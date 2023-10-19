@@ -102,6 +102,40 @@ router.post("/recommendations", async (req, res) => {
   }
 });
 
+router.post("/link-clicked", async (req, res) => {
+  try {
+    const user = await User.findById(req.body.user_id).exec();
+    if (!user) {
+      return res.status(400).send("User not found");
+    }
+
+    const link = req.body.link;
+    // find the content with the user and link
+    const content = await Content.findOne({
+      user: user,
+      url: link,
+    }).exec();
+    console.log(content);
+
+    if (!content) {
+      return res.status(400).send("Content not found");
+    }
+    const result = await Content.updateOne(
+      {
+        user: user,
+        url: link,
+      },
+      {
+        clicked: true,
+      }
+    );
+    return res.status(201).json(result);
+  } catch (err) {
+    console.trace(err);
+    return res.status(400).send("Error collecting clicked link: " + err);
+  }
+});
+
 export default router;
 
 /*************************************************************************

@@ -18,11 +18,31 @@ const logPageContents = async (user_id) => {
     redirectToForYou()
   }
   sections.forEach((section, s_idx) => {
+    const oneArticle = section.querySelector('.IFHyqb')
+    if (oneArticle) {
+      // only one article in this section
+      const title = oneArticle.querySelector('.JtKRv').innerText
+      const link = oneArticle.querySelector('.WwrzSb').href
+      const timestamp = oneArticle.querySelector('.hvbAAd').innerText
+      const press = oneArticle.querySelector('.vr1PYe').innerText
+      const img = oneArticle.querySelector('.Quavad').srcset.split(' ')[0]
+      contents.push({
+        index: s_idx + 1 + '.1',
+        title,
+        link,
+        timestamp,
+        press,
+        img,
+      })
+      return
+    }
+
+    // get all articles in this section
     const prominentArticle = section.querySelector('.IBr9hb')
     const articles = section.querySelectorAll('.UwIKyb')
-    console.log(articles[0].querySelector('.JtKRv').innerText)
     if (prominentArticle) {
-      const title = prominentArticle.querySelector('.JtKRv').innerText
+      // console.log(prominentArticle.querySelector('.gPFEn').innerText)
+      const title = prominentArticle.querySelector('.gPFEn').innerText
       const link = prominentArticle.querySelector('.WwrzSb').href
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
@@ -37,7 +57,7 @@ const logPageContents = async (user_id) => {
       })
     }
     articles.forEach((article, a_idx) => {
-      const title = article.querySelector('.JtKRv').innerText
+      const title = article.querySelector('.gPFEn').innerText
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
@@ -59,6 +79,30 @@ const logPageContents = async (user_id) => {
   })
 
   console.log(result)
+}
+
+const disableLinks = async (user_id) => {
+  const links = document.querySelectorAll('a')
+
+  links.forEach((link) => {
+    link.addEventListener('click', async (e) => {
+      e.preventDefault() // Disable the link
+      // Send a message to the background script
+      await chrome.runtime.sendMessage(
+        {
+          type: 'linkClicked',
+          href: e.target.href,
+          id: e.target.id,
+          class: e.target.className,
+          target: e.target,
+          user_id: user_id,
+        },
+        (response) => {
+          location.reload()
+        },
+      )
+    })
+  })
 }
 
 const logReadingProgress = () => {
@@ -111,6 +155,8 @@ chrome.storage.local.get(['user_id'], (result) => {
     console.log('User ID: ' + result.user_id)
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
       logPageContents(result.user_id)
+      disableLinks(result.user_id)
+
       const chatBox = createChatBox()
       pageBodyNode.insertBefore(chatBox, referenceForYouNode)
 
@@ -158,14 +204,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   const chatBox = document.getElementById('chatbox')
   console.log(request.result)
 
-  // Append the bot's response
-  const botBubble = createMessageBubble('Bot', request.result)
-  chatBox.insertBefore(botBubble, chatBox.firstChild)
-
   // Append the user's message
   const userMessage = document.getElementById('chatbox-input').value
   const userBubble = createMessageBubble('You', userMessage)
   chatBox.insertBefore(userBubble, chatBox.firstChild)
+
+  // Append the bot's response
+  const botBubble = createMessageBubble('Bot', request.result)
+  chatBox.insertBefore(botBubble, chatBox.firstChild)
 
   // Clear the input field
   document.getElementById('chatbox-input').value = ''

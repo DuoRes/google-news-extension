@@ -1,6 +1,6 @@
 const chatBoxStyles = {
   width: '300px',
-  height: '400px',
+  height: '516px',
   backgroundColor: 'white',
   overflowY: 'auto',
   padding: '10px',
@@ -12,6 +12,7 @@ const chatBoxStyles = {
   flexDirection: 'column',
   boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
   flexDirection: 'column-reverse',
+  zIndex: '999',
 }
 
 const inputStyles = {

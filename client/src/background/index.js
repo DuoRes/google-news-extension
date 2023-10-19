@@ -39,6 +39,31 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       sendResponse({ redirect: 'success' })
       break
+    case 'linkClicked':
+      // a link was clicked, do something with it
+      console.log('URL:', message.href)
+      console.log('ID:', message.id)
+      console.log('Class:', message.class)
+      console.log('target:', message.target)
+
+      const res = await fetch(BACKEND_URL + 'collect/link-clicked', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          link: message.href,
+          id: message.id,
+          class: message.class,
+          target: message.target,
+          user_id: message.user_id,
+        }),
+      })
+
+      console.log(res)
+
+      sendResponse({ linkClicked: 'success' })
+      break
     case 'logPageContents':
       console.log(message.contents)
       const result = await fetch(BACKEND_URL + 'collect/recommendations', {
@@ -57,7 +82,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       sendResponse({ result: result })
       break
     case 'chat':
-      fetch(BACKEND_URL + 'chat/left', {
+      fetch(BACKEND_URL + 'chat/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
