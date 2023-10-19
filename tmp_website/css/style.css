@@ -1,0 +1,182 @@
+body {
+    background-color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    background-color: rgba(255, 255, 255, 0.77);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    color: #C46454;
+    width: 80%; /* Adjust the width as needed */
+}
+
+.plugin_box{
+    color: #C46454;
+    width: 80%;
+    margin: 5vw;
+    background-color: rgba(255, 255, 255, 0.77);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+.plugin_box .plugin_item{
+    display: flex;
+    padding: 1vw;
+    width: 100%;  /* 更改为100% */
+    border-bottom: 2px dotted aliceblue;
+}
+.plugin_box .plugin_item .left_box{
+    width: 50%;
+    margin-right: 10%;
+}
+.proceed_button{
+  background: #36bee8;
+  border: 2px solid #36bee8;
+  color: white;
+  padding: 10px 23px;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+.download_button{
+    background: none;
+    border: 2px solid #36bee8;
+    color: black;
+    padding: 10px 23px;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+.plugin_box .plugin_item .left_box p .title{
+    font-weight: bold;
+}
+.plugin_box .plugin_item .right_box {
+    margin: 0;
+    padding: 0;
+}
+
+.plugin_box .plugin_item .right_box img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;  /* 确保图像覆盖整个容器，但不会拉伸或压缩 */
+}
+
+.border{
+    border-bottom: 1px solid aliceblue;
+}
+
+.bubbles{
+    position: absolute;
+    display: flex;
+    height: 90vh;
+    width: 96vw;
+    overflow: hidden;
+    z-index: -1;
+}
+.bubbles span{
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background-color: #4fc3dc;
+    margin: 0 -5px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 10px #4fc3dc44,
+    0 0 50px #4fc3dc,
+    0 0 100px  #4fc3dc;
+    animation: animate 15s linear infinite;
+    animation-duration: calc(125s / var(--num));
+}
+.bubbles span:nth-child(even){
+    background-color: #ff2d75;
+    box-shadow: 0 0 0 10px #ff2d7544,
+    0 0 50px #ff2d75,
+    0 0 100px  #ff2d75;
+    z-index: -1;
+}
+.buttons{
+    border-radius: 1rem !important;
+}
+.border_bootom{
+    border-bottom: 1px solid #919191;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+@keyframes animate {
+    0%{
+      transform: translateY(85vh) scale(0);
+    }
+    100%{
+      transform: translateY(10vh) scale(1);
+    }
+}
+
+h1 {
+    font-size: 28px;
+}
+
+.additional-text {
+    font-size: 14px;
+    margin-top: 20px;
+    color: #C46454;
+    text-align: left;
+    line-height: 2rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #C46454;
+    border-radius: 3px;
+    font-size: 16px;
+    color: #C46454;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+}
+
+button[type="submit"],
+button[type="button"],.update {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    background-color: #C46454;
+    color: #fff;
+    margin-right: 5px;
+}
+
+button[type="button"],.update  {
+    background-color: #C46454;
+    color: #fff;
+    margin-left: 5px;
+}
