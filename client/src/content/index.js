@@ -1,6 +1,7 @@
 console.info('content script')
 
 import { createChatBox, createMessageBubble } from './chatbox'
+import { checkLoggedInAndLogout } from './login'
 
 const article = document.querySelector('article')
 const link = document.querySelector('link')
@@ -148,6 +149,10 @@ const redirectPopup = () => {
 
 const pageBodyNode = document.querySelector('.afJ4ge')
 const referenceForYouNode = document.querySelector('.AUWEld')
+chrome.storage.get(null, function (items) {
+  var allKeys = Object.keys(items)
+  console.info(allKeys)
+})
 
 chrome.storage.local.get(['user_id'], (result) => {
   console.log('User ID: ' + result.user_id)
@@ -181,6 +186,9 @@ chrome.storage.local.get(['user_id'], (result) => {
           chrome.runtime.sendMessage({ type: 'trackArticle', url: articleUrl })
         }
       })
+    } else if (document.URL.includes('google.com')) {
+      console.log('This is a Google News page: ' + document.URL)
+      checkLoggedInAndLogout()
     } else {
       console.log('This is not a Google News page: ' + document.URL)
       // redirectPopup()
