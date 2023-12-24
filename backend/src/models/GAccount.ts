@@ -9,7 +9,17 @@ const GAccountSchema = new mongoose.Schema({
     type: Boolean,
   },
   stance: {
-    type: String, // "left" or "right"
+    type: String, // "left" or "right" or "neutral" or "blank"
     default: "neutral",
   },
+  password: {
+    type: String,
+  },
+  recoveryEmail: {
+    type: String,
+  },
 });
+
+const GAccount = mongoose.model("GAccount", GAccountSchema);
+
+export default GAccount;
