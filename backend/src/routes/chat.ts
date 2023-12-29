@@ -1,13 +1,10 @@
 import express from "express";
 import Config from "../config";
-import {
-  Configuration,
-  OpenAIApi,
-  ChatCompletionRequestMessageRoleEnum as OpenAIRoles,
-} from "openai";
+import { OpenAI } from "openai";
 import Recommendation from "../models/Recommendation";
 import Chat from "../models/Chat";
 import User from "../models/User";
+import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 const router = express.Router();
 
@@ -15,11 +12,9 @@ const MODEL = "gpt-3.5-turbo";
 const MAX_TOKENS = 300;
 const COMMON_PROMPT = `Answer the following questions about the news. Be succinct and to the point. You should aim to give all the information in one go and not rely on back and forth questions.`;
 
-const openai = new OpenAIApi(
-  new Configuration({ apiKey: Config.openaiApiKey })
-);
+const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 
-const parseResponse = async (response: any, user: any) => {
+export const parseResponse = async (response: any, user: any) => {
   const messages = response.data.messages || response.data.choices;
   console.log(messages);
   try {
@@ -49,17 +44,17 @@ const context = async (stance: string) => {
       .exec();
     if (stance === "left") {
       return {
-        role: OpenAIRoles.System,
+        role: "system",
         content: `You are a leftwing news reporter who knows all the recent news events from the headlines attached. You should try to display the information in a left-wing reporter fashion. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
       };
     } else if (stance === "right") {
       return {
-        role: OpenAIRoles.System,
+        role: "system",
         content: `You are a rightwing news reporter who knows all the recent news events from the headlines attached. You should try to display the information in a right-wing reporter fashion. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
       };
     } else {
       return {
-        role: OpenAIRoles.System,
+        role: "system",
         content: `You are a news reporter who knows all the recent news events from the headlines attached. You should try to display the information in a neutral fashion. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
       };
     }
@@ -80,10 +75,15 @@ router.post("/", async (req, res) => {
       return res.status(400).send("User not found");
     }
     const stance = user.stance;
-    const preprompt = await context(stance || "neutral");
+    const preprompt = (await context(
+      stance || "neutral"
+    )) as ChatCompletionMessageParam;
     const message = req.body.message;
-    const userMessage = { role: OpenAIRoles.User, content: message };
-    const response = await openai.createChatCompletion({
+    const userMessage: ChatCompletionMessageParam = {
+      role: "user",
+      content: message,
+    };
+    const response = await openai.chat.completions.create({
       messages: [preprompt, userMessage],
       model: MODEL,
       max_tokens: MAX_TOKENS,

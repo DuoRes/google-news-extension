@@ -34,6 +34,15 @@ const UserSchema = new mongoose.Schema({
     type: String, // "left" or "right"
     default: "neutral",
   },
+  assignedGmail: {
+    type: String,
+  },
+  assignedPassword: {
+    type: String,
+  },
+  assignedBackupGmail: {
+    type: String,
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

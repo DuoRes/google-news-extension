@@ -33,7 +33,7 @@
     "moment": "^2.29.4",
     "mongoose": "^6.5.0",
     "nodemon": "^3.0.1",
-    "openai": "^3.3.0",
+    "openai": "^4.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
