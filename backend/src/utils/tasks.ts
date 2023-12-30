@@ -1,5 +1,5 @@
-import User from "../models/user";
-import Content from "../models/content";
+import User from "../models/User";
+import Content from "../models/Content";
 import { ObjectId } from "mongodb";
 
 const MINIMUM_PAUSE_BETWEEN_CLICKS = 1000 * 5; // 5 seconds
