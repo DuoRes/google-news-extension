@@ -88,6 +88,7 @@ const disableLinks = async (user_id) => {
   links.forEach((link) => {
     link.addEventListener('click', async (e) => {
       e.preventDefault() // Disable the link
+      e.stopPropagation() // Don't bubble the event up
       // Send a message to the background script
       await chrome.runtime.sendMessage(
         {
@@ -149,7 +150,7 @@ const redirectPopup = () => {
 
 const pageBodyNode = document.querySelector('.afJ4ge')
 const referenceForYouNode = document.querySelector('.AUWEld')
-chrome.storage.get(null, function (items) {
+chrome.storage.local.get(null, function (items) {
   var allKeys = Object.keys(items)
   console.info(allKeys)
 })
@@ -159,6 +160,7 @@ chrome.storage.local.get(['user_id'], (result) => {
   if (result.user_id) {
     console.log('User ID: ' + result.user_id)
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
+      console.log('This is a Google News For You page: ' + document.URL)
       logPageContents(result.user_id)
       disableLinks(result.user_id)
 
@@ -181,6 +183,8 @@ chrome.storage.local.get(['user_id'], (result) => {
       // Listen for clicks on news articles
       document.addEventListener('click', function (event) {
         if (event.target.closest('.ipQwMb')) {
+          event.preventDefault()
+          event.stopPropagation()
           // This is a news article, let's track it
           var articleUrl = event.target.closest('a').href
           chrome.runtime.sendMessage({ type: 'trackArticle', url: articleUrl })
@@ -201,7 +205,9 @@ chrome.storage.local.get(['user_id'], (result) => {
 // add a click event listener on all hyperlink elements
 document.addEventListener('click', function (event) {
   // check if the clicked element is a hyperlink
-  if (event.target.tagName === 'A') {
+  if (event.target.tagName === 'A' || event.target.closest('a')) {
+    event.preventDefault()
+    event.stopPropagation()
     // send a message to the background script with the URL of the clicked hyperlink
     chrome.runtime.sendMessage({ type: 'linkClicked', url: event.target.href })
   }

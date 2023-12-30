@@ -92,6 +92,3 @@ export function checkLoggedInAndLogout() {
     performLogin()
   }
 }
-
-// Start the process
-checkLoggedInAndLogout()
