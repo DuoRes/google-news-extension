@@ -15,8 +15,7 @@ const COMMON_PROMPT = `Answer the following questions about the news. Be succinc
 const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 
 export const parseResponse = async (response: any, user: any) => {
-  console.log(response);
-  const messages = response.data.messages || response.data.choices;
+  const messages = response.choices[0].messages || response.data.choices;
   console.log(messages);
   try {
     const chat = await Chat.create({
