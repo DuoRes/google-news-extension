@@ -30,9 +30,12 @@ function App() {
 
     if (response._id) {
       setPage('logged_in')
-      await chrome.storage.local.set({ user_id: response._id }, function () {
-        console.log('User saved:', response)
-      })
+      await chrome.storage.local.set(
+        { user_id: response._id, displayChatBox: response.displayChatBox, stance: response.stance },
+        function () {
+          console.log('User saved:', response)
+        },
+      )
     } else {
       alert('Login Failed, please try again.')
     }
