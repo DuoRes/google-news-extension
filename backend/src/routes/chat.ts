@@ -14,25 +14,24 @@ const COMMON_PROMPT = `Answer the following questions about the news. Be succinc
 
 const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 
-export const parseResponse = async (response: any, user: any) => {
-  console.log(response);
-  console.log(response.data);
-  console.log(response.choices);
-  const messages = response?.choices[0].message || response.data.choices;
-  console.log(messages);
+export const parseResponse = async (
+  response: any,
+  user: any,
+  userMessage: string
+) => {
+  const message = response.choices[0].message;
+  const text = message.content;
   try {
     const chat = await Chat.create({
       user: user,
-      messages: messages,
+      userMessage,
+      botMessage: text,
     });
     await user.chats.push(chat);
     await user.save();
   } catch (err) {
     console.trace(err);
   }
-  console.log(messages);
-  const lastMessage = messages[messages.length - 1];
-  const text = lastMessage.message.content;
   return text;
 };
 
@@ -91,7 +90,7 @@ router.post("/", async (req, res) => {
       model: MODEL,
       max_tokens: MAX_TOKENS,
     });
-    return res.status(200).send(await parseResponse(response, user));
+    return res.status(200).send(await parseResponse(response, user, message));
   } catch (error: any) {
     console.trace(error.message);
     return res
