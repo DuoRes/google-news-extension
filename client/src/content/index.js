@@ -148,8 +148,15 @@ const redirectPopup = () => {
   return
 }
 
-const pageBodyNode = document.querySelector('.afJ4ge')
-const referenceForYouNode = document.querySelector('.AUWEld')
+const pageBodyNode = document
+  .evaluate('//main', document, null, XPathResult.ANY_TYPE, null)
+  .iterateNext()
+const referenceForYouNode = document
+  .evaluate("//h2[contains(., 'For you')]", document, null, XPathResult.ANY_TYPE, null)
+  .iterateNext()
+
+console.log('referenceForYouNode', referenceForYouNode)
+
 chrome.storage.local.get(null, function (items) {
   var allKeys = Object.keys(items)
   console.info(allKeys)
@@ -165,7 +172,7 @@ chrome.storage.local.get(['user_id'], (result) => {
       disableLinks(result.user_id)
 
       const chatBox = createChatBox()
-      pageBodyNode.insertBefore(chatBox, referenceForYouNode)
+      pageBodyNode.appendChild(chatBox)
 
       document.getElementById('chatbox-button').addEventListener('click', async () => {
         const message = document.getElementById('chatbox-input').value
