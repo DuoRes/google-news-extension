@@ -5,7 +5,6 @@ import User from "../models/User";
 import { countValidClicks } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
-import { parseResponse } from "./chat";
 
 const MINIMUM_CLICKS_REQUIRED = 100;
 const PROLIFIC_COMPLETION_CODE = "yay_you_did_it";

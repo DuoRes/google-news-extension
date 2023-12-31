@@ -34,6 +34,10 @@ const UserSchema = new mongoose.Schema({
     type: String, // "left" or "right"
     default: "neutral",
   },
+  chatBotStance: {
+    type: String, // "left" or "right"
+    default: "neutral",
+  },
   assignedGmail: {
     type: String,
   },

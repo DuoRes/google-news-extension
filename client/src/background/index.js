@@ -60,9 +60,23 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }),
       })
 
+      const progress = await fetch(BACKEND_URL + 'user/status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: message.user_id,
+        }),
+      })
+
       console.log(res)
 
-      sendResponse({ linkClicked: 'success' })
+      sendResponse({
+        linkClicked: 'success',
+        ok: progress.ok,
+        completionCode: progress.completionCode,
+      })
       break
     case 'logPageContents':
       console.log(message.contents)

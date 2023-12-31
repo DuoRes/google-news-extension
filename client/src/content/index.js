@@ -153,7 +153,33 @@ chrome.storage.local.get(['user_id', 'displayChatBox'], (result) => {
           event.stopPropagation()
           // This is a news article, let's track it
           var articleUrl = event.target.closest('a').href
-          chrome.runtime.sendMessage({ type: 'trackArticle', url: articleUrl })
+          const { _, ok, completionCode } = chrome.runtime.sendMessage({
+            type: 'trackArticle',
+            url: articleUrl,
+          })
+
+          // Give a popup with the completion code stating that the study is complete; add a thank you message.
+          if (ok) {
+            document.body.prepend(
+              new DOMParser().parseFromString(
+                `
+                  <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);
+                  z-index: 999
+                  ">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 300px; background-color: white; border-radius: 10px; padding: 20px">
+                      <h1>Google News Recommendation</h1>
+                      <p>Thank you for participating in our study!</p>
+                      <p>Your completion code is: ${completionCode}</p>
+                      <p>Please copy and paste this code into the HIT on MTurk.</p>
+                      <div style="display: flex; justify-content: space-between; margin-top: 20px">
+                      </div>
+                    </div>
+                  </div>
+                `,
+                'text/html',
+              ).body.firstChild,
+            )
+          }
         }
       })
     } else if (document.URL.includes('google.com')) {
@@ -188,6 +214,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   const userMessage = document.getElementById('chatbox-input').value
   const userBubble = createMessageBubble('You', userMessage)
   chatBox.insertBefore(userBubble, chatBox.firstChild)
+
+  const names = [] //TODO: add names
 
   // Append the bot's response
   const botBubble = createMessageBubble('Bot', request.result)
