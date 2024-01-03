@@ -215,10 +215,23 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   const userBubble = createMessageBubble('You', userMessage)
   chatBox.insertBefore(userBubble, chatBox.firstChild)
 
-  const names = [] //TODO: add names
+  const names = [
+    'Emily',
+    'Greg',
+    'Lakisha',
+    'Jamal',
+    'Mei',
+    'Hiroshi',
+    'Aponi',
+    'Chayton',
+    'Maria',
+    'Juan',
+  ]
+
+  const botName = names[Math.floor(Math.random() * names.length)]
 
   // Append the bot's response
-  const botBubble = createMessageBubble('Bot', request.result)
+  const botBubble = createMessageBubble(botName, request.result)
   chatBox.insertBefore(botBubble, chatBox.firstChild)
 
   // Clear the input field
