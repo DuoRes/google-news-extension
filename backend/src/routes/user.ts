@@ -1,6 +1,5 @@
 import moment from "moment";
 import express from "express";
-import Content from "../models/Content";
 import User from "../models/User";
 import { countValidClicks } from "../utils/tasks";
 import OpenAI from "openai";
@@ -67,7 +66,7 @@ router.get("/validateImage", async (req, res) => {
     const image = req.body.image; // Assuming the image is sent in the request body
 
     // Make an API call to the GPT-4v multi-modal model
-    const openai = new OpenAI({ apiKey: Config.openaiApiKey }); // Replace YOUR_API_KEY with your actual OpenAI API key
+    const openai = new OpenAI({ apiKey: Config.openaiApiKey });
     const response = await openai.chat.completions.create({
       model: "gpt-4-vision-preview",
       max_tokens: 1000,

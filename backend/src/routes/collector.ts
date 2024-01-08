@@ -4,6 +4,7 @@ import Content from "../models/Content";
 import Recommendation from "../models/Recommendation";
 import User from "../models/User";
 import * as cheerio from "cheerio";
+import { ratePoliticalStance } from "../utils/scorer";
 
 const router = express.Router();
 
@@ -95,7 +96,11 @@ router.post("/recommendations", async (req, res) => {
       }
     );
 
-    return res.status(201).json(result);
+    const currentStance = ratePoliticalStance(
+      contentDocuments.map((content) => content.content).join(" ")
+    );
+
+    return res.status(201).send(currentStance);
   } catch (err) {
     console.trace(err);
     return res.status(400).send("Error collecting activity: " + err);

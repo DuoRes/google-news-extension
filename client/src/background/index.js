@@ -80,7 +80,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       break
     case 'logPageContents':
       console.log(message.contents)
-      const result = await fetch(BACKEND_URL + 'collect/recommendations', {
+      const currentStance = await fetch(BACKEND_URL + 'collect/recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }),
       })
 
-      console.log(result)
+      console.log(currentStance)
+
+      if (currentStance > 80) {
+      } else if (currentStance < -80) {
+      }
 
       sendResponse({ result: result })
       break
