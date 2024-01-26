@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/nociza/chrome-extension#readme",
   "dependencies": {
-    "aws-sdk": "^2.1542.0",
+    "aws-sdk": "^2.1545.0",
     "axios": "^1.2.1",
     "bing-chat": "^0.2.1",
     "cheerio": "^1.0.0-rc.12",
