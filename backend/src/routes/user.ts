@@ -4,6 +4,18 @@ import User from "../models/User";
 import { countValidClicks } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
+import { extractGoogleEmail } from "../utils/ocr";
+import { uploadImages } from "../middleware/multer";
+import aws from "aws-sdk";
+import fs from "fs";
+
+aws.config.update({
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  region: "us-west-1",
+});
+
+const s3 = new aws.S3();
 
 const MINIMUM_CLICKS_REQUIRED = 100;
 const PROLIFIC_COMPLETION_CODE = "yay_you_did_it";
@@ -59,9 +71,60 @@ router.get("/status", async (req, res) => {
   }
 });
 
+router.post(
+  "/validateImageOCR",
+  uploadImages.single("screenshot"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+
+    try {
+      const user = await User.findById(req.body.user_id).exec();
+      if (!user) {
+        return res.status(400).send("User not found");
+      }
+      const assignedEmail = user.assignedGmail;
+      const localImagePath = req.file.path; // Path to the locally stored file
+
+      const [extractedEmail, confidence] = await extractGoogleEmail(
+        localImagePath,
+        assignedEmail
+      );
+
+      if (confidence < 80) {
+        fs.unlinkSync(localImagePath); // Delete the local file
+        return res.status(400).send("Low confidence in OCR processing.");
+      }
+
+      // Upload file to S3
+      const fileContent = fs.readFileSync(localImagePath);
+      const params = {
+        Bucket: "duo-research-storage",
+        Key: `screenshots/${Date.now().toString()}-${req.file.originalname}`,
+        Body: fileContent,
+      };
+      const uploadResult = await s3.upload(params).promise();
+      fs.unlinkSync(localImagePath); // Delete the local file after upload
+
+      user.loginScreenshot = uploadResult.Location; // S3 URL
+      await user.save();
+
+      return res.json({
+        message: "File uploaded and processed successfully.",
+        extractedEmail: extractedEmail,
+        confidence: confidence,
+      });
+    } catch (error) {
+      console.error(error);
+      fs.unlinkSync(req.file.path); // Ensure to delete local file in case of error
+      return res.status(500).send("Error processing the file.");
+    }
+  }
+);
+
 // validate the screenshot image the user has uploaded that they have logged into the designated account using gpt-4v
-// TODO add multer middleware to handle image upload
-router.get("/validateImage", async (req, res) => {
+router.get("/validateImageGPT4V", async (req, res) => {
   try {
     const image = req.body.image; // Assuming the image is sent in the request body
 

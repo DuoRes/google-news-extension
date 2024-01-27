@@ -24,6 +24,9 @@ const UserSchema = new mongoose.Schema({
       ref: "Chat",
     },
   ],
+  loginScreenshot: {
+    type: String,
+  },
 
   // Experiment fields
   displayChatBox: {

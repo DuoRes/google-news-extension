@@ -1,6 +1,4 @@
 import Tesseract from "tesseract.js";
-import fs from "fs";
-import path from "path";
 
 export async function extractGoogleEmail(
   imagePath: string,
@@ -40,30 +38,3 @@ export async function extractGoogleEmail(
 
   return [extractedEmail, confidence];
 }
-
-async function main() {
-  const data = JSON.parse(fs.readFileSync("actual.json", "utf8"));
-
-  const results = [];
-
-  for (const imgInfo of data) {
-    const imgId = imgInfo["id"];
-    console.log("Processing image: ", imgId);
-    const imgPath = path.join("img", imgId + ".png");
-    const email = imgInfo["account"];
-    const [extractedEmail, confidence] = await extractGoogleEmail(
-      imgPath,
-      email
-    );
-    results.push({
-      id: imgId,
-      email: email.split("@")[0],
-      extracted_email: extractedEmail,
-      confidence: confidence,
-    });
-  }
-
-  fs.writeFileSync("result.json", JSON.stringify(results, null, 4));
-}
-
-main().catch(console.error);

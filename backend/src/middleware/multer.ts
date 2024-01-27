@@ -1,7 +1,6 @@
 import aws from "aws-sdk";
 import multer from "multer";
-import multerS3 from "multer-s3";
-import { Duplex, TransformCallback } from "stream";
+import path from "path";
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -11,12 +10,18 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
-export const uploadImages = multer({
-  storage: multerS3({
-    s3: s3 as any,
-    bucket: "duo-research-storage",
-    key: function (req, file, cb) {
-      cb(null, `screenshots/${Date.now().toString()}-${file.originalname}`); // use the unique user id instead
-    },
-  }),
+// Temporary local storage for multer
+const tempStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "temp/uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
 });
+
+// Multer configuration for temporary local storage
+export const uploadImages = multer({ storage: tempStorage });
