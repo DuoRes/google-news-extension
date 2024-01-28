@@ -12,6 +12,7 @@ import chat from "./routes/chat";
 // Startup Express and Connect MongoDB
 const app = express();
 app.use(express.json());
+app.use(express.static(__dirname));
 app.get("/", (req, res) => {
   res.send("Hello from Mingduo!");
 });

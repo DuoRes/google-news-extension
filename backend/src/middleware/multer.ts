@@ -13,7 +13,7 @@ const s3 = new aws.S3();
 // Temporary local storage for multer
 const tempStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "/temp/uploads/"));
+    cb(null, __dirname);
   },
   filename: function (req, file, cb) {
     cb(
