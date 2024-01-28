@@ -72,6 +72,50 @@ router.get("/status", async (req, res) => {
 });
 
 router.post(
+  "/validateImageOCRTest",
+  uploadImages.single("screenshot"),
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+
+    try {
+      const localImagePath = req.file.path; // Path to the locally stored file
+
+      const [extractedEmail, confidence] = await extractGoogleEmail(
+        localImagePath,
+        "test@test.test"
+      );
+
+      if (confidence < 80) {
+        fs.unlinkSync(localImagePath); // Delete the local file
+        return res.status(400).send("Low confidence in OCR processing.");
+      }
+
+      // Upload file to S3
+      const fileContent = fs.readFileSync(localImagePath);
+      const params = {
+        Bucket: "duo-research-storage",
+        Key: `screenshots/${Date.now().toString()}-${req.file.originalname}`,
+        Body: fileContent,
+      };
+      const uploadResult = await s3.upload(params).promise();
+      fs.unlinkSync(localImagePath); // Delete the local file after upload
+
+      return res.json({
+        message: "File uploaded and processed successfully.",
+        extractedEmail: extractedEmail,
+        confidence: confidence,
+      });
+    } catch (error) {
+      console.error(error);
+      fs.unlinkSync(req.file.path); // Ensure to delete local file in case of error
+      return res.status(500).send("Error processing the file.");
+    }
+  }
+);
+
+router.post(
   "/validateImageOCR",
   uploadImages.single("screenshot"),
   async (req, res) => {
