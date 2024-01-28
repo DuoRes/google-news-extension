@@ -80,16 +80,18 @@ router.post(
     }
 
     try {
-      const localImagePath = req.file.path; // Path to the locally stored file
+      const localImagePath = req.file.path;
 
       const [extractedEmail, confidence] = await extractGoogleEmail(
         localImagePath,
-        "test@test.test"
+        "test@gmail.com"
       );
 
       if (confidence < 80) {
         fs.unlinkSync(localImagePath); // Delete the local file
-        return res.status(400).send("Low confidence in OCR processing.");
+        return res
+          .status(400)
+          .send("Low confidence in OCR processing: " + confidence.toString());
       }
 
       // Upload file to S3
