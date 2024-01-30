@@ -1,6 +1,7 @@
 import moment from "moment";
 import express from "express";
 import User from "../models/User";
+import GAccount from "../models/GAccount";
 import { countValidClicks } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
@@ -23,20 +24,30 @@ const PREPROMPT = `You are an assistant researcher that can help with validating
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
-  try {
-  } catch (error) {
-    console.trace(error);
-    return res.status;
-  }
-});
-
 router.post("/login", async (req, res) => {
   try {
     const token = req.body.token;
     const user = await User.findOne({ token });
     if (!user) {
-      const newUser = await User.create({ token });
+      const randomGAccount = await GAccount.aggregate([
+        { $match: { $and: [{ batch: "pilot-0" }, { isAssigned: false }] } },
+        { $sample: { size: 1 } },
+      ])[0];
+
+      const newUser = await User.create({
+        token,
+        displayChatBox: randomGAccount.chatBoxEnabled,
+        displayWarningMessage: randomGAccount.warningMessageEnabled,
+        assignedEmail: randomGAccount.email,
+        assignedPassword: randomGAccount.password,
+        assignedRecoveryEmail: randomGAccount.recoveryEmail,
+        stance: randomGAccount.type,
+        batch: randomGAccount.batch,
+      });
+
+      randomGAccount.isAssigned = true;
+      await randomGAccount.save();
+
       return res.send(newUser);
     }
     console.log("user", user);
@@ -91,7 +102,7 @@ router.post(
       if (!user) {
         return res.status(400).send("User not found");
       }
-      const assignedEmail = user.assignedGmail;
+      const assignedEmail = user.assignedEmail;
       const localImagePath = req.file.path; // Path to the locally stored file
 
       const [extractedEmail, confidence] = await extractGoogleEmail(

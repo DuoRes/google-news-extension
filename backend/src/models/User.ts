@@ -1,12 +1,6 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
   token: {
     type: String,
     required: true,
@@ -31,23 +25,30 @@ const UserSchema = new mongoose.Schema({
   // Experiment fields
   displayChatBox: {
     type: Boolean,
-    default: true,
+    default: false,
   },
-  stance: {
-    type: String, // "left" or "right"
-    default: "neutral",
+  displayWarningMessage: {
+    type: Boolean,
+    default: false,
+  },
+  type: {
+    type: String, // "pert-left" or "pert-right" or "follow-left" or "follow-right"
+    default: "blank",
+  },
+  batch: {
+    type: String, // "pilot-0"
   },
   chatBotStance: {
     type: String, // "left" or "right"
     default: "neutral",
   },
-  assignedGmail: {
+  assignedEmail: {
     type: String,
   },
   assignedPassword: {
     type: String,
   },
-  assignedBackupGmail: {
+  assignedRecoveryEmail: {
     type: String,
   },
 });
