@@ -13,7 +13,7 @@ const config: Config = {
   port: nodeConfig.get<number>("port"),
   emailPrivateKey: process.env.EMAIL_PRIV_KEY,
   accessToken: process.env.ACCESS_TOKEN,
-  mongoDbUri: nodeConfig.get<string>("db"),
+  mongoDbUri: process.env.MONGODB_URI,
   openaiApiKey: process.env.OPENAI_API_KEY,
 };
 

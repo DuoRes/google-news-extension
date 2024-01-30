@@ -1,5 +1,4 @@
-import express, { application } from "express";
-import Config from "./config";
+import express from "express";
 import { connectDB } from "./utils/db";
 
 // Link Routes
