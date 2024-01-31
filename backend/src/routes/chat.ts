@@ -77,7 +77,7 @@ router.post("/", async (req, res) => {
     if (!user) {
       return res.status(400).send("User not found");
     }
-    const stance = user.stance;
+    const stance = user.chatBotStance;
     const preprompt = (await context(
       stance || "neutral"
     )) as ChatCompletionMessageParam;
