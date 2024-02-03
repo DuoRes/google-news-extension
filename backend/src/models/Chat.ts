@@ -5,11 +5,12 @@ const ChatSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  userMessage: {
-    type: String,
+  messages: {
+    type: [String],
   },
-  botMessage: {
+  initialPrompt: {
     type: String,
+    required: true,
   },
   timestamp: {
     type: Date,
