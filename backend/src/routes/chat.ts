@@ -14,7 +14,7 @@ const COMMON_PROMPT = `Answer the following questions about the news. Be succinc
 
 const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 
-const TOPICS = {
+const Articles = {
   left: {
     EconomicPolicy: `Biden pushes economic message in North Carolina as aides see 2024 pickup opportunity: Biden\'s North Carolina visit: President Joe Biden visited Raleigh, North Carolina, on Thursday to announce new investments in broadband internet and to pitch his economic agenda.
 Biden\'s campaign strategy: Biden and his campaign are eyeing North Carolina as a potential pickup opportunity in November, hoping to flip the state blue for the first time since 2008 by appealing to suburban, Black and rural voters.
@@ -45,15 +45,81 @@ Haley\'s impact on global issues: The article highlights the consequences of som
     CriminalJustice: ``,
   },
   right: {
-    EconomicPolicy: ``,
-    Healthcare: ``,
-    EnvironmentalPolicy: ``,
-    Immigration: ``,
-    GunControl: ``,
-    SocialIssues: ``,
-    Education: ``,
-    ForeignPolicy: ``,
-    CriminalJustice: ``,
+    EconomicPolicy: `Fox News Poll: Only 14% say they have been helped by Biden\'s economic policies: Biden\'s economic policies: More voters feel they have been hurt rather than helped by President Biden\'s economic policies, according to a Fox News national survey1.
+Economic outlook: Negative views of the economy and dissatisfaction with the way things are going in the country have increased substantially since the beginning of Biden\'s term, and voters don\'t see the economy getting better next year2.
+Biden\'s job approval: Approval of Biden\'s overall job performance stands at 43%, up from a low of 40% last month, but his marks are well underwater on inflation, border security, China, the economy, Ukraine, and national security3.
+Top issues: The economy remains the top issue to voters, followed by immigration, and voters are extremely or very concerned about inflation, health care costs, housing costs, retirement savings, interest rates, and the job market4.`,
+    Healthcare: `It\'s the economy, stupid … but it should also be healthcare: The author\'s experience: The author recalls his involvement in the 2008 New Hampshire primary as a high school student and how healthcare was a major issue for many candidates and voters.
+The current situation: The author argues that healthcare is still not “fixed” despite the passage of the ACA and other reforms, and that costs, outcomes, access, and quality remain problematic.
+The Republican candidates\' views: The author reviews the healthcare proposals of some leading Republican presidential candidates for 2024, such as Trump, Haley, DeSantis, and Ramaswamy, and finds them lacking in details and substance.
+The call for action: The author urges voters, especially in early states like New Hampshire, to demand more specifics and solutions from candidates on how they will address the healthcare challenges faced by Americans.`,
+    EnvironmentalPolicy: `Montana Supreme Court upholds ruling favoring youth plaintiffs in climate lawsuit: Montana Supreme Court upholds climate ruling: The court rejected the request by Republican Gov. Greg Gianforte and three state agencies to block a district court judge\'s ruling that fossil fuel development permits must consider carbon emissions12.
+Lawsuit by 16 young plaintiffs: The plaintiffs sued the state for violating their constitutional right to a clean and healthful environment by allowing greenhouse gas emissions from fossil fuel projects.
+Implications for fossil fuel industry: The ruling challenges a state law that prohibited greenhouse gas emission analyses and provides precedent for legal challenges against fossil fuel development in Montana, a fossil fuel-friendly state.
+Response by state officials: The Montana Department of Environmental Quality said it was disappointed by the court\'s decision and declined to say how it would comply with the ruling. The agency is in the process of updating the Montana Environmental Policy Act3.`,
+    Immigration: `This Should Be Republicans\' Red Line in Any Immigration Deal: - Conservatives and Senate Republicans are concerned about a reported immigration deal that might not secure the border effectively, particularly opposing work permits for illegal immigrants awaiting asylum hearings as it could incentivize further illegal migration.
+- The proposal to speed up the process for awarding work permits to illegal migrants already in the country is deemed unacceptable by Republicans, arguing it would undermine border control efforts and pressure Border Patrol, while potentially leading to lower wages for American workers.
+- Granting work permits is seen as a step towards eventual amnesty, with critics fearing it would entrench illegal migrants in communities, making it difficult to deny them permanent residence or citizenship, despite the slow pace of immigration court hearings.
+- Some Republicans believe rejecting the deal and waiting for a potential Trump administration could lead to stricter immigration enforcement and better control over illegal migration, emphasizing the need for policies that prioritize American workers and lawful immigration.`,
+    GunControl: `Ohio Just Disproved a Gun-Control Talking Point: - Mayors of Ohio's largest cities blamed a new state law permitting "constitutional carry" for an uptick in gun violence, asserting that repealing the permit requirement for concealed weapons led to increased shootings and unsafe conditions.
+- A study commissioned by the author's office and conducted by Bowling Green State University found that eliminating concealed-carry licenses had no impact on gun crimes in Ohio's eight largest cities; in fact, gun crimes declined in six of the cities within a year of the law's change.
+- The study's results showed a significant decrease in gun crimes, with cities like Parma seeing a 22% drop, and an overall 8% reduction across the sampled cities, challenging the mayors' claims and highlighting the complexity of gun crime causes.
+- The author advocates for proactive policing and targeted enforcement over blaming lawful gun ownership, suggesting that addressing gun violence involves taking criminals off the streets and enforcing existing laws more effectively rather than attributing the issue to constitutional carry laws.`,
+    SocialIssues: `Nikki Haley Is Completely Incoherent on Bots and Anonymous Online Users: - Nikki Haley proposes mandating social media companies to verify all users with their real names, arguing it's a measure against national security threats and to promote online civility, a stance criticized as potentially unconstitutional and fundamentally flawed.
+- The proposal conflates two distinct issues: the threat posed by foreign bots to national security and the problem of online incivility, without offering a clear strategy on how verification would effectively address either issue, or distinguishing between their impacts.
+- Critics argue that anonymous speech has significant value, illustrated by historical examples like the Federalist and Anti-Federalist Papers, and serves as a vital protection against censorship and retaliation in modern discourse, suggesting Haley's approach overlooks the benefits of anonymity.
+- The critique emphasizes that addressing foreign interference and fostering civility should be managed with targeted, minimal interventions rather than broad mandates for user verification, highlighting a fundamental disagreement with Haley's approach to regulating American online spaces.`,
+    Education: `Far-Left Organization To Train Teachers How To Incorporate Palestinian \'Narratives\' Into The Classroom: MECA\'s training: A pro-Palestinian group called MECA will train teachers in Oakland, California, on how to incorporate Palestinian history and culture into K-12 classrooms.
+Parents Defending Education\'s response: A parental rights group called Parents Defending Education criticized the training as an attempt to politicize the classroom and indoctrinate young children into a geopolitical worldview.
+MECA\'s background: MECA is associated with the Democratic Socialists of America and has organized pro-Palestinian rallies in San Francisco. It has also downplayed Hamas\' terrorist attacks against Israel in October 7, 2023.
+Ethnic studies controversy: Pro-Palestinian organizations have pushed for anti-Western materials to be integrated into the classroom, often through ethnic studies classes and curriculum.`,
+    ForeignPolicy: `If Biden\'s Polls Get Worse This Summer, Look Out Taiwan: China\'s economic and military challenges: The page discusses how China is facing a low reproduction rate, a debt crisis, and a lack of access to modern military technology, which could prompt it to invade Taiwan before Biden leaves office.
+Taiwan\'s election and defiance: The page reports how Taiwan elected a vice president who is considered a separatist and a troublemaker by Beijing, and how the voters of Taiwan have no intention of appeasing China1.
+US\'s foreign policy dilemma: The page speculates how a conflict between China and Taiwan could affect the US\'s relations with both countries, and how Biden\'s perceived weakness and possible loss to Trump could influence China\'s decision.`,
+    CriminalJustice: `Mega-Study Finds That Minorities Don\'t Receive Harsher Criminal Punishments, But That Academics Said So Anyway: Meta-analysis of 51 studies: The authors examined the evidence for racial bias in criminal adjudication in the US since 2005 and found little or no support for the systemic racism narrative.
+Weaknesses of race-fueled scholars: The authors criticized the methods and interpretations of some researchers who claimed to find racial bias, even when their data did not back it up or was very weak.
+Potential harm of overstating racial bias: The authors suggested that exaggerating the role of race in criminal justice may increase racial discord, create fear and mistrust, and reduce community cooperation with authorities, leading to more crime1.
+Cause for optimism: The authors concluded that the criminal justice system is remarkably neutral and fair, compared to historical or global standards, and that this finding should be communicated better to the public and policymakers2.`,
+  },
+};
+
+const Openings = {
+  left: {
+    EconomicPolicy:
+      "Did you hear about President Biden's visit to North Carolina? He's really pushing his economic agenda there, focusing on new broadband investments. It's part of his strategy to win over North Carolina in the upcoming election by appealing to diverse voter groups. Despite some skepticism over his economic handling and other issues, he's highlighting bipartisan successes like the infrastructure law. It's refreshing to see a leader committed to being president for all Americans and specifically helping Black communities. What do you think?",
+    Healthcare:
+      "I came across this alarming study linking plastic chemicals to $249 billion in US healthcare costs in just 2018. These chemicals, found in everyday products, are causing chronic diseases and harming children's development. It's shocking how pervasive these endocrine-disrupting substances are. The study calls for stricter regulation and safer alternatives. It's high time we address the hidden costs of plastic pollution on our health and economy. What's your take on this?",
+    EnvironmentalPolicy:
+      "President Biden has taken a significant step towards environmental justice by signing an executive order to prioritize it within federal agencies and establishing a new Office of Environmental Justice. He's also expanding his Justice40 initiative, aiming to direct more climate and clean funding to disadvantaged communities. In contrast to GOP policies, Biden is making a clear commitment to communities affected by pollution. It's a bold move towards addressing environmental inequalities. How do you see this playing out?",
+    Immigration: "",
+    GunControl:
+      "The tragic shooting at a private Christian school in Nashville has sparked a movement among parents, the Covenant Parents, to push for gun control measures like red flag laws. Despite their efforts, they've faced resistance and failed to pass their priority bills. It's disheartening to see meaningful action on gun safety being blocked. Their determination to continue advocating is inspiring, though. We need more voices calling for change to prevent further tragedies. What are your thoughts?",
+    SocialIssues: "",
+    Education:
+      "A federal survey revealed a concerning drop in policing and mental health services in schools during the 2021-2022 school year. It's alarming to see a decrease in critical resources for student safety and well-being, especially in such a tumultuous time. This highlights the need for a stronger focus on mental health support and safety measures in our schools. It's essential for addressing the challenges students and staff face. How do you think we should respond to these findings?",
+    ForeignPolicy:
+      "Nikki Haley is using her foreign policy experience from her time as U.N. ambassador in her 2024 presidential campaign. She's positioning herself against Trump by highlighting her stance on Russia, China, and the Middle East. Haley's decisions, like withdrawing from the Iran nuclear deal, have had significant global impacts. It's interesting to see her leverage this experience, especially with her evolving views. What's your perspective on her foreign policy approach?",
+    CriminalJustice: "",
+  },
+  right: {
+    EconomicPolicy:
+      "Have you seen the latest Fox News poll on Biden's economic policies? It's quite telling, with only 14% feeling helped by his administration's actions. Voter dissatisfaction is growing, and the outlook for the economy isn't optimistic. It seems Biden's approach to inflation and other economic challenges isn't resonating with Americans. With the economy being a top issue, it's crucial for policies to reflect the needs of the populace. What's your view on this?",
+    Healthcare:
+      "Healthcare remains a critical issue, yet it feels like the reforms have fallen short of solving the core problems. I read an opinion highlighting the lack of detailed healthcare proposals from Republican candidates for 2024. With healthcare being such a vital concern, it's disappointing to see it not being addressed adequately. We need concrete solutions to improve access, costs, and quality. What do you think should be the focus of healthcare reform?",
+    EnvironmentalPolicy:
+      "The Montana Supreme Court's decision to uphold a ruling in favor of youth plaintiffs in a climate lawsuit is a significant moment. It challenges the state's stance on fossil fuel development and greenhouse gas emissions analysis. This could set a precedent for future legal actions against fossil fuel projects, even in states that are traditionally supportive of the industry. It's a complex issue, balancing environmental rights and economic interests. What's your take on this ruling?",
+    Immigration:
+      "There's a lot of concern among Republicans about a potential immigration deal that might not effectively secure the border. The idea of speeding up work permits for illegal immigrants is particularly troubling, as it could incentivize further illegal migration. It's seen as a step towards amnesty, which could undermine border control efforts. With immigration being a top concern, it's vital to have policies that prioritize American workers and lawful immigration. What are your thoughts on the proposed deal?",
+    GunControl:
+      "A study in Ohio has challenged the claim that 'constitutional carry' laws increase gun violence. Despite mayoral concerns, the study found no impact on gun crimes in the state's largest cities, even noting declines in some areas. It suggests that the issue of gun violence is more complex than simply regulating lawful gun ownership. This underscores the importance of effective law enforcement over restrictive gun control measures. How do you interpret these findings?",
+    SocialIssues:
+      "Nikki Haley's proposal to mandate real name verification for social media users has sparked debate. While aimed at national security and civility online, it's seen as potentially unconstitutional and overlooking the value of anonymous speech. The critique suggests that targeted measures are preferable to broad mandates for user verification. It's an interesting discussion on balancing security and privacy rights. What's your stance on online anonymity and security?",
+    Education:
+      "A pro-Palestinian group's plan to train teachers in Oakland on incorporating Palestinian narratives into classrooms has raised concerns about politicizing education. Critics argue it's an attempt to indoctrinate students with a specific geopolitical viewpoint. It's crucial for educational content to remain unbiased and focused on broadening students' perspectives rather than pushing a singular narrative. How do you view the integration of such political topics into the curriculum?",
+    ForeignPolicy:
+      "The situation between China and Taiwan is reaching a critical point, with fears that China might act aggressively before Biden's term ends. Taiwan's recent election of a separatist vice president has added tension. The U.S.'s role and stance in this delicate situation could have significant implications for international relations. With Biden's current polls, there's concern about perceived weakness influencing China's decisions. How should the U.S. navigate this increasingly complex foreign policy challenge?",
+    CriminalJustice:
+      "A comprehensive study has found little evidence to support claims of systemic racial bias in criminal punishments, challenging the narrative of widespread racial injustice in the criminal justice system. This suggests a need for a more nuanced discussion on crime and punishment, focusing on fairness and effectiveness rather than attributing disparities primarily to race. It's an opportunity to reevaluate how we address crime and justice. What are your thoughts on these findings?",
   },
 };
 
