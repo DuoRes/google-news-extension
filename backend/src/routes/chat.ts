@@ -155,33 +155,32 @@ export const parseResponse = async (
   return text;
 };
 
-export const getRandomTopic = async () => {};
+const getRandomLeftOpening = async () => {
+  const keys = Object.keys(Openings.left);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  return Openings.left[randomKey];
+};
 
-// Don't be with the news, only chat, a person that you've met, 吐槽箱
+const getRandomRightOpening = async () => {
+  const keys = Object.keys(Openings.right);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+  return Openings.right[randomKey];
+};
+
 const context = async (stance: string) => {
   try {
-    const latestRec = await Recommendation.findOne(
-      {},
-      {},
-      { sort: { timestamp: -1 } }
-    )
-      .populate("contents")
-      .exec();
     if (stance === "left") {
       return {
         role: "system",
-        content: `You are an average American with a left-wing political view.  Please provide your response in a manner that aligns with your left-wing perspective. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
+        content: `You are an average American with a left-wing political view. Open with the following prompt and then provide your response in a manner that aligns with your left-wing perspective. ${await getRandomLeftOpening()}`,
       };
     } else if (stance === "right") {
       return {
         role: "system",
-        content: `You are an average American with a right-wing political view. You are aware of all the recent news events from the attached headlines. Please provide your response in a manner that aligns with your right-wing perspective. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
+        content: `You are an average American with a right-wing political view. Open with the following prompt and then provide your response in a manner that aligns with your right-wing perspective. ${await getRandomRightOpening()}`,
       };
     } else {
-      return {
-        role: "system",
-        content: `You are an average American with a neutral political view. You are aware of all the recent news events from the attached headlines. Please provide your response in a neutral manner. ${COMMON_PROMPT} ${latestRec.toJSON()}`,
-      };
+      throw new Error("Invalid stance");
     }
   } catch (err) {
     console.trace(err);
