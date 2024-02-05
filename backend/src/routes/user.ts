@@ -37,10 +37,18 @@ router.post("/login", async (req, res) => {
     const token = req.body.token;
     const user = await User.findOne({ token });
     if (!user) {
-      const randomGAccount = await GAccount.aggregate([
-        { $match: { $and: [{ batch: "pilot-0" }, { isAssigned: false }] } },
-        { $sample: { size: 1 } },
-      ])[0];
+      const randomGAccount = (
+        await GAccount.aggregate([
+          { $match: { $and: [{ batch: "pilot-0" }, { isAssigned: false }] } },
+          { $sample: { size: 1 } },
+        ])
+      )[0];
+
+      console.log("randomGAccount", randomGAccount);
+
+      if (!randomGAccount) {
+        return res.status(404).send("No available accounts");
+      }
 
       const newUser = await User.create({
         token,
