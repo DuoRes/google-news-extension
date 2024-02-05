@@ -23,11 +23,15 @@ export async function ratePoliticalStance(
           description:
             "Publishes the political stance rating of the user based on the articles they have chosen",
           parameters: {
-            politicalStanceRating: {
-              type: "number",
-              description:
-                "The political stance rating of the user based on the articles they have chosen",
+            type: "object",
+            properties: {
+              politicalStanceRating: {
+                type: "number",
+                description:
+                  "The political stance rating of the user based on the articles they have chosen",
+              },
             },
+            required: ["politicalStanceRating"],
           },
         },
       ],
