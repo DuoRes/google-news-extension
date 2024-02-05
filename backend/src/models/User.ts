@@ -40,6 +40,9 @@ const UserSchema = new mongoose.Schema({
     type: String, // "left" or "right"
     default: "neutral",
   },
+  chatBotName: {
+    type: String,
+  },
   assignedEmail: {
     type: String,
   },

@@ -11,6 +11,7 @@ import { uploadImages } from "../middleware/multer";
 import aws from "aws-sdk";
 import fs from "fs";
 import {
+  chatBotNames,
   getRandomLeftOpening,
   getRandomRightOpening,
   getSystemPrompt,
@@ -74,6 +75,8 @@ router.post("/login", async (req, res) => {
         });
         newUser.chatRecord = chat._id;
         newUser.chatBotStance = stance;
+        newUser.chatBotName =
+          chatBotNames[Math.floor(Math.random() * chatBotNames.length)];
         await newUser.save();
       }
 

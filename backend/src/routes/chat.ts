@@ -14,6 +14,19 @@ const COMMON_PROMPT = `Answer the following questions about the news. Be succinc
 
 const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 
+export const chatBotNames = [
+  "Emily",
+  "Greg",
+  "Lakisha",
+  "Jamal",
+  "Mei",
+  "Hiroshi",
+  "Aponi",
+  "Chayton",
+  "Maria",
+  "Juan",
+];
+
 const Articles = {
   left: {
     EconomicPolicy: `Biden pushes economic message in North Carolina as aides see 2024 pickup opportunity: Biden\'s North Carolina visit: President Joe Biden visited Raleigh, North Carolina, on Thursday to announce new investments in broadband internet and to pitch his economic agenda.
