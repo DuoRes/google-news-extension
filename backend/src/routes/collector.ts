@@ -80,12 +80,19 @@ router.post("/recommendations", async (req, res) => {
     if (existingRecommendation) {
       return res.status(226).send("Recommendation hasn't changed");
     }
+
+    const currentStance = ratePoliticalStance(
+      contentDocuments.map((content) => content.content).join(" ")
+    );
+
     const recommendation = await Recommendation.create({
       user: user,
       contents: contentDocuments,
       timestamp: moment().toDate(),
+      politicalStanceRating: currentStance,
     });
-    const result = await User.updateOne(
+
+    await User.updateOne(
       {
         token: req.body.token,
       },
@@ -94,10 +101,6 @@ router.post("/recommendations", async (req, res) => {
           recommendations: recommendation,
         },
       }
-    );
-
-    const currentStance = ratePoliticalStance(
-      contentDocuments.map((content) => content.content).join(" ")
     );
 
     return res.status(201).send(currentStance);

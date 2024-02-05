@@ -14,6 +14,9 @@ const RecommendationSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
   },
+  politicalStanceRating: {
+    type: Number,
+  },
 });
 
 const Recommendation = mongoose.model("Recommendation", RecommendationSchema);
