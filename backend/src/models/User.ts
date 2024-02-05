@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
       ref: "Recommendation",
     },
   ],
-  chatRecords: {
+  chatRecord: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Chat",
   },

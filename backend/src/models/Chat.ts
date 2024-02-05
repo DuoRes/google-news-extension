@@ -5,10 +5,19 @@ const ChatSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  messages: {
-    type: [String],
-  },
-  initialPrompt: {
+  messages: [
+    {
+      role: {
+        type: String,
+        required: true,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+  assignedStance: {
     type: String,
     required: true,
   },

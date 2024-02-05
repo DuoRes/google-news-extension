@@ -1,7 +1,7 @@
 import express from "express";
 import Config from "../config";
 import { OpenAI } from "openai";
-import Recommendation from "../models/Recommendation";
+import _ from "lodash";
 import Chat from "../models/Chat";
 import User from "../models/User";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
@@ -155,36 +155,20 @@ export const parseResponse = async (
   return text;
 };
 
-const getRandomLeftOpening = async () => {
+export const getRandomLeftOpening = async () => {
   const keys = Object.keys(Openings.left);
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
   return Openings.left[randomKey];
 };
 
-const getRandomRightOpening = async () => {
+export const getRandomRightOpening = async () => {
   const keys = Object.keys(Openings.right);
   const randomKey = keys[Math.floor(Math.random() * keys.length)];
   return Openings.right[randomKey];
 };
 
-const context = async (stance: string) => {
-  try {
-    if (stance === "left") {
-      return {
-        role: "system",
-        content: `You are an average American with a left-wing political view. Open with the following prompt and then provide your response in a manner that aligns with your left-wing perspective. ${await getRandomLeftOpening()}`,
-      };
-    } else if (stance === "right") {
-      return {
-        role: "system",
-        content: `You are an average American with a right-wing political view. Open with the following prompt and then provide your response in a manner that aligns with your right-wing perspective. ${await getRandomRightOpening()}`,
-      };
-    } else {
-      throw new Error("Invalid stance");
-    }
-  } catch (err) {
-    console.trace(err);
-  }
+export const getSystemPrompt = async (stance: string) => {
+  return `You are an average American with a ${stance}-wing political view. Open with the following prompt and then provide your response in a manner that aligns with your ${stance}-wing perspective.`;
 };
 
 router.get("/", (req, res) => {
@@ -198,21 +182,37 @@ router.post("/", async (req, res) => {
     if (!user) {
       return res.status(400).send("User not found");
     }
-    const stance = user.chatBotStance;
-    const preprompt = (await context(
-      stance || "neutral"
-    )) as ChatCompletionMessageParam;
-    const message = req.body.message;
-    const userMessage: ChatCompletionMessageParam = {
+
+    const chatRecord = await Chat.findById(user.chatRecord).exec();
+    const messages = chatRecord.messages.map((message: any) => {
+      return {
+        role: message.role,
+        content: message.content,
+      } as ChatCompletionMessageParam;
+    });
+    const userMessage = {
       role: "user",
-      content: message,
+      content: req.body.message,
     };
+
+    chatRecord.messages.push(userMessage);
+
     const response = await openai.chat.completions.create({
-      messages: [preprompt, userMessage],
+      messages: [...messages, userMessage as ChatCompletionMessageParam],
       model: MODEL,
       max_tokens: MAX_TOKENS,
     });
-    return res.status(200).send(await parseResponse(response, user, message));
+
+    const message = response.choices[0].message;
+    const text = message.content;
+
+    chatRecord.messages.push({
+      role: "assistant",
+      content: text,
+    });
+    await chatRecord.save();
+
+    return res.status(200).send(text);
   } catch (error: any) {
     console.trace(error.message);
     return res

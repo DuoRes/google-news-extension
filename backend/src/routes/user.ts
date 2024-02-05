@@ -1,7 +1,8 @@
-import moment from "moment";
 import express from "express";
 import User from "../models/User";
+import Chat from "../models/Chat";
 import GAccount from "../models/GAccount";
+
 import { countValidClicks } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
@@ -9,6 +10,12 @@ import { extractGoogleEmail } from "../utils/ocr";
 import { uploadImages } from "../middleware/multer";
 import aws from "aws-sdk";
 import fs from "fs";
+import {
+  getRandomLeftOpening,
+  getRandomRightOpening,
+  getSystemPrompt,
+} from "./chat";
+import { get } from "lodash";
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -44,6 +51,31 @@ router.post("/login", async (req, res) => {
         stance: randomGAccount.type,
         batch: randomGAccount.batch,
       });
+
+      if (newUser.displayChatBox) {
+        const stance = Math.random() > 0.5 ? "left" : "right";
+        const openingMessage =
+          stance === "left"
+            ? await getRandomLeftOpening()
+            : await getRandomRightOpening();
+        const chat = await Chat.create({
+          user: newUser._id,
+          assignedStance: stance,
+          messages: [
+            {
+              role: "system",
+              content: getSystemPrompt(stance) + openingMessage,
+            },
+            {
+              role: "assistant",
+              content: openingMessage,
+            },
+          ],
+        });
+        newUser.chatRecord = chat._id;
+        newUser.chatBotStance = stance;
+        await newUser.save();
+      }
 
       randomGAccount.isAssigned = true;
       await randomGAccount.save();
