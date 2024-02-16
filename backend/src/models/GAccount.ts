@@ -7,6 +7,7 @@ const GAccountSchema = new mongoose.Schema({
   },
   isAssigned: {
     type: Boolean,
+    default: false,
   },
   password: {
     type: String,
