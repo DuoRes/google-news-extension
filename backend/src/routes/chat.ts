@@ -180,7 +180,7 @@ export const getRandomRightOpening = async () => {
   return Openings.right[randomKey];
 };
 
-export const getSystemPrompt = async (stance: string) => {
+export const getSystemPrompt = (stance: string) => {
   return `You are an average American with a ${stance}-wing political view. Open with the following prompt and then provide your response in a manner that aligns with your ${stance}-wing perspective.`;
 };
 

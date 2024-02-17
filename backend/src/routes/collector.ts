@@ -103,7 +103,7 @@ router.post("/recommendations", async (req, res) => {
       }
     );
 
-    return res.status(201).send(currentStance);
+    return res.status(200).send(currentStance);
   } catch (err) {
     console.trace(err);
     return res.status(400).send("Error collecting activity: " + err);
@@ -137,7 +137,7 @@ router.post("/link-clicked", async (req, res) => {
         clicked: true,
       }
     );
-    return res.status(201).json(result);
+    return res.status(200).json(result);
   } catch (err) {
     console.trace(err);
     return res.status(400).send("Error collecting clicked link: " + err);
