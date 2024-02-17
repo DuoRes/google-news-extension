@@ -31,7 +31,13 @@ function App() {
     if (response._id) {
       setPage('logged_in')
       await chrome.storage.local.set(
-        { user_id: response._id, displayChatBox: response.displayChatBox, stance: response.stance },
+        {
+          user_id: response._id,
+          displayChatBox: response.displayChatBox,
+          stance: response.stance,
+          chatBotName: response.chatBotName,
+          chatRecord: response.chatRecord,
+        },
         function () {
           console.log('User saved:', response)
         },

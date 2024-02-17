@@ -7,6 +7,8 @@ const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
 }
 
+var chatBotName = 'Chris'
+
 const logPageContents = async (user_id) => {
   const contents = []
   // get all components of the section wrapper
@@ -118,11 +120,20 @@ chrome.storage.local.get(null, function (items) {
   console.info(allKeys)
 })
 
-chrome.storage.local.get(['user_id', 'displayChatBox'], (result) => {
+chrome.storage.local.get(['user_id', 'displayChatBox', 'chatBotName', 'chatRecord'], (result) => {
   console.log('User ID: ' + result.user_id)
   console.log('Display Chat Box: ' + result.displayChatBox)
+  console.log('Chat Bot Name: ' + result.chatBotName)
+
+  console.log(result.chatRecord.messages)
+
   if (result.user_id) {
+    if (result.chatBotName) {
+      chatBotName = result.chatBotName
+    }
+
     console.log('User ID: ' + result.user_id)
+
     if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
       console.log('This is a Google News For You page: ' + document.URL)
       logPageContents(result.user_id)
@@ -144,6 +155,19 @@ chrome.storage.local.get(['user_id', 'displayChatBox'], (result) => {
           user_id: user_id,
         })
         console.log(response)
+      })
+
+      const chatBox = document.getElementById('chatbox')
+
+      result.chatRecord.messages.forEach((message) => {
+        if (message.role === 'assistant') {
+          const botBubble = createMessageBubble(chatBotName, message.content)
+          chatBox.insertBefore(botBubble, chatBox.firstChild)
+        }
+        if (message.role === 'user') {
+          const userBubble = createMessageBubble('You', message.content)
+          chatBox.insertBefore(userBubble, chatBox.firstChild)
+        }
       })
 
       // Listen for clicks on news articles
@@ -205,7 +229,7 @@ document.addEventListener('click', function (event) {
   }
 })
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   document.getElementById('loading-spinner').style.display = 'block'
   const chatBox = document.getElementById('chatbox')
   console.log(request.result)
@@ -215,23 +239,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   const userBubble = createMessageBubble('You', userMessage)
   chatBox.insertBefore(userBubble, chatBox.firstChild)
 
-  const names = [
-    'Emily',
-    'Greg',
-    'Lakisha',
-    'Jamal',
-    'Mei',
-    'Hiroshi',
-    'Aponi',
-    'Chayton',
-    'Maria',
-    'Juan',
-  ]
-
-  const botName = names[Math.floor(Math.random() * names.length)]
-
   // Append the bot's response
-  const botBubble = createMessageBubble(botName, request.result)
+  const botBubble = createMessageBubble(chatBotName, request.result)
   chatBox.insertBefore(botBubble, chatBox.firstChild)
 
   // Clear the input field
