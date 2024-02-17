@@ -44,6 +44,9 @@ export async function ratePoliticalStance(
 
     const parsedCompletion = JSON.parse(completion);
 
+    console.log(parsedCompletion);
+    console.log(parsedCompletion.politicalStanceRating);
+
     const politicalStanceRating = Number(
       parsedCompletion.politicalStanceRating
     );
