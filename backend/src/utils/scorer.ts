@@ -40,11 +40,13 @@ export async function ratePoliticalStance(
       },
     });
 
-    console.log(response.choices[0].message);
+    const completion = response.choices[0].message.function_call.arguments;
 
-    const completion = response.choices[0].message.function_call;
-    console.log(completion);
-    const politicalStanceRating = Number(completion);
+    const parsedCompletion = JSON.parse(completion);
+
+    const politicalStanceRating = Number(
+      parsedCompletion.politicalStanceRating
+    );
     return politicalStanceRating;
   } catch (err) {
     console.trace(err);
