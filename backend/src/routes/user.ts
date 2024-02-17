@@ -100,8 +100,10 @@ router.post("/login", async (req, res) => {
         await newUser.save();
       }
 
-      randomGAccount.isAssigned = true;
-      await randomGAccount.save();
+      await GAccount.updateOne(
+        { _id: randomGAccount._id },
+        { isAssigned: true }
+      );
 
       return res.send(newUser);
     }
