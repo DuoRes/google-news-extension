@@ -103,7 +103,7 @@ router.post("/recommendations", async (req, res) => {
       }
     );
 
-    return res.status(200).send(currentStance);
+    return res.status(201).send({ currentStance });
   } catch (err) {
     console.trace(err);
     return res.status(400).send("Error collecting activity: " + err);
