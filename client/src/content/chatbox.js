@@ -112,7 +112,7 @@ export function createChatBox() {
       chatBoxButton.style.borderBottomLeftRadius = '0'
       chatBoxButton.style.borderTopLeftRadius = '0'
       chatBox.style.display = 'flex'
-      container.style.height = '400px'
+      container.style.height = '600px'
       toggleButton.innerText = 'Minimize'
     }
   })
