@@ -47,10 +47,7 @@ export async function ratePoliticalStance(
     console.log(parsedCompletion);
     console.log(parsedCompletion.politicalStanceRating);
 
-    const politicalStanceRating = Number(
-      parsedCompletion.politicalStanceRating
-    );
-    return politicalStanceRating;
+    return parsedCompletion.politicalStanceRating;
   } catch (err) {
     console.trace(err);
   }
