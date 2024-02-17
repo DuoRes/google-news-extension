@@ -23,13 +23,6 @@ chrome.runtime.onConnect.addListener((port) => {
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   console.log(message)
   switch (message.type) {
-    case 'trackArticle':
-      // track a new article
-      currentArticle = {
-        url: message.url,
-        startTime: new Date(),
-      }
-      break
     case 'redirect':
       // redirect to a specific url
       await chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -72,15 +65,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       console.log(res)
 
-      sendResponse({
-        linkClicked: 'success',
-        ok: progress.ok,
-        completionCode: progress.completionCode,
-      })
+      sendMessageToCurrentTab(
+        {
+          linkClicked: 'success',
+          ok: progress.ok,
+          completionCode: progress.completionCode,
+        },
+        'linkClicked',
+      )
       break
     case 'logPageContents':
       console.log(message.contents)
-      const currentStance = await fetch(BACKEND_URL + 'collect/recommendations', {
+      const response = await fetch(BACKEND_URL + 'collect/recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,13 +87,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }),
       })
 
-      console.log(currentStance)
+      const json = await response.json()
 
-      if (currentStance > 80) {
-      } else if (currentStance < -80) {
-      }
+      console.log(json.currentStance)
 
-      sendResponse({ result: result })
+      sendMessageToCurrentTab(json, 'logPageContents')
       break
     case 'chat':
       fetch(BACKEND_URL + 'chat/', {
@@ -114,32 +108,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         .then((chatResult) => {
           console.log(chatResult)
           chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, { result: chatResult })
+            chrome.tabs.sendMessage(tabs[0].id, { result: chatResult, type: 'chat' })
           })
         })
         .catch((error) => {
           console.log('Error: ' + error)
         })
       break
-  }
-  return true
-})
-
-// Listen for tab updates
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  if (
-    currentArticle &&
-    tabId === tab.id &&
-    changeInfo.status === 'complete' &&
-    tab.url === currentArticle.url
-  ) {
-    // The user finished loading the article, let's track their reading progress
-    var endTime = new Date()
-    var readingTime = endTime - currentArticle.startTime
-    // You can do something with the reading time here, like send it to an analytics service
-    console.log('User spent ' + readingTime + ' ms reading ' + currentArticle.url)
-    // Reset the current article
-    currentArticle = null
   }
   return true
 })
@@ -153,6 +128,17 @@ const getToken = async () => {
     return result.identifier
   })
   return token
+}
+
+const sendMessageToCurrentTab = (obj, type) => {
+  try {
+    obj.type = type
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, obj)
+    })
+  } catch (error) {
+    console.trace(error)
+  }
 }
 
 export {}

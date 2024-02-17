@@ -37,6 +37,7 @@ function App() {
           stance: response.stance,
           chatBotName: response.chatBotName,
           chatRecord: response.chatRecord,
+          displayWarningMessage: response.displayWarningMessage,
         },
         function () {
           console.log('User saved:', response)
