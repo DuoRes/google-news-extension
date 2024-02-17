@@ -108,6 +108,9 @@ router.post("/login", async (req, res) => {
       return res.send(newUser);
     }
     console.log("user", user);
+
+    await user.populate("chatRecord");
+
     return res.status(200).send(user);
   } catch (error) {
     console.trace(error);

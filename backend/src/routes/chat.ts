@@ -223,6 +223,7 @@ router.post("/", async (req, res) => {
       role: "assistant",
       content: text,
     });
+
     await chatRecord.save();
 
     return res.status(200).send(text);
