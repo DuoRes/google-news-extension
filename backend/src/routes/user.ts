@@ -38,7 +38,19 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ token });
     if (!user) {
       const randomGAccounts = await GAccount.aggregate([
-        { $match: { $and: [{ batch: "pilot-0" }, { isAssigned: false }] } },
+        {
+          $match: {
+            $or: [
+              { $and: [{ batch: "pilot-0" }, { isAssigned: false }] },
+              {
+                $and: [
+                  { batch: "pilot-0" },
+                  { isAssigned: { $exists: false } },
+                ],
+              },
+            ],
+          },
+        },
         { $sample: { size: 1 } },
       ]);
 
