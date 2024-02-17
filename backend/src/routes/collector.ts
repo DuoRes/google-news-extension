@@ -81,7 +81,7 @@ router.post("/recommendations", async (req, res) => {
       return res.status(226).send("Recommendation hasn't changed");
     }
 
-    const currentStance = ratePoliticalStance(
+    const currentStance = await ratePoliticalStance(
       contentDocuments.map((content) => content.content).join(" ")
     );
 
