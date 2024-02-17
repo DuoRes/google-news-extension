@@ -43,6 +43,7 @@ export async function ratePoliticalStance(
     console.log(response);
 
     const completion = response.choices[0].message.content;
+    console.log(completion);
     const politicalStanceRating = Number(completion);
     return politicalStanceRating;
   } catch (err) {
