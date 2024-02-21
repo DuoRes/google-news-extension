@@ -126,11 +126,14 @@ h1 {
 .additional-text {
     font-size: 14px;
     margin-top: 20px;
-    color: #C46454;
+    color: black;
     text-align: left;
     line-height: 2rem;
 }
-
+.additional-text iframe{
+    width: 100%;
+    border: none;
+}
 form {
     display: flex;
     flex-direction: column;

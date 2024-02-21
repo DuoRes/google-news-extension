@@ -1,5 +1,7 @@
 $(function(){
     setInterval(scheduledtask,10000);
+    var show_message=JSON.parse(window.localStorage.getItem("show_message"));
+    $("#show_message").html(data);
 });
 
 function scheduledtask(){
@@ -38,21 +40,21 @@ function login(e){
 }
 
 function upload(){
+    var prolific_id=window.localStorage.getItem("prolific_id");
     var formData = new FormData();
-    formData.append("file", $("#License")[0].files[0]);
-    console.log(formData);
+    formData.append("image", $("#License")[0].files[0]);
+    formData.append("token",prolific_id);
     $.ajax({
-        url: "",
+        url: "http://localhost:5000/verify_image",
         type: "post",
         data: formData,
         processData: false, 
         contentType: false,
-        Cache: false,
         success: function(res) {
             console.log(res);
         },
-        error: function(res) {
-            
+        error: function(err) {
+            console.log(err);
         }
     })
 }

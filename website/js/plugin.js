@@ -1,18 +1,21 @@
 $(function(){
     create();
-    setInterval(scheduledtask,5000);
+    // setInterval(scheduledtask,5000);
+    scheduledtask();
 });
 
 function scheduledtask(){
     var prolific_id=window.localStorage.getItem("prolific_id");
     $.ajax({
-        url:"",
+        url:"https://duo.up.railway.app/user/login", 
         method:"post",
         data:{
-            "prolific_id":prolific_id,
-        },
+            "token":prolific_id,
+        },  
         success:function(data){
-            create();
+            create(data);
+            console.log(data);
+            window.localStorage.setItem("show_message",JSON.stringify(data));
         },
         error:function(err){
             console.log(err);

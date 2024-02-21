@@ -16,7 +16,6 @@ import {
   getRandomRightOpening,
   getSystemPrompt,
 } from "./chat";
-import { get } from "lodash";
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
