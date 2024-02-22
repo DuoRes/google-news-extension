@@ -29,17 +29,13 @@ function create(){
     var str=`
         <div class="plugin_item" >
             <div class="left_box">
-                <h3>SSSSSSS</h3>
+                <h3>News Research Tracker</h3>
                 <p>
-                <span class="title">Name:</span>
-                <span class="content">Plug-in name</span>
+                    <span class="title">Introduction</span>
+                    <span class="content">A google chrome plugin built for this experiment.</span>
                 </p>
                 <p>
-                    <span class="title">Introduce:</span>
-                    <span class="content">Introduce Introduce Introduce Introduce Introduce Introduce IntroduceIntroduceIntroduce Introduce  Introduce.</span>
-                </p>
-                <p>
-                    <button class="proceed_button" onclick="openProceed()">Proceed</button>
+                    <button class="proceed_button" onclick="openProceed()">Continue</button>
                     <button class="download_button" onclick="openDownload()">Download</button>
                 </p>
             </div>
