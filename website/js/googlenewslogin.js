@@ -35,7 +35,8 @@ function login(e){
         error: function(res) {
             
         }
-    })
+    });
+    window.location.href="https://news.google.com/home?hl=en-US&gl=US&ceid=US:en";
    
 }
 

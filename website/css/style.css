@@ -17,6 +17,7 @@ body {
     text-align: center;
     color: #C46454;
     width: 80%; /* Adjust the width as needed */
+    margin: 2vw 0vw;
 }
 
 .plugin_box{
@@ -36,7 +37,7 @@ body {
     border-bottom: 2px dotted aliceblue;
 }
 .plugin_box .plugin_item .left_box{
-    width: 50%;
+    width: 100%;
     margin-right: 10%;
 }
 .proceed_button{
@@ -61,6 +62,9 @@ body {
 .plugin_box .plugin_item .right_box {
     margin: 0;
     padding: 0;
+    position: relative;
+    top: -14vh;
+    right: 9vh;
 }
 
 .plugin_box .plugin_item .right_box img {
@@ -68,6 +72,8 @@ body {
     height: auto;
     display: block;
     object-fit: cover;  /* 确保图像覆盖整个容器，但不会拉伸或压缩 */
+    box-sizing: border-box;
+    box-shadow: 5px 5px 6px 2px #848484;
 }
 
 .border{
@@ -121,6 +127,8 @@ body {
 
 h1 {
     font-size: 28px;
+    font-weight: bold;
+    font-style: italic;
 }
 
 .additional-text {
@@ -143,6 +151,7 @@ form {
 label {
     font-size: 18px;
     margin-bottom: 5px;
+
 }
 
 input[type="text"],
@@ -150,10 +159,11 @@ input[type="password"] {
     width: 50%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #C46454;
+    border: 4px solid #C46454;
     border-radius: 3px;
     font-size: 16px;
     color: #C46454;
+    outline:none;
 }
 
 .button-container {
@@ -165,7 +175,6 @@ input[type="password"] {
 button[type="submit"],
 button[type="button"],.update {
     flex: 1;
-    padding: 10px;
     border: none;
     border-radius: 3px;
     cursor: pointer;
@@ -182,4 +191,8 @@ button[type="button"],.update  {
     background-color: #C46454;
     color: #fff;
     margin-left: 5px;
+    border-radius: 10px !important;
+    height: 8vh !important;
+    line-height: 8vh !important;
+    
 }

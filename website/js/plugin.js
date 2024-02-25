@@ -31,12 +31,12 @@ function create(){
             <div class="left_box">
                 <h3>News Research Tracker</h3>
                 <p>
-                    <span class="title">Introduction</span>
+                    <span class="title"></span>
                     <span class="content">A google chrome plugin built for this experiment.</span>
                 </p>
                 <p>
-                    <button class="proceed_button" onclick="openProceed()">Continue</button>
-                    <button class="download_button" onclick="openDownload()">Download</button>
+                    <button style="width: 11vw;" class="" type="button" onclick="openProceed()">Continue</button>
+                    <button style="width: 11vw;"  class="" type="button" onclick="openDownload()">Download</button>
                 </p>
             </div>
             <div class="right_box">
