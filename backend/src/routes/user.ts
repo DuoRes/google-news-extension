@@ -28,7 +28,8 @@ const s3 = new aws.S3();
 const MINIMUM_CLICKS_REQUIRED = 100;
 const PROLIFIC_COMPLETION_CODE = "yay_you_did_it";
 const PREPROMPT = `You are an assistant researcher that can help with validating whether a research participant has successfully logged into the following google account: $name$; validate the screenshot image the user has uploaded that they have logged into the designated account. if the user has not logged in, ask them to log in and upload a new screenshot image; make sure that the username matches the one in the screenshot. If the user has indeed logged in, then reply "YES", otherwise reply "NO".`;
-const PRE_SURVEY_COMPLETION_CODE = "thank_you_for_completing_the_pre_survey";
+const PRE_SURVEY_COMPLETION_CODE =
+  "thank_you_for_completing_the_haas_research_pre_survey";
 
 const router = express.Router();
 
