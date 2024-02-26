@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema({
   loginScreenshot: {
     type: String,
   },
+  preSurveyCompleted: {
+    type: Boolean,
+    default: false,
+  },
 
   // Experiment fields
   displayChatBox: {
