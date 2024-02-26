@@ -22,7 +22,7 @@ function scheduledtask(){
 function login(e){
     var prolific_id=window.localStorage.getItem("prolific_id");
     $.ajax({
-        url: "",
+        url: "https://duo.up.railway.app/user/login",
         type: "post",
         data: {"prolific_id":prolific_id},
         success: function(res) {
@@ -46,7 +46,7 @@ function upload(){
     formData.append("image", $("#License")[0].files[0]);
     formData.append("token",prolific_id);
     $.ajax({
-        url: "http://localhost:5000/verify_image",
+        url: "https://duo.up.railway.app/user/verify_image",
         type: "post",
         data: formData,
         processData: false, 
