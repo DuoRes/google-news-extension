@@ -37,7 +37,7 @@ body {
     border-bottom: 2px dotted aliceblue;
 }
 .plugin_box .plugin_item .left_box{
-    width: 100%;
+    width: 44%;
     margin-right: 10%;
 }
 .proceed_button{
@@ -63,11 +63,15 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
-    top: -14vh;
+    top: -6vh;
     right: 9vh;
+    border: 2px solid black;
+    width: 46%;
+    height: 80vh;
+    overflow-y: scroll;
 }
 
-.plugin_box .plugin_item .right_box img {
+.plugin_box .plugin_item .left_box img {
     width: 100%;
     height: auto;
     display: block;
@@ -153,7 +157,10 @@ label {
     margin-bottom: 5px;
 
 }
-
+.txt_box{
+    text-align: left;
+    margin-bottom: 2vh;
+}
 input[type="text"],
 input[type="password"] {
     width: 50%;
