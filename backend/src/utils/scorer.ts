@@ -4,9 +4,9 @@ import Config from "../config";
 const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 
 export async function ratePoliticalStance(
-  allArticles: string
+  pressFreqencyMap: string
 ): Promise<number> {
-  const prompt = `Based on the following articles, please analyze and score the news reader's political stance:\n${allArticles}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views, 0 is neutral, and 100 indicates extremely right-leaning views.\n\nProvide a brief explanation for your score, summarizing the reader's tendencies based on their chosen articles.}`;
+  const prompt = `Based on the frequency of the following presses that appears on the user's news feed, please analyze and score the current news page's political stance:\n${pressFreqencyMap}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views, 0 is neutral, and 100 indicates extremely right-leaning views. Please provide a score for the current news page's political stance:`;
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -21,14 +21,14 @@ export async function ratePoliticalStance(
         {
           name: "publishPoliticalStanceRating",
           description:
-            "Publishes the political stance rating of the user based on the articles they have chosen",
+            "Publishes the political stance rating of the user based on the press frequency map.",
           parameters: {
             type: "object",
             properties: {
               politicalStanceRating: {
                 type: "number",
                 description:
-                  "The political stance rating of the user based on the articles they have chosen",
+                  "The political stance rating of the user based on the press frequency map.",
               },
             },
             required: ["politicalStanceRating"],

@@ -81,8 +81,17 @@ router.post("/recommendations", async (req, res) => {
       return res.status(226).send("Recommendation hasn't changed");
     }
 
+    const pressFreqencyMap = {};
+    contentDocuments.forEach((content) => {
+      if (pressFreqencyMap[content.pressName]) {
+        pressFreqencyMap[content.pressName]++;
+      } else {
+        pressFreqencyMap[content.pressName] = 1;
+      }
+    });
+
     const currentStance = await ratePoliticalStance(
-      contentDocuments.map((content) => content.content).join(" ")
+      JSON.stringify(pressFreqencyMap)
     );
 
     const recommendation = await Recommendation.create({
