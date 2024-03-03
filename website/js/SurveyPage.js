@@ -1,4 +1,4 @@
-function login(e) {
+function verifyCompletionCode(e) {
   var Indentifier = $("#Indentifier").val();
   if (Indentifier) {
     if (
@@ -6,9 +6,14 @@ function login(e) {
     ) {
       window.location.href = "./Login.html";
     } else {
-      alert("You have entered the wrong identifier.");
+      alert("You have entered the wrong completion code. Please try again.");
     }
   } else {
-    alert("The Unique Indentifier cannot be empty!");
+    alert("The completion code cannot be empty. Please try again.");
   }
+}
+
+function redirectToQualtrics(e) {
+  window.location.href =
+    "https://berkeley.qualtrics.com/jfe/form/SV_0V8H8L2K8h9d7eB";
 }
