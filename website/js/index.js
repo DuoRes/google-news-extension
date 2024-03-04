@@ -10,7 +10,7 @@ function verifyCompletionCode(e) {
     if (
       Indentifier == "thank_you_for_completing_the_haas_research_pre_survey"
     ) {
-      window.location.href = "./GoogleNewsLoginPage.html";
+      window.location.href = "./ProlificLoginPage.html";
     } else {
       alert("You have entered the wrong completion code. Please try again.");
     }
