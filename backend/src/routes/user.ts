@@ -3,7 +3,7 @@ import User from "../models/User";
 import Chat from "../models/Chat";
 import GAccount from "../models/GAccount";
 
-import { countValidClicks } from "../utils/tasks";
+import { countValidClicks, isCompleted } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
 import { extractGoogleEmail } from "../utils/ocr";
@@ -25,7 +25,6 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
-const MINIMUM_CLICKS_REQUIRED = 100;
 const PROLIFIC_COMPLETION_CODE = "yay_you_did_it";
 const PREPROMPT = `You are an assistant researcher that can help with validating whether a research participant has successfully logged into the following google account: $name$; validate the screenshot image the user has uploaded that they have logged into the designated account. if the user has not logged in, ask them to log in and upload a new screenshot image; make sure that the username matches the one in the screenshot. If the user has indeed logged in, then reply "YES", otherwise reply "NO".`;
 const PRE_SURVEY_COMPLETION_CODE =
@@ -129,7 +128,7 @@ router.get("/status", async (req, res) => {
     }
     const content_clicked = await countValidClicks(user._id);
 
-    if (content_clicked < MINIMUM_CLICKS_REQUIRED) {
+    if (!(await isCompleted(user._id))) {
       return res.send({ ok: false, content_clicked });
     }
 

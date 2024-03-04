@@ -1,5 +1,6 @@
 import express from "express";
 import { connectDB } from "./utils/db";
+import cors from "cors";
 
 // Link Routes
 import collector from "./routes/collector";
@@ -12,6 +13,7 @@ import chat from "./routes/chat";
 const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
+app.use(cors());
 app.get("/", (req, res) => {
   res.send("Hello from Mingduo!");
 });
