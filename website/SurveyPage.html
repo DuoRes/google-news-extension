@@ -5,20 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Initial Page</title>
-    <link rel="stylesheet" type="text/css" href="./css/procedue.css" />
-    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <link rel="stylesheet" type="text/css" href="./css/surveypage.css" />
 </head>
 
 <body>
     <div class="login-container">
-        <h1>Introduction of experimental instructions</h1>
+        <h1>Introduction</h1>
         <div class="txt_box">
-            XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            <h2>Instructions</h2>
+            <p>Welcome to our study! Our study aims at understanding the different outcomes when a news recommender system is attached with different features. You will need to participate in the experiments by following these 6 steps:</p>
+            <ol>
+                <li>Conduct a pre-survey on Qualtrics.</li>
+                <li>Input your Prolific ID to get your unique Gmail Account, Password, and backup recovery mail address.</li>
+                <li>Install a chrome extension. <strong>The extension is only guaranteed to function correctly on Google Chrome. So we require that you must have Google Chrome installed and participate in our study using Google Chrome. If you don't have Google Chrome installed, you can download it via this link: <a href="https://www.google.com/chrome/">https://www.google.com/chrome/</a>. If you do not use Google Chrome, you might be unable to finish the experiments.</strong></li>
+                <li>Browse google news, click on the news you want to read for several iterations. <strong>Notice: Every click within 5 seconds will not be counted as a valid click.</strong></li>
+                <li>Conduct an end-survey on Qualtrics.</li>
+                <li>Conduct a follow-up survey on Qualtrics.</li>
+            </ol>
+            <p>Now please conduct this pre-survey by hitting this link: [placeholder].</p>
+            <p>You will get a unique identifier after you finish the survey, please enter it correctly below in the text box to move on to the next sections.</p>
+            <p>If anything goes wrong, please contact us via [placeholder].</p>
         </div>
         <form>
-            <label for="Indentifier" style="width:38vw;text-align:left;">Unique Indentifier:</label>
+            <label for="Indentifier" style="width:38vw;text-align:left;">Unique Identifier:</label>
             <input type="text" id="Indentifier" name="Indentifier" required>
-            <div class="button-container" style="  margin-top: 1rem;">
+            <div class="button-container" style="margin-top: 1rem;">
                 <button type="button" class="buttons" onclick="login()">Next</button>
             </div>
         </form>

@@ -3,21 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plugin Download Page</title>
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+    <title>Login to the given google account</title>
+    <link rel="stylesheet" type="text/css" href="./css/plugin.css"/>
 </head>
 <body style="flex-direction: column;">
 
-    <div class="plugin_box" style="">
+    <div class="plugin_box">
         <div class="border">
-            <h1>Plugin</h1>
-            <p class="additional-text">
-                Please click the Download button below to download the plugin.
-            </p>
+            <h1>Instructions</h1>
+            <p>First, open Google Chrome.</p>
+            <p><strong>If you are already logged in:</strong></p>
+            <ul>
+                <li>You will see two account icons on the top right of the screen. Click on the smaller and higher one as shown below.
+                    <br><img src="./images/4a.png" alt="Account Icon"></li>
+                <li>Click on the Add button at the bottom.
+                        <br><img src="./images/5a.png" alt="Add Button" style="width:50%;"></li>
+            </ul>
+            <p><strong>If you are not logged in yet:</strong></p>
+            <ul>
+                <li>You will see one account icon on the top right of the screen. Click on it as shown below.
+                    <br><img src="./images/8a.png" alt="Login Icon" style="width:50%;"></li>
+                <li>Click on the Add button at the bottom.
+                    <br><img src="./images/7a.png" alt="Add Button" style="width:50%;"></li>
+            </ul>
+            <ol>
+                <li>Click on the <strong>Sign in</strong> button.
+                    <br><img src="./images/6a.png" alt="Sign in Button" style="width:33%;"></li>
+                <li>Click 'Sign in', copy and paste the Gmail address given to you into the text box, and click 'Next'
+                    <br><img src="./images/5.png" alt="Gmail Address Input" style="width:30%;"></li>
+                <li>Hit the captcha to confirm you're not a robot if asked
+                    <br><img src="./images/6.png" alt="Captcha Verification" style="width:30%;"></li>
+                <li>Enter the given password, and proceed with 'Next'
+                    <br><img src="./images/7.png" alt="Password Input" style="width:30%;"></li>
+                <li>Verify your identity by choosing to 'Confirm your recovery email'
+                    <br><img src="./images/8.png" alt="Confirm Recovery Email" style="width:30%;"></li>
+                <li>Enter the given recovery email, and proceed with 'Next'
+                    <br><img src="./images/9.png" alt="Recovery Email Input" style="width:30%;"></li>
+                <li>If you are asked to further verify your identity after you enter the recovery email via SMS, please use your own Phone number to pass the SMS code verification.
+                    <br><img src="./images/10.png" alt="SMS Verification" style="width:30%;">
+                    <br><img src="./images/11.png" alt="SMS Code Input" style="width:30%;"></li>
+                <li>If you see any message saying that your account has been banned, let us know through Prolific website. We will assign a new account to you and you can restart the whole process subsequently.</li>
+                <li>Click on the icon representing your account on the top right of the screen, screenshot the account information to verify that you have successfully logged in. Upload the screenshot via our experiment website to let us verify that you have actually logged in with the given account. You can only move forward by uploading the correct image.
+                    <br><img src="./images/12.png" alt="Account Verification" style="width:30%;"></li>
+            </ol>
         </div>
         <div id="plugin_row"></div>
     </div>
-
     
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/plugin.js?v=2"></script>
