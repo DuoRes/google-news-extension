@@ -35,10 +35,33 @@ function create(data) {
   var str = `
     <div class="plugin_item">
         <div class="left_box">
-            <label for="License" style="display: inline-block; padding: 0vw 2vw; border: 1px solid green; text-align: center;" class="update buttons">
+        <h3>News Research Tracker</h3>
+        <p>
+            <span class="title">Gmail:</span>
+            <span class="content">${data.assignedEmail}</span>
+        </p>
+        <p>
+            <span class="title">Password:</span>
+            <span class="content">${data.assignedPassword}</span>
+        </p>
+        <p>
+            <span class="title">Recovery mail:</span>
+            <span class="content">${data.assignedRecoveryEmail}</span>
+        </p>
+        <p>
+            <img src="./images/bg.png"/>
+        </p>
+        <p>
+            <a href="https://chrome.google.com/webstore/detail/news-research-tracker/cahcdhhjliadadbbabnlkhffdlfmepca?hl=en&authuser=0">
+            https://chrome.google.com/webstore/detail/news-research-tracker/cahcdhhjliadadbbabnlkhffdlfmepca?hl=en&authuser=0
+            </a>
+        </p>
+        <p>
+            <label for="License" style="display: inline-block; padding: 0vw 2vw; border: 1px solid green; text-align: center;width: 100%;" class="update buttons">
                 <input type="file" id="License" onchange="upload(this);" style="display: none">
                 <span class="button-text">Upload local files</span>
             </label>
+        </p>
         </div>
     </div>
 `;
