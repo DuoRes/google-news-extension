@@ -49,7 +49,7 @@ function upload() {
   var prolific_id = window.localStorage.getItem("prolific_id");
   var formData = new FormData();
   formData.append("screenshot", $("#License")[0].files[0]);
-  formData.append("user_id", prolific_id);
+  formData.append("token", prolific_id);
 
   // Show spinner while waiting
   showSpinner();
