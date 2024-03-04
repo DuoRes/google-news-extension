@@ -30,15 +30,15 @@ async function scheduledtask() {
   console.log("Scheduled task.");
 }
 
-function create(data){
-  var plugin_row=$("#plugin_row");
-  var str=`
+function create(data) {
+  var plugin_row = $("#plugin_row");
+  var str = `
       <div class="plugin_item" >
           <div class="left_box">
               <h3>News Research Tracker</h3>
               <p>
                   <span class="title">Gmail:</span>
-                  <span class="content">${data.assignedGmail}</span>
+                  <span class="content">${data.assignedEmail}</span>
               </p>
               <p>
                   <span class="title">Password:</span>
@@ -46,7 +46,7 @@ function create(data){
               </p>
               <p>
                   <span class="title">Recovery mail:</span>
-                  <span class="content">${data.assignedBackupGmail}</span>
+                  <span class="content">${data.assignedRecoveryEmail}</span>
               </p>
               <p>
                   <img src="./images/bg.png"/>
