@@ -9,30 +9,6 @@ async function scheduledtask() {
     token: prolific_id,
   });
 
-<<<<<<< HEAD
-    $.ajax({
-        headers: {
-            "contentType": "application/json;charset=utf-8",
-            "Accept":"*/*",
-        },
-        contentType: "application/json;charset=utf-8",
-        url:"https://duo.up.railway.app/user/login", 
-        method:"post",
-        data:now_data,  
-        success:function(data){
-            create(data);
-            console.log(data);
-            window.localStorage.setItem("show_message",JSON.stringify(data));
-        },
-        error: function(xhr, status, error) {
-            // 处理错误响应数据
-            console.log();
-            console.log(xhr.responseText); // 错误的响应数据
-            console.log(status);
-        }
-    });
-    console.log("Scheduled task.");
-=======
   $.ajax({
     headers: {
       "content-type": "application/json",
@@ -52,7 +28,6 @@ async function scheduledtask() {
     },
   });
   console.log("Scheduled task.");
->>>>>>> cb202259a1f5f5944e168b8f530d610ad656443e
 }
 
 function create(data) {
@@ -96,31 +71,6 @@ function openDownload() {
     "https://chrome.google.com/webstore/detail/news-research-tracker/cahcdhhjliadadbbabnlkhffdlfmepca?hl=en&authuser=0";
 }
 
-<<<<<<< HEAD
-function upload(){
-    var prolific_id=window.localStorage.getItem("prolific_id");
-    var formData = new FormData();
-    formData.append("screenshot", $("#License")[0].files[0]);
-    formData.append("user_id",prolific_id);
-    $.ajax({
-        url: "hhttps://duo.up.railway.app/user/validateImageOCR",
-        type: "post",
-        data: formData,
-        processData: false, 
-        contentType: false,
-        success: function(res) {
-            console.log(res);
-            if(res.result=="success"){
-                window.location.href="end.html";
-            }else{
-                alert("error.");
-            }
-        },
-        error: function(err) {
-            console.log(err);
-        }
-    })
-=======
 function upload() {
   var prolific_id = window.localStorage.getItem("prolific_id");
   var formData = new FormData();
@@ -139,5 +89,4 @@ function upload() {
       console.log(err);
     },
   });
->>>>>>> cb202259a1f5f5944e168b8f530d610ad656443e
 }
