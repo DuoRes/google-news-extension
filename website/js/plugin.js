@@ -51,11 +51,6 @@ function create(data) {
                 <p>
                     <img src="./images/bg.png"/>
                 </p>
-                <p>
-                    <label for="License" style="    display: inline-block;padding: 0vw 2vw;" class="update buttons">
-                        <input type="file" id="License"  onchange="upload(this);"   style="display: none">Upload local files
-                    </label>
-                </p>
             </div>
             <div class="right_box">
                 
@@ -69,24 +64,4 @@ function openDownload() {
   const w = window.open("about:blank");
   w.location.href =
     "https://chrome.google.com/webstore/detail/news-research-tracker/cahcdhhjliadadbbabnlkhffdlfmepca?hl=en&authuser=0";
-}
-
-function upload() {
-  var prolific_id = window.localStorage.getItem("prolific_id");
-  var formData = new FormData();
-  formData.append("screenshot", $("#License")[0].files[0]);
-  formData.append("user_id", prolific_id);
-  $.ajax({
-    url: "https://duo.up.railway.app/user/validateImageOCR",
-    type: "post",
-    data: formData,
-    processData: false,
-    contentType: false,
-    success: function (res) {
-      console.log(res);
-    },
-    error: function (err) {
-      console.log(err);
-    },
-  });
 }
