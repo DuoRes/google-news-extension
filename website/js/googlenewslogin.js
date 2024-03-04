@@ -52,11 +52,6 @@ function create(data) {
             <img src="./images/bg.png"/>
         </p>
         <p>
-            <a href="https://chrome.google.com/webstore/detail/news-research-tracker/cahcdhhjliadadbbabnlkhffdlfmepca?hl=en&authuser=0">
-            https://chrome.google.com/webstore/detail/news-research-tracker/cahcdhhjliadadbbabnlkhffdlfmepca?hl=en&authuser=0
-            </a>
-        </p>
-        <p>
             <label for="License" style="display: inline-block; padding: 0vw 2vw; border: 1px solid green; text-align: center;width: 100%;" class="update buttons">
                 <input type="file" id="License" onchange="upload(this);" style="display: none">
                 <span class="button-text">Upload local files</span>
