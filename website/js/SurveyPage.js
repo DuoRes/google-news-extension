@@ -1,3 +1,9 @@
+function showVerification() {
+  document.getElementById("verificationContainer").style.display = "block";
+  window.open("https://berkeley.qualtrics.com/jfe/form/SV_0V8H8L2K8h9d7eB");
+  document.getElementById("iagree").setAttribute("hidden", "true");
+}
+
 function verifyCompletionCode(e) {
   var Indentifier = $("#Indentifier").val();
   if (Indentifier) {
@@ -11,9 +17,4 @@ function verifyCompletionCode(e) {
   } else {
     alert("The completion code cannot be empty. Please try again.");
   }
-}
-
-function redirectToQualtrics(e) {
-  window.location.href =
-    "https://berkeley.qualtrics.com/jfe/form/SV_0V8H8L2K8h9d7eB";
 }

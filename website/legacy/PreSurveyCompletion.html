@@ -4,18 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestudy Survey</title>
-    <link rel="stylesheet" type="text/css" href="./css/procedue.css" />
-    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <title>Initial Page</title>
+    <link rel="stylesheet" type="text/css" href="./css/surveypage.css" />
 </head>
 
 <body>
     <div class="login-container">
-        <h1>Welcome to News Interaction Research by Berkeley</h1>
+        <h1>Introduction</h1>
         <div class="txt_box">
-            Thank you for agreeing to take part in this study conducted by UC
-            Berkeley. This study is designed to understand how people interact with
-            news articles and how they perceive the credibility of news sources.
             <h2>Instructions</h2>
             <p>Welcome back to our study! Our study aims at understanding the different outcomes when a news recommender
                 system is attached with different features. You will need to participate in the experiments by following
@@ -37,34 +33,20 @@
             <p>Now please conduct this pre-survey by hitting this link: [placeholder].</p>
             <p>You will get a unique identifier after you finish the survey, please enter it correctly below in the text
                 box to move on to the next sections.</p>
-            <p>If you have any questions or concerns, please contact us via <a
-                    href="mailto:help@haasresearch.org">help@haasresearch.org</a>.</p>
+            <p>If anything goes wrong, please contact us via [placeholder].</p>
         </div>
-        <div class="txt_box">
-            <h1>Consent</h1>
-            <p>
-                By clicking the button below, you are agreeing to participate in this
-                study. You are also agreeing that you are at least 18 years old and
-                that you have read and understood the information provided in the
-                consent form.
-
-                After you click the button, you will be redirected to a pre-study survey to collect some basic
-                information about you. This survey will be conducted on the Qualtrics platform. After completing the
-                survey, you will provided a completion code. Please return to this page and enter the code in the text
-                box below.
-            </p>
-            <div class="button-container" style="text-align: center;">
-                <button type="button" class="buttons" onclick="showVerification()" id="iagree">I Agree</button>
-            </div>
-            <div id="verificationContainer" style="display: none;">
-                <input type="text" id="Indentifier" name="Indentifier" required style="margin-left: 1rem;">
+        <form>
+            <label for="Indentifier" style="width:38vw;text-align:left;">Unique Identifier:</label>
+            <input type="text" id="Indentifier" name="Indentifier" required>
+            <div class="button-container" style="margin-top: 1rem;">
                 <button type="button" class="buttons" onclick="verifyCompletionCode()">Verify</button>
             </div>
-        </div>
+        </form>
     </div>
-
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/SurveyPage.js"></script>
 </body>
+
+
 
 </html>
