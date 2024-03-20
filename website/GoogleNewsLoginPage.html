@@ -12,18 +12,27 @@
     <style>
         .plugin_box{
             display: flex;
+            margin-top: 7vw;
+            flex-direction: column;
+            max-width: 100vw;
+            width: 93vw;
         }
         .border{
-            width: 50%;
+            width: 100%;
         }
         #plugin_row{
-            width: 50%;
+            width: 100%;
+        }
+        header{
+            width: 99%;
         }
     </style>
 </head>
 
 <body style="flex-direction: column;">
-
+    <header>
+        <img src="./images/icon.png"/>
+    </header>
     <div class="plugin_box">
         <div class="border">
             <h1>Instructions</h1>
@@ -51,16 +60,20 @@
                 <li>Click on the <strong>Sign in</strong> button.
                     <br><img src="./images/6a.png" alt="Sign in Button" style="width:33%;">
                 </li>
-                <li>Click 'Sign in', copy and paste the Gmail address given to you into the text box, and click 'Next'
+                <li>
+                    Click 'Sign in', copy and paste the Gmail address given to you into the text box, and click 'Next'
+                    <p class="jc" id="gmail"></p>
                     <br><img src="./images/5.png" alt="Gmail Address Input" style="width:30%;">
                 </li>
                 <li>Hit the captcha to confirm you're not a robot if asked
                     <br><img src="./images/6.png" alt="Captcha Verification" style="width:30%;">
                 </li>
                 <li>Enter the given password, and proceed with 'Next'
+                    <p class="jc" id="password"></p>
                     <br><img src="./images/7.png" alt="Password Input" style="width:30%;">
                 </li>
                 <li>Verify your identity by choosing to 'Confirm your recovery email'
+                    <p class="jc" id="recoverymail"></p>
                     <br><img src="./images/8.png" alt="Confirm Recovery Email" style="width:30%;">
                 </li>
                 <li>Enter the given recovery email, and proceed with 'Next'
@@ -80,9 +93,19 @@
                     forward by uploading the correct image.
                     <br><img src="./images/12.png" alt="Account Verification" style="width:30%;">
                 </li>
+                <li>The account assigned to you is a real account that we created. It is specifically assigned to you for 
+                    this particular study. The account is safe to use, and it will be soon deleted after the study is completed.
+                </li>
             </ol>
         </div>
-        <div id="plugin_row"></div>
+        <div id="plugin_row">
+            <p style="text-align: center;">
+                <label for="License" style="display: inline-block; padding: 0vw 2vw; border: 1px solid green; text-align: center;width: 53%;" class="update buttons">
+                    <input type="file" id="License" onchange="upload(this);" style="display: none">
+                    <span class="button-text">Upload local files</span>
+                </label>
+            </p>
+        </div>
 
         <script src="./js/googlenewslogin.js"></script>
 </body>

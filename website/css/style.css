@@ -1,5 +1,9 @@
+*{
+    font-size: 21px !important;
+    
+}
 body {
-    background-color: white;
+    background-color: #3B7EA1 !important;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -10,18 +14,20 @@ body {
 }
 
 .login-container {
-    background-color: rgba(255, 255, 255, 0.77);
+    background-color: #FDB515 !important;
+    color: #003262 !important;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     text-align: center;
-    color: #C46454;
+    /* color: #3B7EA1; */
     width: 80%; /* Adjust the width as needed */
     margin: 2vw 0vw;
+    margin-top: 7vw;
 }
 
 .plugin_box{
-    color: #C46454;
+    color: #3B7EA1;
     width: 80%;
     margin: 5vw;
     background-color: rgba(255, 255, 255, 0.77);
@@ -29,6 +35,9 @@ body {
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     text-align: left;
+    margin-top: 7vw;
+    background-color: #FDB515 !important;
+    color: #003262 !important;
 }
 .plugin_box .plugin_item{
     display: flex;
@@ -166,10 +175,10 @@ input[type="password"] {
     width: 50%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 4px solid #C46454;
+    border: 4px solid #3B7EA1;
     border-radius: 3px;
     font-size: 16px;
-    color: #C46454;
+    color: #3B7EA1;
     outline:none;
 }
 
@@ -189,17 +198,30 @@ button[type="button"],.update {
 }
 
 button[type="submit"] {
-    background-color: #C46454;
+    background-color: #3B7EA1;
     color: #fff;
     margin-right: 5px;
 }
 
 button[type="button"],.update  {
-    background-color: #C46454;
+    background-color: #3B7EA1;
     color: #fff;
     margin-left: 5px;
     border-radius: 10px !important;
     height: 8vh !important;
     line-height: 8vh !important;
     
+}
+header{
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    width: 80%;
+}
+header img{
+    width: 15%;
+    border: none;
+}
+.jc{
+    font-weight: bold;
 }
