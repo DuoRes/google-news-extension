@@ -229,7 +229,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                       <h1>Google News Recommendation</h1>
                       <p>Thank you for participating in our study!</p>
                       <p>Your completion code is: ${request.completionCode}</p>
-                      <p>Please copy and paste this code into the HIT on MTurk.</p>
+                      <p>Please copy and paste this code into prolific to complete the study.</p>
                       <div style="display: flex; justify-content: space-between; margin-top: 20px">
                       </div>
                     </div>
