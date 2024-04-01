@@ -10,14 +10,31 @@ const redirectToForYou = () => {
 var chatBotName = 'Chris'
 var displayChatBox = false
 
-const logPageContents = async (user_id) => {
+const observePageChanges = (user_id) => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        const addedNodes = mutation.addedNodes;
+        addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('Ccj79')) {
+            processPageContents([node], user_id);
+          }
+        });
+      }
+    });
+  });
+
+  const observerConfig = {
+    childList: true,
+    subtree: true,
+  };
+
+  const targetNode = document.querySelector('main');
+  observer.observe(targetNode, observerConfig);
+};
+
+const processPageContents = async (user_id) => {
   const contents = []
-  // get all components of the section wrapper
-  const sections = document.querySelectorAll('.Ccj79')
-  if (sections.length === 0) {
-    console.log('No sections found.')
-    redirectToForYou()
-  }
   sections.forEach((section, s_idx) => {
     const oneArticle = section.querySelector('.IFHyqb')
     if (oneArticle) {
@@ -80,6 +97,15 @@ const logPageContents = async (user_id) => {
   })
 }
 
+const logPageContents = async (user_id) => {
+  const sections = document.querySelectorAll('.Ccj79')
+  if (sections.length === 0) {
+    console.log('No sections found.')
+    redirectToForYou()
+  }
+  processPageContents(sections, user_id);
+}
+
 const disableLinks = async (user_id) => {
   const links = document.querySelectorAll('a')
 
@@ -137,6 +163,7 @@ chrome.storage.local.get(
       if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
         console.log('This is a Google News For You page: ' + document.URL)
         await logPageContents(result.user_id)
+        observePageChanges(result.user_id);
         disableLinks(result.user_id)
 
         chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
