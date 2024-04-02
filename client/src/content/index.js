@@ -3,6 +3,8 @@ console.info('content script')
 import { createChatBox, createMessageBubble } from './chatbox'
 import { checkLoggedInAndLogout } from './login'
 
+const sections2remove = ['.ME1Kbf', '.qNlNJb.au9Ul.EA71Tc.NLP41e.mImKeb']
+
 const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
 }
@@ -21,10 +23,13 @@ const sendLogPageContents = async (user_id) => {
 }
 
 const processPageContents = async (sections, user_id) => {
-  const sectionToRemove = document.querySelector('.qNlNJb.au9Ul.EA71Tc.NLP41e.mImKeb')
-  if (sectionToRemove) {
-    sectionToRemove.remove()
+  for (const section of sections2remove) {
+    const sectionToRemove = document.querySelector(section)
+    if (sectionToRemove) {
+      sectionToRemove.remove()
+    }
   }
+
   sections.forEach((section, s_idx) => {
     const oneArticle = section.querySelector('.IFHyqb')
     if (oneArticle) {
