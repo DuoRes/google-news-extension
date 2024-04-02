@@ -9,32 +9,22 @@ const redirectToForYou = () => {
 
 var chatBotName = 'Chris'
 var displayChatBox = false
+var pageContents = []
 
-const observePageChanges = (user_id) => {
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        const addedNodes = mutation.addedNodes
-        addedNodes.forEach((node) => {
-          if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('Ccj79')) {
-            processPageContents([node], user_id)
-          }
-        })
-      }
-    })
+const sendLogPageContents = async (user_id) => {
+  console.log(pageContents)
+  await chrome.runtime.sendMessage({
+    type: 'logPageContents',
+    contents: JSON.stringify(pageContents),
+    user_id: user_id,
   })
-
-  const observerConfig = {
-    childList: true,
-    subtree: true,
-  }
-
-  const targetNode = document.querySelector('main')
-  observer.observe(targetNode, observerConfig)
 }
 
 const processPageContents = async (sections, user_id) => {
-  const contents = []
+  const sectionToRemove = document.querySelector('.qNlNJb.au9Ul.EA71Tc.NLP41e.mImKeb')
+  if (sectionToRemove) {
+    sectionToRemove.remove()
+  }
   sections.forEach((section, s_idx) => {
     const oneArticle = section.querySelector('.IFHyqb')
     if (oneArticle) {
@@ -44,8 +34,8 @@ const processPageContents = async (sections, user_id) => {
       const timestamp = oneArticle.querySelector('.hvbAAd').innerText
       const press = oneArticle.querySelector('.vr1PYe').innerText
       const img = oneArticle.querySelector('.Quavad').srcset.split(' ')[0]
-      contents.push({
-        index: s_idx + 1 + '.1',
+      pageContents.push({
+        index: pageContents.length + 1 + '.1',
         title,
         link,
         timestamp,
@@ -65,8 +55,8 @@ const processPageContents = async (sections, user_id) => {
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
       const img = prominentArticle.querySelector('img').src
-      contents.push({
-        index: s_idx + 1 + '.1',
+      pageContents.push({
+        index: pageContents.length + 1 + '.1',
         title,
         link,
         timestamp,
@@ -79,8 +69,8 @@ const processPageContents = async (sections, user_id) => {
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
-      contents.push({
-        index: s_idx + 1 + '.' + (a_idx + 2),
+      pageContents.push({
+        index: pageContents.length + 1 + '.' + (a_idx + 2),
         title,
         link,
         timestamp,
@@ -88,13 +78,30 @@ const processPageContents = async (sections, user_id) => {
       })
     })
   })
-  console.log(contents)
+}
 
-  await chrome.runtime.sendMessage({
-    type: 'logPageContents',
-    contents: JSON.stringify(contents),
-    user_id: user_id,
+const observePageChanges = (user_id) => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        const addedNodes = mutation.addedNodes
+        addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('Ccj79')) {
+            processPageContents([node], user_id)
+          }
+        })
+      }
+    })
+    disableLinks(user_id)
   })
+
+  const observerConfig = {
+    childList: true,
+    subtree: true,
+  }
+
+  const targetNode = document.querySelector('main')
+  observer.observe(targetNode, observerConfig)
 }
 
 const logPageContents = async (user_id) => {
@@ -113,7 +120,8 @@ const disableLinks = async (user_id) => {
     link.addEventListener('click', async (e) => {
       e.preventDefault() // Disable the link
       e.stopPropagation() // Don't bubble the event up
-      // Send a message to the background script
+      // Send messages to the background script
+      await sendLogPageContents(user_id)
       await chrome.runtime.sendMessage(
         {
           type: 'linkClicked',
@@ -124,7 +132,7 @@ const disableLinks = async (user_id) => {
           user_id: user_id,
         },
         (response) => {
-          location.reload()
+          // location.reload()
         },
       )
     })
