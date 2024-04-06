@@ -72,7 +72,7 @@ const processPageContents = async (sections, user_id) => {
       const link = oneArticle.querySelector('.WwrzSb').href
       const timestamp = oneArticle.querySelector('.hvbAAd').innerText
       const press = oneArticle.querySelector('.vr1PYe').innerText
-      const img = oneArticle.querySelector('.Quavad').src
+      const img = oneArticle.querySelector('.Quavad') ? oneArticle.querySelector('.Quavad').src : ''
       const reporter = oneArticle.querySelector('.PJK1m')
         ? oneArticle.querySelector('.PJK1m').innerText
         : ''
