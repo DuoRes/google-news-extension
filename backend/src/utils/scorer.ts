@@ -56,7 +56,7 @@ export async function ratePoliticalStance(
 }
 
 async function ratePressPoliticalStance(pressName: string): Promise<number> {
-  const prompt = `Based on the following press name, please analyze and score the press's political stance:\n\n${pressName}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views, 0 is neutral, and 100 indicates extremely right-leaning views. Please provide a score for the press's political stance:`;
+  const prompt = `Based on the following press name, please analyze and score the press's political stance:\n\n${pressName}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views and 100 indicates extremely right-leaning views; aim for large variance, do not give 0 lightly. Please provide a score for the press's political stance:`;
   try {
     const response = await openai.chat.completions.create({
       model: MODEL_NAME,
