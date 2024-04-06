@@ -240,7 +240,7 @@ chrome.storage.local.get(
           if (request.type === 'logPageContents') {
             const currentStance = request.currentStance
             console.log('currentStance', currentStance)
-            if (result.displayWarningMessage && Math.abs(currentStance.currentStance) > 80) {
+            if (result.displayWarningMessage && Math.abs(currentStance) > 80) {
               alert(
                 'Warning: ' +
                   (currentStance.currentStance > 0
