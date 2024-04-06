@@ -3,37 +3,87 @@ console.info('content script')
 import { createChatBox, createMessageBubble } from './chatbox'
 import { checkLoggedInAndLogout } from './login'
 
+const sections2remove = []
+
 const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
 }
 
 var chatBotName = 'Chris'
 var displayChatBox = false
+var pageContents = []
+var currIndex = 0
 
-const logPageContents = async (user_id) => {
-  const contents = []
-  // get all components of the section wrapper
-  const sections = document.querySelectorAll('.Ccj79')
-  if (sections.length === 0) {
-    console.log('No sections found.')
-    redirectToForYou()
+const sendLogPageContents = async (user_id) => {
+  console.log(pageContents)
+  await chrome.runtime.sendMessage({
+    type: 'logPageContents',
+    contents: JSON.stringify(pageContents),
+    user_id: user_id,
+  })
+}
+
+const processPageContents = async (sections, user_id) => {
+  for (const section of sections2remove) {
+    const sectionToRemove = document.querySelector(section)
+    if (sectionToRemove) {
+      sectionToRemove.remove()
+    }
   }
+
   sections.forEach((section, s_idx) => {
+    // the geolocation based suggestion section
+    const newSection = section.querySelector('.wwh0Hb')
+    if (newSection) {
+      currIndex += 1
+      const sources = newSection.querySelectorAll('.YRegrc')
+      const sectionName =
+        newSection.querySelector('.Pe8HEe').innerText +
+        '|' +
+        newSection.querySelector('.EdjnGc').innerText
+      sources.forEach((source, a_idx) => {
+        const press = source.querySelector('.UiDffd').alt
+        const timestamp = source.querySelector('.xsHp8').innerText
+        const innerSources = source.querySelectorAll('.TPqh7b')
+        innerSources.forEach((source, i_idx) => {
+          const title = source.querySelector('.kEAYTc').innerText
+          const link = source.querySelector('.kEAYTc').href
+          const img = source.querySelector('.L8a44').src
+          const type = source.querySelector('.JrYg1b').innerText
+          pageContents.push({
+            index: `${currIndex}.${a_idx + 1}.${i_idx + 1}`,
+            title,
+            link,
+            img,
+            press,
+            type,
+            timestamp,
+            section: sectionName,
+          })
+        })
+      })
+    }
+
     const oneArticle = section.querySelector('.IFHyqb')
     if (oneArticle) {
       // only one article in this section
+      currIndex += 1
       const title = oneArticle.querySelector('.JtKRv').innerText
       const link = oneArticle.querySelector('.WwrzSb').href
       const timestamp = oneArticle.querySelector('.hvbAAd').innerText
       const press = oneArticle.querySelector('.vr1PYe').innerText
-      const img = oneArticle.querySelector('.Quavad').srcset.split(' ')[0]
-      contents.push({
-        index: s_idx + 1 + '.1',
+      const img = oneArticle.querySelector('.Quavad') ? oneArticle.querySelector('.Quavad').src : ''
+      const reporter = oneArticle.querySelector('.PJK1m')
+        ? oneArticle.querySelector('.PJK1m').innerText
+        : ''
+      pageContents.push({
+        index: currIndex + '.1',
         title,
         link,
         timestamp,
         press,
         img,
+        reporter,
       })
       return
     }
@@ -41,6 +91,7 @@ const logPageContents = async (user_id) => {
     // get all articles in this section
     const prominentArticle = section.querySelector('.IBr9hb')
     const articles = section.querySelectorAll('.UwIKyb')
+    currIndex += 1
     if (prominentArticle) {
       // console.log(prominentArticle.querySelector('.gPFEn').innerText)
       const title = prominentArticle.querySelector('.gPFEn').innerText
@@ -48,13 +99,17 @@ const logPageContents = async (user_id) => {
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
       const img = prominentArticle.querySelector('img').src
-      contents.push({
-        index: s_idx + 1 + '.1',
+      const reporter = prominentArticle.querySelector('.PJK1m')
+        ? prominentArticle.querySelector('.PJK1m').innerText
+        : ''
+      pageContents.push({
+        index: currIndex + '.1',
         title,
         link,
         timestamp,
         press,
         img,
+        reporter,
       })
     }
     articles.forEach((article, a_idx) => {
@@ -62,22 +117,62 @@ const logPageContents = async (user_id) => {
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
-      contents.push({
-        index: s_idx + 1 + '.' + (a_idx + 2),
+      const reporter = prominentArticle.querySelector('.PJK1m')
+        ? prominentArticle.querySelector('.PJK1m').innerText
+        : ''
+      var sectionName = ''
+      if (prominentArticle.querySelector('.hgyOfc')) {
+        sectionName += prominentArticle.querySelector('.hgyOfc').innerText
+      }
+      if (prominentArticle.querySelector('.Q5P2pb') && sectionName !== '') {
+        sectionName += '|' + prominentArticle.querySelector('.Q5P2pb').innerText
+      } else if (prominentArticle.querySelector('.Q5P2pb')) {
+        sectionName += prominentArticle.querySelector('.Q5P2pb').innerText
+      }
+      pageContents.push({
+        index: currIndex + '.' + (a_idx + 2),
         title,
         link,
         timestamp,
         press,
+        reporter,
+        section: sectionName,
       })
     })
   })
-  console.log(contents)
+}
 
-  await chrome.runtime.sendMessage({
-    type: 'logPageContents',
-    contents: JSON.stringify(contents),
-    user_id: user_id,
+const observePageChanges = (user_id) => {
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        const addedNodes = mutation.addedNodes
+        addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('Ccj79')) {
+            processPageContents([node], user_id)
+          }
+        })
+      }
+    })
+    disableLinks(user_id)
   })
+
+  const observerConfig = {
+    childList: true,
+    subtree: true,
+  }
+
+  const targetNode = document.querySelector('main')
+  observer.observe(targetNode, observerConfig)
+}
+
+const logPageContents = async (user_id) => {
+  const sections = document.querySelectorAll('.Ccj79')
+  if (sections.length === 0) {
+    console.log('No sections found.')
+    redirectToForYou()
+  }
+  processPageContents(sections, user_id)
 }
 
 const disableLinks = async (user_id) => {
@@ -87,7 +182,8 @@ const disableLinks = async (user_id) => {
     link.addEventListener('click', async (e) => {
       e.preventDefault() // Disable the link
       e.stopPropagation() // Don't bubble the event up
-      // Send a message to the background script
+      // Send messages to the background script
+      await sendLogPageContents(user_id)
       await chrome.runtime.sendMessage(
         {
           type: 'linkClicked',
@@ -137,16 +233,17 @@ chrome.storage.local.get(
       if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
         console.log('This is a Google News For You page: ' + document.URL)
         await logPageContents(result.user_id)
+        observePageChanges(result.user_id)
         disableLinks(result.user_id)
 
         chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
           if (request.type === 'logPageContents') {
             const currentStance = request.currentStance
             console.log('currentStance', currentStance)
-            if (result.displayWarningMessage && Math.abs(currentStance.currentStance) > 80) {
+            if (result.displayWarningMessage && Math.abs(currentStance) > 80) {
               alert(
                 'Warning: ' +
-                  (currentStance.currentStance > 0
+                  (currentStance > 0
                     ? 'You are leaning towards conservative news sources.'
                     : 'You are leaning towards liberal news sources.'),
               )
@@ -229,7 +326,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                       <h1>Google News Recommendation</h1>
                       <p>Thank you for participating in our study!</p>
                       <p>Your completion code is: ${request.completionCode}</p>
-                      <p>Please copy and paste this code into the HIT on MTurk.</p>
+                      <p>Please copy and paste this code into prolific to complete the study.</p>
                       <div style="display: flex; justify-content: space-between; margin-top: 20px">
                       </div>
                     </div>

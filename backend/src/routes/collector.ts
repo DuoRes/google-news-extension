@@ -4,7 +4,7 @@ import Content from "../models/Content";
 import Recommendation from "../models/Recommendation";
 import User from "../models/User";
 import * as cheerio from "cheerio";
-import { ratePoliticalStance } from "../utils/scorer";
+import { ratePressesPoliticalStanceIfNotExists } from "../utils/scorer";
 
 const router = express.Router();
 
@@ -66,6 +66,9 @@ router.post("/recommendations", async (req, res) => {
         publishTimestamp: content.timestamp,
         displayImageURI: content.image,
         user: user,
+        reporter: content.reporter,
+        type: content.type ? content.type : "default",
+        section: content.section ? content.section : "default",
         timestamp: moment().toDate(),
       });
       contentDocuments.push(newContent);
@@ -90,8 +93,8 @@ router.post("/recommendations", async (req, res) => {
       }
     });
 
-    const currentStance = await ratePoliticalStance(
-      JSON.stringify(pressFreqencyMap)
+    const currentStance = await ratePressesPoliticalStanceIfNotExists(
+      pressFreqencyMap
     );
 
     const recommendation = await Recommendation.create({

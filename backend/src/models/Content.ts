@@ -11,6 +11,7 @@ const ContentSchema = new mongoose.Schema({
     required: true,
   },
   pressName: { type: String },
+  reporter: { type: String },
   content: { type: String },
   url: { type: String },
   displayImageURI: {
@@ -25,6 +26,12 @@ const ContentSchema = new mongoose.Schema({
   clicked: {
     type: Boolean,
     default: false,
+  },
+  section: {
+    type: String,
+  },
+  type: {
+    type: String,
   },
 
   // Unimplemented fields
