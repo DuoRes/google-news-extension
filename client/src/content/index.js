@@ -3,7 +3,7 @@ console.info('content script')
 import { createChatBox, createMessageBubble } from './chatbox'
 import { checkLoggedInAndLogout } from './login'
 
-const sections2remove = ['.qNlNJb.au9Ul.EA71Tc.NLP41e.mImKeb']
+const sections2remove = []
 
 const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
@@ -39,6 +39,7 @@ const processPageContents = async (sections, user_id) => {
       const timestamp = oneArticle.querySelector('.hvbAAd').innerText
       const press = oneArticle.querySelector('.vr1PYe').innerText
       const img = oneArticle.querySelector('.Quavad').srcset.split(' ')[0]
+      const reporter = oneArticle.querySelector('.PJK1m').innerText
       pageContents.push({
         index: pageContents.length + 1 + '.1',
         title,
@@ -46,6 +47,7 @@ const processPageContents = async (sections, user_id) => {
         timestamp,
         press,
         img,
+        reporter,
       })
       return
     }
@@ -61,6 +63,7 @@ const processPageContents = async (sections, user_id) => {
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
       const img = prominentArticle.querySelector('img').src
+      const reporter = prominentArticle.querySelector('.PJK1m').innerText
       pageContents.push({
         index: currIndex + '.1',
         title,
@@ -68,6 +71,7 @@ const processPageContents = async (sections, user_id) => {
         timestamp,
         press,
         img,
+        reporter,
       })
     }
     articles.forEach((article, a_idx) => {
@@ -75,12 +79,14 @@ const processPageContents = async (sections, user_id) => {
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
+      const reporter = prominentArticle.querySelector('.PJK1m').innerText
       pageContents.push({
         index: currIndex + '.' + (a_idx + 2),
         title,
         link,
         timestamp,
         press,
+        reporter,
       })
     })
   })
