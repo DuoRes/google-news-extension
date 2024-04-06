@@ -4,6 +4,7 @@ import Press from "../models/Press";
 
 const openai = new OpenAI({ apiKey: Config.openaiApiKey });
 const MODEL_NAME = "gpt-4-turbo-preview";
+const MAX_RETRIES = 3;
 
 export async function ratePoliticalStance(
   pressFreqencyMap: string
@@ -56,45 +57,54 @@ export async function ratePoliticalStance(
 }
 
 async function ratePressPoliticalStance(pressName: string): Promise<number> {
-  const prompt = `Based on the following press name, please analyze and score the press's political stance:\n\n${pressName}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views and 100 indicates extremely right-leaning views; aim for large variance, do not give 0 lightly. Please provide a score for the press's political stance:`;
+  const prompt = `Based on the following press name, please analyze and score the press's political stance:\n\n${pressName}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views and 100 indicates extremely right-leaning views; do not give 0 under any circumstances. Please provide a score for the press's political stance that is not 0:`;
+  let retries = 0;
+  let politicalStanceRating = 0;
   try {
-    const response = await openai.chat.completions.create({
-      model: MODEL_NAME,
-      max_tokens: 100,
-      messages: [
-        {
-          role: "system",
-          content: prompt,
-        },
-      ],
-      functions: [
-        {
-          name: "publishPoliticalStanceRating",
-          description:
-            "Rates the political stance of the press based on the press name.",
-          parameters: {
-            type: "object",
-            properties: {
-              politicalStanceRating: {
-                type: "number",
-                description:
-                  "The political stance rating of the press based on the press name.",
-              },
-            },
-            required: ["politicalStanceRating"],
+    while (retries < MAX_RETRIES && politicalStanceRating === 0) {
+      const response = await openai.chat.completions.create({
+        model: MODEL_NAME,
+        max_tokens: 100,
+        messages: [
+          {
+            role: "system",
+            content: prompt,
           },
+        ],
+        functions: [
+          {
+            name: "publishPoliticalStanceRating",
+            description:
+              "Rates the political stance of the press based on the press name.",
+            parameters: {
+              type: "object",
+              properties: {
+                politicalStanceRating: {
+                  type: "number",
+                  description:
+                    "The political stance rating of the press based on the press name; cannot be 0.",
+                },
+              },
+              required: ["politicalStanceRating"],
+            },
+          },
+        ],
+        function_call: {
+          name: "publishPoliticalStanceRating",
         },
-      ],
-      function_call: {
-        name: "publishPoliticalStanceRating",
-      },
-    });
+      });
 
-    const completion = response.choices[0].message.function_call.arguments;
+      const completion = response.choices[0].message.function_call.arguments;
 
-    const parsedCompletion = JSON.parse(completion);
+      politicalStanceRating = JSON.parse(completion).politicalStanceRating;
+    }
 
-    return parsedCompletion.politicalStanceRating;
+    if (politicalStanceRating === 0) {
+      throw new Error(
+        `Failed to rate press political stance after ${MAX_RETRIES} retries`
+      );
+    }
+    return politicalStanceRating;
   } catch (err) {
     console.trace(err);
   }
