@@ -94,9 +94,6 @@ async function ratePressPoliticalStance(pressName: string): Promise<number> {
 
     const parsedCompletion = JSON.parse(completion);
 
-    console.log(parsedCompletion);
-    console.log(parsedCompletion.politicalStanceRating);
-
     return parsedCompletion.politicalStanceRating;
   } catch (err) {
     console.trace(err);

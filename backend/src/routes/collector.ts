@@ -93,8 +93,6 @@ router.post("/recommendations", async (req, res) => {
       }
     });
 
-    console.log(pressFreqencyMap);
-
     const currentStance = await ratePressesPoliticalStanceIfNotExists(
       pressFreqencyMap
     );
