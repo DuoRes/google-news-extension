@@ -124,8 +124,6 @@ export async function ratePressesPoliticalStanceIfNotExists(pressFreqencyMap: {
       } else if (existingPress.leaning === "right") {
         right += pressFreqencyMap[pressName];
       }
-      existingPress.totalAppearence += 1;
-      await existingPress.save();
       continue;
     }
     const politicalStanceRating = await ratePressPoliticalStance(pressName);
@@ -134,7 +132,6 @@ export async function ratePressesPoliticalStanceIfNotExists(pressFreqencyMap: {
       politicalStance: politicalStanceRating,
       leaning: politicalStanceRating > 0 ? "right" : "left",
       ratingAuthor: MODEL_NAME,
-      totalAppearence: 1,
     });
     if (politicalStanceRating > 0) {
       right += pressFreqencyMap[pressName];

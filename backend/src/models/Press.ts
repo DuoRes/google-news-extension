@@ -17,10 +17,6 @@ const PressSchema = new mongoose.Schema({
     type: String, // author of rating; e.g. GPT-4 or Human
     required: true,
   },
-  totalAppearence: {
-    type: Number,
-    default: 0,
-  },
 });
 
 const Press = mongoose.model("Press", PressSchema);

@@ -243,7 +243,7 @@ chrome.storage.local.get(
             if (result.displayWarningMessage && Math.abs(currentStance) > 80) {
               alert(
                 'Warning: ' +
-                  (currentStance.currentStance > 0
+                  (currentStance > 0
                     ? 'You are leaning towards conservative news sources.'
                     : 'You are leaning towards liberal news sources.'),
               )
