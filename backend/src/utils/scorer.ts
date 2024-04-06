@@ -9,7 +9,7 @@ export async function ratePoliticalStance(
   const prompt = `Based on the frequency of the following presses that appears on the user's news feed selection, please analyze and score the current news page's political stance:\n\n${pressFreqencyMap}\n\nScore from -100 to 100, where -100 indicates extremely left-leaning views, 0 is neutral, and 100 indicates extremely right-leaning views. Please provide a score for the current news page's political stance:`;
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4.0-turbo",
+      model: "gpt-4-turbo-preview",
       max_tokens: 100,
       messages: [
         {
