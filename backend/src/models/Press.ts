@@ -6,7 +6,7 @@ const PressSchema = new mongoose.Schema({
     required: true,
   },
   politicalStance: {
-    type: String,
+    type: Number, // -100 to 100
     required: true,
   },
   leaning: {
@@ -16,6 +16,10 @@ const PressSchema = new mongoose.Schema({
   ratingAuthor: {
     type: String, // author of rating; e.g. GPT-4 or Human
     required: true,
+  },
+  totalAppearence: {
+    type: Number,
+    default: 0,
   },
 });
 
