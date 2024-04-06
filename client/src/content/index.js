@@ -3,7 +3,7 @@ console.info('content script')
 import { createChatBox, createMessageBubble } from './chatbox'
 import { checkLoggedInAndLogout } from './login'
 
-const sections2remove = ['.ME1Kbf', '.qNlNJb.au9Ul.EA71Tc.NLP41e.mImKeb']
+const sections2remove = ['.qNlNJb.au9Ul.EA71Tc.NLP41e.mImKeb']
 
 const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
@@ -51,6 +51,7 @@ const processPageContents = async (sections, user_id) => {
     }
 
     // get all articles in this section
+    const currIndex = pageContents.length + 1
     const prominentArticle = section.querySelector('.IBr9hb')
     const articles = section.querySelectorAll('.UwIKyb')
     if (prominentArticle) {
@@ -61,7 +62,7 @@ const processPageContents = async (sections, user_id) => {
       const press = prominentArticle.querySelector('.vr1PYe').innerText
       const img = prominentArticle.querySelector('img').src
       pageContents.push({
-        index: pageContents.length + 1 + '.1',
+        index: currIndex + '.1',
         title,
         link,
         timestamp,
@@ -75,7 +76,7 @@ const processPageContents = async (sections, user_id) => {
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
       pageContents.push({
-        index: pageContents.length + 1 + '.' + (a_idx + 2),
+        index: currIndex + '.' + (a_idx + 2),
         title,
         link,
         timestamp,
