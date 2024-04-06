@@ -27,6 +27,12 @@ const ContentSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  section: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
 
   // Unimplemented fields
   percentageRead: {

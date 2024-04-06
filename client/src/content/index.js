@@ -31,6 +31,38 @@ const processPageContents = async (sections, user_id) => {
   }
 
   sections.forEach((section, s_idx) => {
+    // the geolocation based suggestion section
+    const newSection = section.querySelector('.wwh0Hb')
+    if (newSection) {
+      const currIndex = pageContents.length + 1
+      const sources = newSection.querySelectorAll('.YRegrc')
+      const sectionName =
+        newSection.querySelector('.Pe8HEe').innerText +
+        '|' +
+        newSection.querySelector('.EdjnGc').innerText
+      sources.forEach((source, a_idx) => {
+        const press = source.querySelector('.UiDffd').alt
+        const timestamp = source.querySelector('.xsHp8').innerText
+        const innerSources = source.querySelectorAll('.TPqh7b')
+        innerSources.forEach((source, i_idx) => {
+          const title = source.querySelector('.kEAYTc').innerText
+          const link = source.querySelector('.kEAYTc').href
+          const img = source.querySelector('.L8a44').src
+          const type = source.querySelector('.JrYg1b').innerText
+          pageContents.push({
+            index: `${currIndex}.${a_idx + 1}.${i_idx + 1}`,
+            title,
+            link,
+            img,
+            press,
+            type,
+            timestamp,
+            section: sectionName,
+          })
+        })
+      })
+    }
+
     const oneArticle = section.querySelector('.IFHyqb')
     if (oneArticle) {
       // only one article in this section
@@ -38,8 +70,10 @@ const processPageContents = async (sections, user_id) => {
       const link = oneArticle.querySelector('.WwrzSb').href
       const timestamp = oneArticle.querySelector('.hvbAAd').innerText
       const press = oneArticle.querySelector('.vr1PYe').innerText
-      const img = oneArticle.querySelector('.Quavad').srcset.split(' ')[0]
-      const reporter = oneArticle.querySelector('.PJK1m').innerText
+      const img = oneArticle.querySelector('.Quavad').src
+      const reporter = oneArticle.querySelector('.PJK1m')
+        ? oneArticle.querySelector('.PJK1m').innerText
+        : ''
       pageContents.push({
         index: pageContents.length + 1 + '.1',
         title,
@@ -63,7 +97,9 @@ const processPageContents = async (sections, user_id) => {
       const timestamp = prominentArticle.querySelector('.hvbAAd').innerText
       const press = prominentArticle.querySelector('.vr1PYe').innerText
       const img = prominentArticle.querySelector('img').src
-      const reporter = prominentArticle.querySelector('.PJK1m').innerText
+      const reporter = prominentArticle.querySelector('.PJK1m')
+        ? prominentArticle.querySelector('.PJK1m').innerText
+        : ''
       pageContents.push({
         index: currIndex + '.1',
         title,
@@ -79,7 +115,18 @@ const processPageContents = async (sections, user_id) => {
       const link = article.querySelector('.WwrzSb').href
       const timestamp = article.querySelector('.hvbAAd').innerText
       const press = article.querySelector('.vr1PYe').innerText
-      const reporter = prominentArticle.querySelector('.PJK1m').innerText
+      const reporter = prominentArticle.querySelector('.PJK1m')
+        ? prominentArticle.querySelector('.PJK1m').innerText
+        : ''
+      var sectionName = ''
+      if (prominentArticle.querySelector('.hgyOfc')) {
+        sectionName += prominentArticle.querySelector('.hgyOfc').innerText
+      }
+      if (prominentArticle.querySelector('.Q5P2pb') && sectionName !== '') {
+        sectionName += '|' + prominentArticle.querySelector('.Q5P2pb').innerText
+      } else if (prominentArticle.querySelector('.Q5P2pb')) {
+        sectionName += prominentArticle.querySelector('.Q5P2pb').innerText
+      }
       pageContents.push({
         index: currIndex + '.' + (a_idx + 2),
         title,
@@ -87,6 +134,7 @@ const processPageContents = async (sections, user_id) => {
         timestamp,
         press,
         reporter,
+        section: sectionName,
       })
     })
   })

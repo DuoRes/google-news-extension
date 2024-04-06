@@ -67,6 +67,8 @@ router.post("/recommendations", async (req, res) => {
         displayImageURI: content.image,
         user: user,
         reporter: content.reporter,
+        type: content.type ? content.type : "default",
+        section: content.section ? content.section : "default",
         timestamp: moment().toDate(),
       });
       contentDocuments.push(newContent);
