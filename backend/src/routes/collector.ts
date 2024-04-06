@@ -4,7 +4,7 @@ import Content from "../models/Content";
 import Recommendation from "../models/Recommendation";
 import User from "../models/User";
 import * as cheerio from "cheerio";
-import { ratePoliticalStance } from "../utils/scorer";
+import { ratePressesPoliticalStanceIfNotExists } from "../utils/scorer";
 
 const router = express.Router();
 
@@ -95,8 +95,8 @@ router.post("/recommendations", async (req, res) => {
 
     console.log(pressFreqencyMap);
 
-    const currentStance = await ratePoliticalStance(
-      JSON.stringify(pressFreqencyMap)
+    const currentStance = await ratePressesPoliticalStanceIfNotExists(
+      pressFreqencyMap
     );
 
     const recommendation = await Recommendation.create({
