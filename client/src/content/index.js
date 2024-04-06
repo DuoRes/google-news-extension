@@ -194,7 +194,7 @@ const disableLinks = async (user_id) => {
           user_id: user_id,
         },
         (response) => {
-          // location.reload()
+          location.reload()
         },
       )
     })
