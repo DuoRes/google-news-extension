@@ -12,6 +12,7 @@ const redirectToForYou = () => {
 var chatBotName = 'Chris'
 var displayChatBox = false
 var pageContents = []
+var currIndex = 0
 
 const sendLogPageContents = async (user_id) => {
   console.log(pageContents)
@@ -34,7 +35,7 @@ const processPageContents = async (sections, user_id) => {
     // the geolocation based suggestion section
     const newSection = section.querySelector('.wwh0Hb')
     if (newSection) {
-      const currIndex = pageContents.length + 1
+      currIndex += 1
       const sources = newSection.querySelectorAll('.YRegrc')
       const sectionName =
         newSection.querySelector('.Pe8HEe').innerText +
@@ -66,6 +67,7 @@ const processPageContents = async (sections, user_id) => {
     const oneArticle = section.querySelector('.IFHyqb')
     if (oneArticle) {
       // only one article in this section
+      currIndex += 1
       const title = oneArticle.querySelector('.JtKRv').innerText
       const link = oneArticle.querySelector('.WwrzSb').href
       const timestamp = oneArticle.querySelector('.hvbAAd').innerText
@@ -75,7 +77,7 @@ const processPageContents = async (sections, user_id) => {
         ? oneArticle.querySelector('.PJK1m').innerText
         : ''
       pageContents.push({
-        index: pageContents.length + 1 + '.1',
+        index: currIndex + '.1',
         title,
         link,
         timestamp,
@@ -87,9 +89,9 @@ const processPageContents = async (sections, user_id) => {
     }
 
     // get all articles in this section
-    const currIndex = pageContents.length + 1
     const prominentArticle = section.querySelector('.IBr9hb')
     const articles = section.querySelectorAll('.UwIKyb')
+    currIndex += 1
     if (prominentArticle) {
       // console.log(prominentArticle.querySelector('.gPFEn').innerText)
       const title = prominentArticle.querySelector('.gPFEn').innerText
