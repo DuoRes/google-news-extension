@@ -1,6 +1,6 @@
-# News Reading
+# News Reading Research
 
-Thank you for agreeing to take part in this study conducted by UC Berkeley. Please review the following action items. 
+Thank you for agreeing to take part in this study conducted by Haas Business School at UC Berkeley. Please review the following information. If you have any questions, please contact us at privacy@haasresearch.org.
 
 # Privacy Policy
 
