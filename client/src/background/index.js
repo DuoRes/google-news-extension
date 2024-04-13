@@ -53,14 +53,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }),
       })
 
-      const progress = await fetch(BACKEND_URL + 'user/status', {
-        method: 'POST',
+      const progress = await fetch(BACKEND_URL + 'user/status/' + message.user_id, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          user_id: message.user_id,
-        }),
       })
 
       console.log('Progress: ', progress)
