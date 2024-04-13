@@ -121,13 +121,18 @@ router.post("/login", async (req, res) => {
 // check if the tasks are done for the user
 router.get("/status", async (req, res) => {
   try {
-    const token = req.body.token;
+    const { token } = req.body;
     console.log("token", token);
+
+    if (!token) {
+      return res.status(400).send("Token is required");
+    }
 
     const user = await User.findOne({ token });
     if (!user) {
       return res.status(404).send("User not found");
     }
+
     const content_clicked = await countValidClicks(user._id);
 
     if (!(await isCompleted(user._id))) {
