@@ -74,7 +74,7 @@ function create(data) {
         </li>
 
         <li>
-          <p><span>Repeat step 12 for 20-30 times.</p>
+          <p><span>Repeat the news selection for 20-30 times.</p>
         </li>
         <li>
           <p><span>The system will give the link to a demographic survey. The link will be displayed once step
