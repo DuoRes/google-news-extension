@@ -4,6 +4,7 @@ import { createChatBox, createMessageBubble } from './chatbox'
 import { checkLoggedInAndLogout } from './login'
 
 const sections2remove = []
+const sections2disable = ['.EctEBd', '.brSCsc']
 
 const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
@@ -25,9 +26,21 @@ const sendLogPageContents = async (user_id) => {
 
 const processPageContents = async (sections, user_id) => {
   for (const section of sections2remove) {
-    const sectionToRemove = document.querySelector(section)
+    const sectionToRemove = document.querySelectorAll(section)
     if (sectionToRemove) {
-      sectionToRemove.remove()
+      sectionToRemove.forEach((section) => {
+        section.remove()
+      })
+    }
+  }
+
+  for (const section of sections2disable) {
+    const sectionToDisable = document.querySelectorAll(section)
+    if (sectionToDisable) {
+      sectionToDisable.forEach((section) => {
+        section.style.pointerEvents = 'none'
+        section.style.opacity = 0.5
+      })
     }
   }
 
@@ -316,6 +329,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     // Scroll to the bottom of the chat box
     chatBox.scrollTop = chatBox.scrollHeight
   } else if (request.type === 'linkClicked' && request.ok) {
+    console.log('OK', request.ok)
     document.body.prepend(
       new DOMParser().parseFromString(
         `
@@ -324,10 +338,12 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                   ">
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 300px; background-color: white; border-radius: 10px; padding: 20px">
                       <h1>Google News Recommendation</h1>
-                      <p>Thank you for participating in our study!</p>
-                      <p>Your completion code is: ${request.completionCode}</p>
-                      <p>Please copy and paste this code into prolific to complete the study.</p>
+                      <p>You have finished the main part of the study.</p>
+                      <p>Please complete the following post-task questionnaire. After completing the questionnaire, you will receive a completion code to paste into Prolific.</p>
+                      <a href="https://berkeley.qualtrics.com/jfe/form/SV_39pHRQ7mlex9Dv0" target="_blank">Post-task questionnaire</a>
+                      <p>If you have any questions, please contact the researcher at <a href="mailto:help@haasresearch.org"></p>
                       <div style="display: flex; justify-content: space-between; margin-top: 20px">
+                      <button id="close-popup" style="padding: 10px 20px; background-color: #f0f0f0; border: none; border-radius: 5px; cursor: pointer">Close</button>
                       </div>
                     </div>
                   </div>

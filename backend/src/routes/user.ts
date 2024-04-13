@@ -122,6 +122,8 @@ router.post("/login", async (req, res) => {
 router.get("/status", async (req, res) => {
   try {
     const token = req.body.token;
+    console.log("token", token);
+
     const user = await User.findOne({ token });
     if (!user) {
       return res.status(404).send("User not found");
