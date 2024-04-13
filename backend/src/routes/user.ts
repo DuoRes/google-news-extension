@@ -119,10 +119,9 @@ router.post("/login", async (req, res) => {
 });
 
 // check if the tasks are done for the user
-router.get("/status", async (req, res) => {
+router.get("/status/:token", async (req, res) => {
   try {
-    const { token } = req.body;
-    console.log("token", token);
+    const token = req.params.token;
 
     if (!token) {
       return res.status(400).send("Token is required");
