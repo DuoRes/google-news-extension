@@ -116,7 +116,7 @@ function App() {
         <main>
           <h1>News Reader</h1>
           <p>
-            Thank you for participating in our research! Please enter your unique participant ID to
+            Thank you for participating in our research! Please enter your unique prolific ID to
             begin. Please verify that you have inputted the correct ID before submitting; we would
             not be able to compensate you if you have entered the wrong ID.
           </p>
