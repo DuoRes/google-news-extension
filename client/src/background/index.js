@@ -63,7 +63,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }),
       })
 
-      console.log(res)
+      console.log('Progress: ', progress)
 
       sendMessageToCurrentTab(
         {
