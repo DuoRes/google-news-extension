@@ -333,19 +333,19 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     document.body.prepend(
       new DOMParser().parseFromString(
         `
-                  <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);
-                  z-index: 999
-                  ">
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 300px; background-color: white; border-radius: 10px; padding: 20px; color: black; flex">
-                      <h1 style="margin-bottom: 10px">Thank you!</h1>
-                      <p>You have finished the main part of the study. Please complete the following post-task questionnaire. After completing the questionnaire, you will receive a completion code to paste into Prolific.</p>
-                      <a href="https://berkeley.qualtrics.com/jfe/form/SV_39pHRQ7mlex9Dv0" target="_blank">Post-task questionnaire</a>
-                      <p>If you have any questions, please contact the researcher at <a href="mailto:help@haasresearch.org"></p>
-                      <div style="display: flex; justify-content: space-between; margin-top: 20px">
-                      </div>
-                    </div>
-                  </div>
-                `,
+            <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999
+            ">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 300px; background-color: white; border-radius: 10px; padding: 20px; color: black; display: flex; flex-direction: column; justify-content: space-between;">
+              <h1 style="margin-bottom: 10px">Thank you!</h1>
+              <p>You have finished the main part of the study. Please complete the following post-task questionnaire. After completing the questionnaire, you will receive a completion code to paste into Prolific.</p>
+              <a href="https://berkeley.qualtrics.com/jfe/form/SV_39pHRQ7mlex9Dv0" target="_blank" style="text-align: center; background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px; text-decoration: none; text-align: center; margin-top: 20px">Post-task questionnaire</a>
+              <p>If you have any questions, please contact the researcher at <a href="mailto:help@haasresearch.org">help@haasresearch.org</a></p>
+              <div style="display: flex; justify-content: space-between; margin-top: 20px">
+              </div>
+            </div>
+            </div>
+          `,
         'text/html',
       ).body.firstChild,
     )
