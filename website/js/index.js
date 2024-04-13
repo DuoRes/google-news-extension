@@ -1,6 +1,6 @@
 function showVerification() {
   document.getElementById("verificationContainer").style.display = "block";
-  window.open("https://berkeley.qualtrics.com/jfe/form/SV_0V8H8L2K8h9d7eB");
+  window.open("https://berkeley.qualtrics.com/jfe/form/SV_0oCZvgUsNwzTaiq");
   document.getElementById("iagree").setAttribute("hidden", "true");
 }
 
@@ -8,7 +8,7 @@ function verifyCompletionCode(e) {
   var Indentifier = $("#Indentifier").val();
   if (Indentifier) {
     if (
-      Indentifier == "thank_you_for_completing_the_haas_research_pre_survey"
+      Indentifier == "QWMN2"
     ) {
       window.location.href = "./ProlificLoginPage.html";
     } else {
