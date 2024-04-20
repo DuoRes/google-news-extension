@@ -16,6 +16,7 @@ import {
   getRandomRightOpening,
   getSystemPrompt,
 } from "./chat";
+import { EXPERIMENT_BATCH } from "../config";
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -41,10 +42,10 @@ router.post("/login", async (req, res) => {
         {
           $match: {
             $or: [
-              { $and: [{ batch: "pilot-0" }, { isAssigned: false }] },
+              { $and: [{ batch: EXPERIMENT_BATCH }, { isAssigned: false }] },
               {
                 $and: [
-                  { batch: "pilot-0" },
+                  { batch: EXPERIMENT_BATCH },
                   { isAssigned: { $exists: false } },
                 ],
               },
@@ -70,7 +71,7 @@ router.post("/login", async (req, res) => {
         assignedPassword: randomGAccount.password,
         assignedRecoveryEmail: randomGAccount.recoveryEmail,
         stance: randomGAccount.type,
-        batch: randomGAccount.batch,
+        batch: EXPERIMENT_BATCH,
       });
 
       if (newUser.displayChatBox) {
