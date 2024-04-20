@@ -93,9 +93,13 @@ router.post("/recommendations", async (req, res) => {
       }
     });
 
-    const currentStance = await ratePressesPoliticalStanceIfNotExists(
+    let currentStance = await ratePressesPoliticalStanceIfNotExists(
       pressFreqencyMap
     );
+
+    if (isNaN(currentStance) || !currentStance) {
+      currentStance = 123456789;
+    }
 
     const recommendation = await Recommendation.create({
       user: user,

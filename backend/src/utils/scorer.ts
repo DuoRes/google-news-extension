@@ -116,29 +116,31 @@ export async function ratePressesPoliticalStanceIfNotExists(pressFreqencyMap: {
   let left = 0;
   let right = 0;
 
-  for (const pressName of Object.keys(pressFreqencyMap)) {
-    const existingPress = await Press.findOne({ name: pressName }).exec();
-    if (existingPress) {
-      if (existingPress.leaning === "left") {
-        left += pressFreqencyMap[pressName];
-      } else if (existingPress.leaning === "right") {
-        right += pressFreqencyMap[pressName];
+  await Promise.all(
+    Object.keys(pressFreqencyMap).map(async (pressName) => {
+      const existingPress = await Press.findOne({ name: pressName }).exec();
+      if (existingPress) {
+        if (existingPress.leaning === "left") {
+          left += pressFreqencyMap[pressName];
+        } else if (existingPress.leaning === "right") {
+          right += pressFreqencyMap[pressName];
+        }
+        return;
       }
-      continue;
-    }
-    const politicalStanceRating = await ratePressPoliticalStance(pressName);
-    await Press.create({
-      name: pressName,
-      politicalStance: politicalStanceRating,
-      leaning: politicalStanceRating > 0 ? "right" : "left",
-      ratingAuthor: MODEL_NAME,
-    });
-    if (politicalStanceRating > 0) {
-      right += pressFreqencyMap[pressName];
-    } else {
-      left += pressFreqencyMap[pressName];
-    }
-  }
+      const politicalStanceRating = await ratePressPoliticalStance(pressName);
+      await Press.create({
+        name: pressName,
+        politicalStance: politicalStanceRating,
+        leaning: politicalStanceRating > 0 ? "right" : "left",
+        ratingAuthor: MODEL_NAME,
+      });
+      if (politicalStanceRating > 0) {
+        right += pressFreqencyMap[pressName];
+      } else {
+        left += pressFreqencyMap[pressName];
+      }
+    })
+  );
 
   return ((right - left) / (right + left)) * 100;
 }
