@@ -38,6 +38,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       console.log('ID:', message.id)
       console.log('Class:', message.class)
       console.log('target:', message.target)
+      console.log('user_id:', message.user_id)
 
       const res = await fetch(BACKEND_URL + 'collect/link-clicked', {
         method: 'POST',
@@ -52,6 +53,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           user_id: message.user_id,
         }),
       })
+
+      const j = await res.json()
+
+      console.log(j)
 
       const progress = await fetch(BACKEND_URL + 'user/status/' + message.user_id, {
         method: 'GET',
@@ -85,8 +90,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       })
 
       const json = await response.json()
-
-      console.log(json.currentStance)
 
       sendMessageToCurrentTab(json, 'logPageContents')
       break
@@ -127,11 +130,27 @@ const getToken = async () => {
   return token
 }
 
-const sendMessageToCurrentTab = (obj, type) => {
+const sendMessageToCurrentTab = (obj, type, retryCount = 0) => {
   try {
     obj.type = type
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, obj)
+    chrome.tabs.query({}, function (tabs) {
+      if (tabs.length === 0 || !tabs[0]) {
+        if (retryCount < 3) {
+          // Retry up to 3 times
+          console.log('Tab is not ready, retrying...')
+          setTimeout(() => sendMessageToCurrentTab(obj, type, retryCount + 1), 2000) // Retry after 1 second
+        } else {
+          console.error('Failed to send message: Tab is not available after retries.')
+        }
+      } else {
+        chrome.tabs.sendMessage(tabs[0].id, obj, function (response) {
+          if (chrome.runtime.lastError) {
+            console.log('Error sending message:', chrome.runtime.lastError.message)
+          } else {
+            console.log('Message sent successfully', response)
+          }
+        })
+      }
     })
   } catch (error) {
     console.trace(error)
