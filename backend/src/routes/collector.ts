@@ -50,29 +50,31 @@ router.post("/recommendations", async (req, res) => {
 
     const contents = JSON.parse(req.body.contents);
     const contentDocuments = [];
-    contents.forEach(async (content) => {
-      const existingContent = await Content.findOne({
-        url: content.link,
-      }).exec();
-      if (existingContent) {
-        contentDocuments.push(existingContent);
-        return;
-      }
-      const newContent = await Content.create({
-        ranking: content.index,
-        title: content.title,
-        pressName: content.press,
-        url: content.link,
-        publishTimestamp: content.timestamp,
-        displayImageURI: content.image,
-        user: user,
-        reporter: content.reporter,
-        type: content.type ? content.type : "default",
-        section: content.section ? content.section : "default",
-        timestamp: moment().toDate(),
-      });
-      contentDocuments.push(newContent);
-    });
+    await Promise.all(
+      contents.map(async (content) => {
+        const existingContent = await Content.findOne({
+          url: content.link,
+        }).exec();
+        if (existingContent) {
+          contentDocuments.push(existingContent);
+          return;
+        }
+        const newContent = await Content.create({
+          ranking: content.index,
+          title: content.title,
+          pressName: content.press,
+          url: content.link,
+          publishTimestamp: content.timestamp,
+          displayImageURI: content.image,
+          user: user,
+          reporter: content.reporter,
+          type: content.type ? content.type : "default",
+          section: content.section ? content.section : "default",
+          timestamp: moment().toDate(),
+        });
+        contentDocuments.push(newContent);
+      })
+    );
 
     const existingRecommendation = await Recommendation.findOne({
       user: user,
