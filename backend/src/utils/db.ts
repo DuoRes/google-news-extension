@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import debug from "debug";
 import Config from "../config";
 import GAccount from "../models/GAccount";
-import accounts from "../../data/accounts-2.json"; // currently using pilot-2 accounts
+import accounts from "../../data/accounts-3.json"; // change this for loading
 import { EXPERIMENT_BATCH } from "../config";
 const dbDebugger = debug("app:db");
 
