@@ -47,8 +47,8 @@ export async function ratePoliticalStance(
 
     const parsedCompletion = JSON.parse(completion);
 
-    console.log(parsedCompletion);
-    console.log(parsedCompletion.politicalStanceRating);
+    // console.log(parsedCompletion);
+    // console.log(parsedCompletion.politicalStanceRating);
 
     return parsedCompletion.politicalStanceRating;
   } catch (err) {

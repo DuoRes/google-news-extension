@@ -190,7 +190,6 @@ router.get("/", (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     const user = await User.findById(req.body.user_id).exec();
     if (!user) {
       return res.status(400).send("User not found");

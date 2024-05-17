@@ -73,7 +73,7 @@ export const importAccounts = async () => {
         }
         console.log("Imported blank account:", newAccount.email);
       } catch (err) {
-        console.log(err);
+        console.trace(err);
       }
     })
   );
