@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 import debug from "debug";
 import Config from "../config";
 import GAccount from "../models/GAccount";
-import accounts from "../../data/accounts.json"; // currently using pilot-0 accounts
-import goodAccounts from "../../data/good_accounts.json"; // currently using pilot-1 accounts
+import accounts from "../../data/accounts-3.json"; // change this for loading
 import { EXPERIMENT_BATCH } from "../config";
 const dbDebugger = debug("app:db");
 
@@ -25,14 +24,14 @@ export const connectDB = async () => {
 export const importAccounts = async () => {
   console.log("Importing accounts...");
   await Promise.all(
-    goodAccounts.map(async (account: any) => {
+    accounts.map(async (account: any) => {
       try {
         const existing = await GAccount.findOne({ email: account.email });
         if (existing) {
           console.log("Account already exists:", account.email);
-          if (existing.isAssigned === true) {
+          if (existing.isAssigned !== true) {
             console.log("Updating batch for account:", account.email);
-            existing.batch = "pilot-0";
+            existing.batch = EXPERIMENT_BATCH;
             await existing.save();
           }
           return;
@@ -74,7 +73,7 @@ export const importAccounts = async () => {
         }
         console.log("Imported blank account:", newAccount.email);
       } catch (err) {
-        console.log(err);
+        console.trace(err);
       }
     })
   );

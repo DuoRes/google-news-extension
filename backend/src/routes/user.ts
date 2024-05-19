@@ -55,8 +55,6 @@ router.post("/login", async (req, res) => {
         { $sample: { size: 1 } },
       ]);
 
-      console.log("randomGAccount", randomGAccounts);
-
       const randomGAccount = randomGAccounts[0];
 
       if (!randomGAccount) {
@@ -108,7 +106,6 @@ router.post("/login", async (req, res) => {
 
       return res.send(newUser);
     }
-    console.log("user", user);
 
     await user.populate("chatRecord");
 

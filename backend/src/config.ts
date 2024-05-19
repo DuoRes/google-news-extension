@@ -17,6 +17,6 @@ const config: Config = {
   openaiApiKey: process.env.OPENAI_API_KEY,
 };
 
-export const EXPERIMENT_BATCH = "pilot-1";
+export const EXPERIMENT_BATCH = "pilot-3";
 
 export default config;

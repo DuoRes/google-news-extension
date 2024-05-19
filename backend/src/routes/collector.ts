@@ -141,7 +141,6 @@ router.post("/link-clicked", async (req, res) => {
       user: user,
       url: link,
     }).exec();
-    console.log(content);
 
     if (!content) {
       return res.status(400).send("Content not found");
