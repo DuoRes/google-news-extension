@@ -4,9 +4,9 @@ import Recommendation from "../models/Recommendation";
 import { ObjectId } from "mongodb";
 import { count } from "console";
 
-const MINIMUM_CLICKS_REQUIRED = 16;
+const MINIMUM_CLICKS_REQUIRED = 20;
 const MINIMUM_PAUSE_BETWEEN_CLICKS = 1000 * 5; // 5 seconds
-const MINIMUM_TOTAL_TIME = 800 * 60 * 10; // 8 minutes
+const MINIMUM_TOTAL_TIME = 700 * 60 * 10; // 7 minutes
 
 // count the number of clicks on the content for the user, each click should be spaced out by at least 5 seconds
 export const countValidClicks = async (user_id: ObjectId | string) => {
