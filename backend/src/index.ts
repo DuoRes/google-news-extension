@@ -6,6 +6,11 @@ import Config from "./config";
 //   await importAccounts();
 // })();
 
+import { exportAllToCSV } from "./utils/db";
+(async () => {
+  await exportAllToCSV();
+})();
+
 const port = Config.port || 6000;
 const server = app.listen(port, () => {
   console.log(`Listening on port ${port}...`);

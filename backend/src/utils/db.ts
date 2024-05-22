@@ -1,9 +1,20 @@
 import mongoose from "mongoose";
 import debug from "debug";
 import Config from "../config";
-import GAccount from "../models/GAccount";
-import accounts from "../../data/accounts-3.json"; // change this for loading
+import {
+  GAccount,
+  Chat,
+  Content,
+  Press,
+  Recommendation,
+  User,
+} from "../models";
+import accounts from "../../data/accounts/accounts-3.json"; // change this for loading
 import { EXPERIMENT_BATCH } from "../config";
+import fs from "fs";
+
+const COLLECTIONS = [GAccount, Chat, Content, Press, Recommendation, User];
+
 const dbDebugger = debug("app:db");
 
 // Switching to test database
@@ -78,6 +89,46 @@ export const importAccounts = async () => {
     })
   );
   console.log("Imported accounts");
+};
+
+// export all collections to csv
+export const exportAllToCSV = async () => {
+  console.log("Exporting all collections to CSV...");
+  if (!mongoose.connection.readyState) {
+    throw new Error("MongoDB connection is not established");
+  }
+
+  const collections = await mongoose.connection.db.listCollections().toArray();
+
+  for (const collection of collections) {
+    const name = collection.name;
+    const model = COLLECTIONS[name];
+
+    if (!model) {
+      console.warn(`Model for collection ${name} not found`);
+      continue;
+    }
+
+    const data = await mongoose.connection.db.collection(name).find().toArray();
+
+    if (data.length === 0) {
+      console.warn(`No data found for collection ${name}`);
+      continue;
+    }
+
+    const fields = Object.keys(model.schema.paths).filter(
+      (field) => field !== "__v"
+    );
+    const csv = data.map((row) =>
+      fields.map((field) => row[field] || "").join(",")
+    );
+    csv.unshift(fields.join(","));
+    const csvStr = csv.join("\n");
+
+    fs.writeFileSync(`../../data/dataset/pilot-3.csv`, csvStr);
+    console.log(`Exported collection ${name} to CSV`);
+  }
+  console.log("Exported all collections to CSV");
 };
 
 process.on("SIGTERM", function () {
