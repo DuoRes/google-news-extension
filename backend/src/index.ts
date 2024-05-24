@@ -1,15 +1,17 @@
 import app from "./server";
 import Config from "./config";
 
+/********** Import New Accounts for Batch ************/
 // import { importAccounts } from "./utils/db";
 // (async () => {
 //   await importAccounts();
 // })();
 
-import { exportAllToCSV } from "./utils/db";
-(async () => {
-  await exportAllToCSV();
-})();
+/************** Export All Data to CSV ***************/
+// import { exportAllToCSV } from "./utils/db";
+// (async () => {
+//   await exportAllToCSV();
+// })();
 
 const port = Config.port || 6000;
 const server = app.listen(port, () => {

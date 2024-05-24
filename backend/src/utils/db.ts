@@ -13,7 +13,14 @@ import accounts from "../../data/accounts/accounts-3.json"; // change this for l
 import { EXPERIMENT_BATCH } from "../config";
 import fs from "fs";
 
-const COLLECTIONS = [GAccount, Chat, Content, Press, Recommendation, User];
+const COLLECTIONS = {
+  gaccounts: GAccount,
+  chats: Chat,
+  contents: Content,
+  presses: Press,
+  recommendations: Recommendation,
+  users: User,
+};
 
 const dbDebugger = debug("app:db");
 
@@ -98,7 +105,11 @@ export const exportAllToCSV = async () => {
     throw new Error("MongoDB connection is not established");
   }
 
-  const collections = await mongoose.connection.db.listCollections().toArray();
+  const collections = await mongoose.connection
+    .getClient()
+    .db()
+    .listCollections()
+    .toArray();
 
   for (const collection of collections) {
     const name = collection.name;
@@ -106,6 +117,11 @@ export const exportAllToCSV = async () => {
 
     if (!model) {
       console.warn(`Model for collection ${name} not found`);
+      continue;
+    }
+
+    if (fs.existsSync(`data/dataset/${EXPERIMENT_BATCH}/${name}.csv`)) {
+      console.warn(`CSV file already exists for collection ${name}`);
       continue;
     }
 
@@ -125,7 +141,11 @@ export const exportAllToCSV = async () => {
     csv.unshift(fields.join(","));
     const csvStr = csv.join("\n");
 
-    fs.writeFileSync(`../../data/dataset/pilot-3.csv`, csvStr);
+    if (!fs.existsSync(`data/dataset/${EXPERIMENT_BATCH}`)) {
+      fs.mkdirSync(`data/dataset/${EXPERIMENT_BATCH}`, { recursive: true });
+    }
+
+    fs.writeFileSync(`data/dataset/${EXPERIMENT_BATCH}/${name}.csv`, csvStr);
     console.log(`Exported collection ${name} to CSV`);
   }
   console.log("Exported all collections to CSV");
