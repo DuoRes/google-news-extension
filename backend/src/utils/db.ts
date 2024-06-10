@@ -135,9 +135,19 @@ export const exportAllToCSV = async () => {
     const fields = Object.keys(model.schema.paths).filter(
       (field) => field !== "__v"
     );
+
     const csv = data.map((row) =>
-      fields.map((field) => row[field] || "").join(",")
+      fields
+        .map((field) => {
+          const value = row[field];
+          if (typeof value === "object" && value !== null) {
+            return JSON.stringify(value).replace(/"/g, '""'); // Escape double quotes
+          }
+          return value !== undefined ? String(value).replace(/"/g, '""') : "";
+        })
+        .join(",")
     );
+
     csv.unshift(fields.join(","));
     const csvStr = csv.join("\n");
 
