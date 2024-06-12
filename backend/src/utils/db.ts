@@ -140,10 +140,14 @@ export const exportAllToCSV = async () => {
       fields
         .map((field) => {
           const value = row[field];
-          if (typeof value === "object" && value !== null) {
-            return JSON.stringify(value).replace(/"/g, '""'); // Escape double quotes
+          if (Array.isArray(value)) {
+            return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+          } else if (typeof value === "object" && value !== null) {
+            return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+          } else if (typeof value === "string") {
+            return `"${value.replace(/"/g, '""')}"`;
           }
-          return value !== undefined ? String(value).replace(/"/g, '""') : "";
+          return value !== undefined ? String(value) : "";
         })
         .join(",")
     );
