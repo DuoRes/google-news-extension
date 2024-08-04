@@ -33,6 +33,10 @@ const ContentSchema = new mongoose.Schema({
   type: {
     type: String,
   },
+  recommendation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Recommendation",
+  },
 
   // Unimplemented fields
   percentageRead: {

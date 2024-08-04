@@ -17,6 +17,10 @@ const RecommendationSchema = new mongoose.Schema({
   politicalStanceRating: {
     type: Number,
   },
+  selectedContent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Content",
+  },
 });
 
 const Recommendation = mongoose.model("Recommendation", RecommendationSchema);

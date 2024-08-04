@@ -48,6 +48,14 @@ router.post("/recommendations", async (req, res) => {
       return res.status(400).send("User not found");
     }
 
+    // Create an empty recommendation first
+    const initialRecommendation = await Recommendation.create({
+      user: user,
+      contents: [],
+      timestamp: moment().toDate(),
+      politicalStanceRating: null,
+    });
+
     const contents = JSON.parse(req.body.contents);
     const contentDocuments = [];
     await Promise.all(
@@ -63,6 +71,7 @@ router.post("/recommendations", async (req, res) => {
           ranking: content.index,
           title: content.title,
           pressName: content.press,
+          recommendation: initialRecommendation._id, // Link content to the initial recommendation
           url: content.link,
           publishTimestamp: content.timestamp,
           displayImageURI: content.image,
@@ -86,29 +95,27 @@ router.post("/recommendations", async (req, res) => {
       return res.status(226).send("Recommendation hasn't changed");
     }
 
-    const pressFreqencyMap = {};
+    const pressFrequencyMap = {};
     contentDocuments.forEach((content) => {
-      if (pressFreqencyMap[content.pressName]) {
-        pressFreqencyMap[content.pressName]++;
+      if (pressFrequencyMap[content.pressName]) {
+        pressFrequencyMap[content.pressName]++;
       } else {
-        pressFreqencyMap[content.pressName] = 1;
+        pressFrequencyMap[content.pressName] = 1;
       }
     });
 
     let currentStance = await ratePressesPoliticalStanceIfNotExists(
-      pressFreqencyMap
+      pressFrequencyMap
     );
 
     if (isNaN(currentStance) || !currentStance) {
       currentStance = 123456789;
     }
 
-    const recommendation = await Recommendation.create({
-      user: user,
-      contents: contentDocuments,
-      timestamp: moment().toDate(),
-      politicalStanceRating: currentStance,
-    });
+    // Update the initial recommendation with the contents and political stance rating
+    initialRecommendation.contents = contentDocuments;
+    initialRecommendation.politicalStanceRating = currentStance;
+    await initialRecommendation.save();
 
     await User.updateOne(
       {
@@ -116,7 +123,7 @@ router.post("/recommendations", async (req, res) => {
       },
       {
         $push: {
-          recommendations: recommendation,
+          recommendations: initialRecommendation,
         },
       }
     );
