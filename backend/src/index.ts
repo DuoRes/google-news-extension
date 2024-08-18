@@ -7,6 +7,12 @@ import Config from "./config";
 //   await importAccounts();
 // })();
 
+/************* Reuse Unassigned Accounts *************/
+// import { reuseUnusedAccountsFromPreviousBatch } from "./utils/db";
+// (async () => {
+//   await reuseUnusedAccountsFromPreviousBatch();
+// })();
+
 /************** Export All Data to CSV ***************/
 // import { exportAllToCSV } from "./utils/db";
 // (async () => {

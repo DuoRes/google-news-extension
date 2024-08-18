@@ -98,6 +98,21 @@ export const importAccounts = async () => {
   console.log("Imported accounts");
 };
 
+export const reuseUnusedAccountsFromPreviousBatch = async () => {
+  console.log("Reusing unused accounts from previous batch...");
+  const unusedAccounts = await GAccount.find({
+    batch: { $eq: "pilot-" + (parseInt(EXPERIMENT_BATCH.split("-")[1]) - 1) },
+    isAssigned: false,
+  });
+
+  for (const account of unusedAccounts) {
+    account.batch = EXPERIMENT_BATCH;
+    await account.save();
+    console.log("Reused account:", account.email);
+  }
+  console.log("Reused unused accounts from previous batch");
+};
+
 // export all collections to csv
 export const exportAllToCSV = async () => {
   console.log("Exporting all collections to CSV...");
