@@ -9,9 +9,9 @@ import {
   Recommendation,
   User,
 } from "../models";
-import accounts from "../../data/accounts/accounts-3.json"; // change this for loading
 import { EXPERIMENT_BATCH } from "../config";
 import fs from "fs";
+import { promises as fsp } from "fs";
 
 const COLLECTIONS = {
   gaccounts: GAccount,
@@ -39,7 +39,85 @@ export const connectDB = async () => {
     .catch((err: any) => console.log(err));
 };
 
-export const importAccounts = async () => {
+export const importAccountsFromTXT = async (filePath: string) => {
+  try {
+    console.log("Importing accounts...");
+    // Read the file content from the provided file path
+    const fileContent = await fsp.readFile(filePath, "utf-8");
+
+    const accounts = fileContent
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const parts = line.split("----");
+        return {
+          email: parts[0].trim(),
+          password: parts[1].trim(),
+          recovery: parts[2].trim(),
+          recoveryCode: parts[3]?.trim(), // This assumes the recovery code is optional
+          countryCode: parts[4]?.trim() || "", // This assumes the country code is optional
+        };
+      });
+
+    await Promise.all(
+      accounts.map(async (account: any) => {
+        try {
+          const existing = await GAccount.findOne({ email: account.email });
+          if (existing) {
+            console.log("Account already exists:", account.email);
+            if (existing.isAssigned !== true) {
+              console.log("Updating batch for account:", account.email);
+              existing.batch = EXPERIMENT_BATCH;
+              await existing.save();
+            }
+            return;
+          }
+          const randNum = Math.random();
+          let newAccount;
+          if (randNum < 0.1) {
+            newAccount = await GAccount.create({
+              email: account.email,
+              password: account.password,
+              recoveryEmail: account.recovery,
+              type: "blank",
+              batch: EXPERIMENT_BATCH,
+              displayChatBox: true,
+              displayWarningMessage: false,
+            });
+          } else if (randNum < 0.2) {
+            newAccount = await GAccount.create({
+              email: account.email,
+              password: account.password,
+              recoveryEmail: account.recovery,
+              type: "blank",
+              batch: EXPERIMENT_BATCH,
+              displayChatBox: false,
+              displayWarningMessage: true,
+            });
+          } else {
+            newAccount = await GAccount.create({
+              email: account.email,
+              password: account.password,
+              recoveryEmail: account.recovery,
+              type: "blank",
+              batch: EXPERIMENT_BATCH,
+              displayChatBox: false,
+              displayWarningMessage: false,
+            });
+          }
+          console.log("Imported blank account:", newAccount.email);
+        } catch (err) {
+          console.trace(err);
+        }
+      })
+    );
+    console.log("Imported accounts");
+  } catch (err) {
+    console.error("Error reading the file:", err);
+  }
+};
+
+export const importAccountsFromJSON = async (accounts: any) => {
   console.log("Importing accounts...");
   await Promise.all(
     accounts.map(async (account: any) => {

@@ -2,9 +2,17 @@ import app from "./server";
 import Config from "./config";
 
 /********** Import New Accounts for Batch ************/
-// import { importAccounts } from "./utils/db";
+// Importing accounts from a JSON file
+// import accounts from "../../data/accounts/accounts-3.json"; // change this for loading
+// import { importAccountsFromJSON } from "./utils/db";
 // (async () => {
-//   await importAccounts();
+//   await importAccounts(accounts);
+// })();
+
+// Importing accounts from a TXT file
+// import { importAccountsFromTXT } from "./utils/db";
+// (async () => {
+//   await importAccountsFromTXT("data/accounts/accounts-4.txt");
 // })();
 
 /************* Reuse Unassigned Accounts *************/
