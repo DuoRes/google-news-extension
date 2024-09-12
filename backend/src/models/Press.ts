@@ -17,6 +17,10 @@ const PressSchema = new mongoose.Schema({
     type: String, // author of rating; e.g. GPT-4 or Human
     required: true,
   },
+  batch: {
+    type: String, // "pilot-0"
+    required: true,
+  },
 });
 
 const Press = mongoose.model("Press", PressSchema);

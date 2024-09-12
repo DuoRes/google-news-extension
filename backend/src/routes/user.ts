@@ -91,6 +91,7 @@ router.post("/login", async (req, res) => {
               content: openingMessage,
             },
           ],
+          batch: EXPERIMENT_BATCH,
         });
         newUser.chatRecord = chat._id;
         newUser.chatBotStance = stance;

@@ -21,6 +21,9 @@ const RecommendationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Content",
   },
+  batch: {
+    type: String,
+  },
 });
 
 const Recommendation = mongoose.model("Recommendation", RecommendationSchema);

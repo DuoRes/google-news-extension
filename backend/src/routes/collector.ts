@@ -5,6 +5,7 @@ import Recommendation from "../models/Recommendation";
 import User from "../models/User";
 import * as cheerio from "cheerio";
 import { ratePressesPoliticalStanceIfNotExists } from "../utils/scorer";
+import { EXPERIMENT_BATCH } from "../config";
 
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.post("/contents", async (req, res) => {
       percentageRead: req.body.percentageRead,
       timeSpent: req.body.timeSpent,
       timestamp: moment().format("YYYY-MM-DD:HH"),
+      batch: EXPERIMENT_BATCH,
     });
     return res.status(201).json(content);
   } catch (err) {
@@ -54,19 +56,13 @@ router.post("/recommendations", async (req, res) => {
       contents: [],
       timestamp: moment().toDate(),
       politicalStanceRating: null,
+      batch: EXPERIMENT_BATCH,
     });
 
     const contents = JSON.parse(req.body.contents);
     const contentDocuments = [];
     await Promise.all(
       contents.map(async (content) => {
-        const existingContent = await Content.findOne({
-          url: content.link,
-        }).exec();
-        if (existingContent) {
-          contentDocuments.push(existingContent);
-          return;
-        }
         const newContent = await Content.create({
           ranking: content.index,
           title: content.title,
@@ -80,20 +76,11 @@ router.post("/recommendations", async (req, res) => {
           type: content.type ? content.type : "default",
           section: content.section ? content.section : "default",
           timestamp: moment().toDate(),
+          batch: EXPERIMENT_BATCH,
         });
         contentDocuments.push(newContent);
       })
     );
-
-    const existingRecommendation = await Recommendation.findOne({
-      user: user,
-      contents: {
-        $all: contentDocuments,
-      },
-    }).exec();
-    if (existingRecommendation) {
-      return res.status(226).send("Recommendation hasn't changed");
-    }
 
     const pressFrequencyMap = {};
     contentDocuments.forEach((content) => {
@@ -147,7 +134,9 @@ router.post("/link-clicked", async (req, res) => {
     const content = await Content.findOne({
       user: user,
       url: link,
-    }).exec();
+    })
+      .sort({ timestamp: -1 })
+      .exec();
 
     if (!content) {
       return res.status(400).send("Content not found");

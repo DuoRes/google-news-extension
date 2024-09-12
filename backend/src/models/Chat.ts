@@ -25,6 +25,9 @@ const ChatSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  batch: {
+    type: String,
+  },
 });
 
 const Chat = mongoose.model("Chat", ChatSchema);

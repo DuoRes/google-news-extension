@@ -49,6 +49,9 @@ const ContentSchema = new mongoose.Schema({
     type: Date,
     default: moment().toDate(),
   },
+  batch: {
+    type: String,
+  },
 });
 
 const Content = mongoose.model("Content", ContentSchema);
