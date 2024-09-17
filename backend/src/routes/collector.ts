@@ -20,29 +20,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// create a new content
-router.post("/contents", async (req, res) => {
-  try {
-    const content = await Content.create({
-      title: req.body.title,
-      pressName: req.body.pressName,
-      content: req.body.content,
-      url: req.body.url,
-      publishTimestamp: req.body.publishTimestamp,
-      user: req.body.user,
-      contentRanking: req.body.contentRanking,
-      percentageRead: req.body.percentageRead,
-      timeSpent: req.body.timeSpent,
-      timestamp: moment().format("YYYY-MM-DD:HH"),
-      batch: EXPERIMENT_BATCH,
-    });
-    return res.status(201).json(content);
-  } catch (err) {
-    console.trace(err);
-    return res.status(400).send("Error collecting activity: " + err);
-  }
-});
-
 router.post("/recommendations", async (req, res) => {
   try {
     const user = await User.findById(req.body.user_id).exec();
@@ -50,9 +27,8 @@ router.post("/recommendations", async (req, res) => {
       return res.status(400).send("User not found");
     }
 
-    // Create an empty recommendation first
     const initialRecommendation = await Recommendation.create({
-      user: user,
+      user: user._id,
       contents: [],
       timestamp: moment().toDate(),
       politicalStanceRating: null,
@@ -60,35 +36,31 @@ router.post("/recommendations", async (req, res) => {
     });
 
     const contents = JSON.parse(req.body.contents);
-    const contentDocuments = [];
-    await Promise.all(
+
+    const contentDocuments = await Promise.all(
       contents.map(async (content) => {
-        const newContent = await Content.create({
+        return await Content.create({
           ranking: content.index,
           title: content.title,
           pressName: content.press,
-          recommendation: initialRecommendation._id, // Link content to the initial recommendation
+          recommendation: initialRecommendation._id,
           url: content.link,
           publishTimestamp: content.timestamp,
           displayImageURI: content.image,
-          user: user,
+          user: user._id,
           reporter: content.reporter,
-          type: content.type ? content.type : "default",
-          section: content.section ? content.section : "default",
+          type: content.type || "default",
+          section: content.section || "default",
           timestamp: moment().toDate(),
           batch: EXPERIMENT_BATCH,
         });
-        contentDocuments.push(newContent);
       })
     );
 
     const pressFrequencyMap = {};
     contentDocuments.forEach((content) => {
-      if (pressFrequencyMap[content.pressName]) {
-        pressFrequencyMap[content.pressName]++;
-      } else {
-        pressFrequencyMap[content.pressName] = 1;
-      }
+      pressFrequencyMap[content.pressName] =
+        (pressFrequencyMap[content.pressName] || 0) + 1;
     });
 
     let currentStance = await ratePressesPoliticalStanceIfNotExists(
@@ -99,23 +71,16 @@ router.post("/recommendations", async (req, res) => {
       currentStance = 123456789;
     }
 
-    // Update the initial recommendation with the contents and political stance rating
-    initialRecommendation.contents = contentDocuments;
+    initialRecommendation.contents = contentDocuments.map(
+      (content) => content._id
+    );
     initialRecommendation.politicalStanceRating = currentStance;
     await initialRecommendation.save();
 
-    await User.updateOne(
-      {
-        token: req.body.token,
-      },
-      {
-        $push: {
-          recommendations: initialRecommendation,
-        },
-      }
-    );
+    user.recommendations.push(initialRecommendation._id);
+    await user.save();
 
-    return res.status(201).json({ currentStance: currentStance, test: "test" });
+    return res.status(201).json({ currentStance: currentStance });
   } catch (err) {
     console.trace(err);
     return res.status(400).send("Error collecting activity: " + err);
@@ -124,33 +89,32 @@ router.post("/recommendations", async (req, res) => {
 
 router.post("/link-clicked", async (req, res) => {
   try {
-    const user = await User.findById(req.body.user_id).exec();
+    const userId = req.body.user_id;
+    const link = req.body.link;
+
+    const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(400).send("User not found");
     }
 
-    const link = req.body.link;
-    // find the content with the user and link
-    const content = await Content.findOne({
-      user: user,
-      url: link,
-    })
-      .sort({ timestamp: -1 })
-      .exec();
+    const content = await Content.findOneAndUpdate(
+      {
+        user: user._id,
+        url: link,
+      },
+      {
+        $set: { clicked: true },
+      },
+      {
+        new: true,
+      }
+    ).exec();
 
     if (!content) {
       return res.status(400).send("Content not found");
     }
-    const result = await Content.updateOne(
-      {
-        user: user,
-        url: link,
-      },
-      {
-        clicked: true,
-      }
-    );
-    return res.status(200).json(result);
+
+    return res.status(200).json({ success: true });
   } catch (err) {
     console.trace(err);
     return res.status(400).send("Error collecting clicked link: " + err);
