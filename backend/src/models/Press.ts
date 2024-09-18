@@ -19,7 +19,6 @@ const PressSchema = new mongoose.Schema({
   },
   batch: {
     type: String, // "pilot-0"
-    required: true,
   },
 });
 
