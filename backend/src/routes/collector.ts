@@ -107,6 +107,7 @@ router.post("/link-clicked", async (req, res) => {
       },
       {
         new: true,
+        sort: { timestamp: -1 },
       }
     ).exec();
 
@@ -122,16 +123,3 @@ router.post("/link-clicked", async (req, res) => {
 });
 
 export default router;
-
-/*************************************************************************
- *                          Helper Functions                             *
- *************************************************************************/
-const getMainContent = (html: string) => {
-  const $ = cheerio.load(html);
-  const mainContent = $("article").text();
-  return mainContent;
-};
-
-const getSummary = (html: string) => {
-  // TODO: Implement using NLP
-};
