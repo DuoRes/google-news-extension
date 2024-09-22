@@ -3,7 +3,7 @@ import User from "../models/User";
 import Chat from "../models/Chat";
 import GAccount from "../models/GAccount";
 
-import { countValidClicks, isCompleted } from "../utils/tasks";
+import { getClickStats } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
 import { extractGoogleEmail } from "../utils/ocr";
@@ -117,31 +117,33 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// check if the tasks are done for the user
 router.get("/status/:id", async (req, res) => {
   try {
-    if (!req.params.id) {
+    const userId = req.params.id;
+
+    if (!userId) {
       return res.status(400).send("User ID is required");
     }
 
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send("User not found");
     }
 
-    const content_clicked = await countValidClicks(user._id);
+    const clickStats = await getClickStats(user._id);
 
-    if (!(await isCompleted(user._id))) {
-      return res.send({ ok: false, content_clicked });
+    if (!clickStats.isCompleted) {
+      return res.send({ ok: false, content_clicked: clickStats.count });
     }
 
     res.send({
       ok: true,
       completion_code: PROLIFIC_COMPLETION_CODE,
-      content_clicked,
+      content_clicked: clickStats.count,
     });
   } catch (error) {
-    console.trace(error);
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
 });
 
