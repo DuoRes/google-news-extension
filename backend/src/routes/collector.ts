@@ -22,13 +22,15 @@ router.post("/", async (req, res) => {
 
 router.post("/recommendations", async (req, res) => {
   try {
-    const user = await User.findById(req.body.user_id).exec();
+    const userId = req.body.user_id;
+    const user = await User.findById(userId).exec();
     if (!user) {
       return res.status(400).send("User not found");
     }
 
+    // Create an empty recommendation first
     const initialRecommendation = await Recommendation.create({
-      user: user._id,
+      user: userId,
       contents: [],
       timestamp: moment().toDate(),
       politicalStanceRating: null,
@@ -37,9 +39,10 @@ router.post("/recommendations", async (req, res) => {
 
     const contents = JSON.parse(req.body.contents);
 
+    // Create content documents and collect their IDs
     const contentDocuments = await Promise.all(
       contents.map(async (content) => {
-        return await Content.create({
+        const newContent = await Content.create({
           ranking: content.index,
           title: content.title,
           pressName: content.press,
@@ -47,13 +50,14 @@ router.post("/recommendations", async (req, res) => {
           url: content.link,
           publishTimestamp: content.timestamp,
           displayImageURI: content.image,
-          user: user._id,
+          user: userId,
           reporter: content.reporter,
           type: content.type || "default",
           section: content.section || "default",
           timestamp: moment().toDate(),
           batch: EXPERIMENT_BATCH,
         });
+        return newContent;
       })
     );
 
@@ -71,14 +75,20 @@ router.post("/recommendations", async (req, res) => {
       currentStance = 123456789;
     }
 
-    initialRecommendation.contents = contentDocuments.map(
-      (content) => content._id
-    );
-    initialRecommendation.politicalStanceRating = currentStance;
-    await initialRecommendation.save();
+    const contentIds = contentDocuments.map((content) => content._id);
 
-    user.recommendations.push(initialRecommendation._id);
-    await user.save();
+    await Recommendation.updateOne(
+      { _id: initialRecommendation._id },
+      {
+        $set: { politicalStanceRating: currentStance },
+        $push: { contents: { $each: contentIds } },
+      }
+    );
+
+    await User.updateOne(
+      { _id: userId },
+      { $push: { recommendations: initialRecommendation._id } }
+    );
 
     return res.status(201).json({ currentStance: currentStance });
   } catch (err) {
