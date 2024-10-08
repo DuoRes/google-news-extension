@@ -1,7 +1,7 @@
 import app from "./server";
 import Config from "./config";
 
-/********** Import New Accounts for Batch ************/
+/********** Import New Accounts from a JSON file ************/
 // Importing accounts from a JSON file
 // import accounts from "../../data/accounts/accounts-3.json"; // change this for loading
 // import { importAccountsFromJSON } from "./utils/db";
@@ -9,10 +9,10 @@ import Config from "./config";
 //   await importAccounts(accounts);
 // })();
 
-// Importing accounts from a TXT file
+/********** Import New Accounts from a TXT file **********/
 // import { importAccountsFromTXT } from "./utils/db";
 // (async () => {
-//   await importAccountsFromTXT("data/accounts/accounts-4.txt");
+//   await importAccountsFromTXT("data/accounts/accounts-5.txt");
 // })();
 
 /************* Reuse Unassigned Accounts *************/
