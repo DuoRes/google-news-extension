@@ -44,6 +44,10 @@ const UserSchema = new mongoose.Schema({
     type: String, // "left" or "right"
     default: "neutral",
   },
+  isControl: {
+    type: Boolean,
+    default: false,
+  },
   chatBotName: {
     type: String,
   },

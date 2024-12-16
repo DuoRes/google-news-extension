@@ -15,10 +15,16 @@ import Config from "./config";
 //   await importAccountsFromTXT("data/accounts/accounts-5.txt");
 // })();
 
-/************* Reuse Unassigned Accounts *************/
+/************* Reuse Unused Accounts *************/
 // import { reuseUnusedAccountsFromPreviousBatch } from "./utils/db";
 // (async () => {
 //   await reuseUnusedAccountsFromPreviousBatch();
+// })();
+
+/******* Reuse and reassign unused account ***********/
+// import { reuseAndReassignAccountsWithControl } from "./utils/db";
+// (async () => {
+//   await reuseAndReassignAccountsWithControl();
 // })();
 
 /************** Export All Data to CSV ***************/

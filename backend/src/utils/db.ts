@@ -81,8 +81,8 @@ export const importAccountsFromTXT = async (filePath: string) => {
               recoveryEmail: account.recovery,
               type: "blank",
               batch: EXPERIMENT_BATCH,
-              displayChatBox: true,
-              displayWarningMessage: false,
+              chatBoxEnabled: true,
+              warningMessageEnabled: false,
             });
           } else if (randNum < 0.2) {
             newAccount = await GAccount.create({
@@ -91,8 +91,8 @@ export const importAccountsFromTXT = async (filePath: string) => {
               recoveryEmail: account.recovery,
               type: "blank",
               batch: EXPERIMENT_BATCH,
-              displayChatBox: false,
-              displayWarningMessage: true,
+              chatBoxEnabled: false,
+              warningMessageEnabled: true,
             });
           } else {
             newAccount = await GAccount.create({
@@ -101,8 +101,8 @@ export const importAccountsFromTXT = async (filePath: string) => {
               recoveryEmail: account.recovery,
               type: "blank",
               batch: EXPERIMENT_BATCH,
-              displayChatBox: false,
-              displayWarningMessage: false,
+              chatBoxEnabled: false,
+              warningMessageEnabled: false,
             });
           }
           console.log("Imported blank account:", newAccount.email);
@@ -143,8 +143,8 @@ export const importAccountsFromJSON = async (accounts: any) => {
             recoveryEmail: account.recovery,
             type: "blank",
             batch: EXPERIMENT_BATCH,
-            displayChatBox: true,
-            displayWarningMessage: false,
+            chatBoxEnabled: true,
+            warningMessageEnabled: false,
           });
         } else if (randNum < 0.2) {
           newAccount = await GAccount.create({
@@ -153,8 +153,8 @@ export const importAccountsFromJSON = async (accounts: any) => {
             recoveryEmail: account.recovery,
             type: "blank",
             batch: EXPERIMENT_BATCH,
-            displayChatBox: false,
-            displayWarningMessage: true,
+            chatBoxEnabled: false,
+            warningMessageEnabled: true,
           });
         } else {
           newAccount = await GAccount.create({
@@ -163,8 +163,8 @@ export const importAccountsFromJSON = async (accounts: any) => {
             recoveryEmail: account.recovery,
             type: "blank",
             batch: EXPERIMENT_BATCH,
-            displayChatBox: false,
-            displayWarningMessage: false,
+            chatBoxEnabled: false,
+            warningMessageEnabled: false,
           });
         }
         console.log("Imported blank account:", newAccount.email);
@@ -189,6 +189,50 @@ export const reuseUnusedAccountsFromPreviousBatch = async () => {
     console.log("Reused account:", account.email);
   }
   console.log("Reused unused accounts from previous batch");
+}
+
+export const reuseAndReassignAccountsWithControl = async () => {
+  console.log("Reusing and reassigning accounts into Experiment and Control groups...");
+
+  try {
+    // Determine the previous batch identifier
+    const currentBatchNumber = parseInt(EXPERIMENT_BATCH.split("-")[1], 10);
+    const previousBatchNumber = currentBatchNumber - 1;
+    const previousBatch = `pilot-${previousBatchNumber}`;
+
+    console.log(`Fetching unused accounts from previous batch: ${previousBatch}`);
+
+    // Fetch unused accounts from the previous batch
+    const unusedAccounts = await GAccount.find({
+      batch: previousBatch,
+      isAssigned: false,
+    });
+
+    console.log(`Found ${unusedAccounts.length} unused accounts to reuse.`);
+
+    // Reassign each account to the current batch and categorize as Experiment or Control
+    const reassignedPromises = unusedAccounts.map(async (account) => {
+      account.batch = EXPERIMENT_BATCH;
+      account.isControl = Math.random() < 0.2; // 20% chance to be Control
+      account.chatBoxEnabled = false;
+      account.warningMessageEnabled = false;
+      account.isAssigned = false; // Ensure the account remains unassigned
+
+      // Save the updated account
+      await account.save();
+
+      console.log(
+        `Reused account: ${account.email} as ${account.isControl ? 'Control' : 'Experiment'}`
+      );
+    });
+
+    // Await all reassignment operations
+    await Promise.all(reassignedPromises);
+
+    console.log("Successfully reused and reassigned accounts into Experiment and Control groups.");
+  } catch (error) {
+    console.error("Error while reusing and reassigning accounts:", error);
+  }
 };
 
 // export all collections to csv

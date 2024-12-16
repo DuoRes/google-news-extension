@@ -29,6 +29,10 @@ const GAccountSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isControl: {
+    type: Boolean,
+    default: false,
+  },
 
   // Experiment Tracking
   batch: {
