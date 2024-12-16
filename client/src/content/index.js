@@ -10,6 +10,11 @@ const redirectToForYou = () => {
   window.location.href = 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US%3Aen'
 }
 
+const redirectToHeadlines = () => {
+  window.location.href =
+    'https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen'
+}
+
 var chatBotName = 'Chris'
 var displayChatBox = false
 var pageContents = []
@@ -179,11 +184,11 @@ const observePageChanges = (user_id) => {
   observer.observe(targetNode, observerConfig)
 }
 
-const logPageContents = async (user_id) => {
+const logPageContents = async (user_id, isControl = false) => {
   const sections = document.querySelectorAll('.Ccj79')
   if (sections.length === 0) {
     console.log('No sections found.')
-    redirectToForYou()
+    isControl ? redirectToHeadlines() : redirectToForYou()
   }
   processPageContents(sections, user_id)
 }
@@ -229,12 +234,22 @@ chrome.storage.local.get(null, function (items) {
 })
 
 chrome.storage.local.get(
-  ['user_id', 'displayChatBox', 'chatBotName', 'chatRecord', 'displayWarningMessage', 'completed'],
+  [
+    'user_id',
+    'displayChatBox',
+    'chatBotName',
+    'chatRecord',
+    'displayWarningMessage',
+    'completed',
+    'isControl',
+  ],
   async (result) => {
     console.log('User ID: ' + result.user_id)
     console.log('Display Chat Box: ' + result.displayChatBox)
     console.log('Chat Bot Name: ' + result.chatBotName)
     console.log('displayWarningMessage: ' + result.displayWarningMessage)
+    console.log('completed: ' + result.completed)
+    console.log('isControl: ' + result.isControl)
 
     if (result.completed) {
       console.log('Completion Code: ' + result.completionCode)
@@ -250,7 +265,7 @@ chrome.storage.local.get(
 
       if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
         console.log('This is a Google News For You page: ' + document.URL)
-        await logPageContents(result.user_id)
+        await logPageContents(result.user_id, result.isControl)
         observePageChanges(result.user_id)
         disableLinks(result.user_id)
 

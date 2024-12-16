@@ -38,6 +38,7 @@ function App() {
           chatBotName: response.chatBotName,
           chatRecord: response.chatRecord,
           displayWarningMessage: response.displayWarningMessage,
+          isControl: response.isControl,
         },
         function () {
           console.log('User saved:', response)
