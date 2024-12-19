@@ -54,16 +54,20 @@ function App() {
 
     console.log('redirecting')
 
-    // redirect chrome to google news page
-    chrome.runtime.sendMessage(
-      {
-        type: 'redirect',
-        redirect: 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US:en',
-      },
-      function (response) {
-        console.log(response)
-      },
-    )
+    await chrome.storage.local.get(['isControl'], function (result) {
+      console.log('isControl', result.isControl)
+      chrome.runtime.sendMessage(
+        {
+          type: 'redirect',
+          redirect: result.isControl
+            ? 'https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRFZxYUdjU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US%3Aen'
+            : 'https://news.google.com/foryou?hl=en-US&gl=US&ceid=US:en',
+        },
+        function (response) {
+          console.log(response)
+        },
+      )
+    })
   }
 
   const LogoutButton = () => {

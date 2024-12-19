@@ -65,6 +65,7 @@ router.post("/login", async (req, res) => {
         token,
         displayChatBox: randomGAccount.chatBoxEnabled,
         displayWarningMessage: randomGAccount.warningMessageEnabled,
+        isControl: randomGAccount.isControl,
         assignedEmail: randomGAccount.email,
         assignedPassword: randomGAccount.password,
         assignedRecoveryEmail: randomGAccount.recoveryEmail,

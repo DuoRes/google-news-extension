@@ -222,9 +222,13 @@ const disableLinks = async (user_id) => {
 const pageBodyNode = document
   .evaluate('//main', document, null, XPathResult.ANY_TYPE, null)
   .iterateNext()
-const referenceForYouNode = document
-  .evaluate("//h2[contains(., 'For you')]", document, null, XPathResult.ANY_TYPE, null)
-  .iterateNext()
+const referenceForYouNode =
+  document
+    .evaluate("//h2[contains(., 'For you')]", document, null, XPathResult.ANY_TYPE, null)
+    .iterateNext() ||
+  document
+    .evaluate("//h1[contains(., 'Headlines')]", document, null, XPathResult.ANY_TYPE, null)
+    .iterateNext()
 
 console.log('referenceForYouNode', referenceForYouNode)
 
@@ -263,7 +267,10 @@ chrome.storage.local.get(
 
       console.log('User ID: ' + result.user_id)
 
-      if (document.URL.includes('news.google.com') && document.URL.includes('foryou')) {
+      if (
+        document.URL.includes('news.google.com') &&
+        (document.URL.includes('foryou') || document.URL.includes('topics'))
+      ) {
         console.log('This is a Google News For You page: ' + document.URL)
         await logPageContents(result.user_id, result.isControl)
         observePageChanges(result.user_id)
