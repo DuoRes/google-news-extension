@@ -12,7 +12,7 @@ import Config from "./config";
 /********** Import New Accounts from a TXT file **********/
 // import { importAccountsFromTXT } from "./utils/db";
 // (async () => {
-//   await importAccountsFromTXT("data/accounts/accounts-5.txt");
+//   await importAccountsFromTXT("data/accounts/accounts-6.txt");
 // })();
 
 /************* Reuse Unused Accounts *************/
