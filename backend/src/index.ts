@@ -10,10 +10,10 @@ import Config from "./config";
 // })();
 
 /********** Import New Accounts from a TXT file **********/
-import { importAccountsFromTXT } from "./utils/db";
-(async () => {
-  await importAccountsFromTXT("data/accounts/accounts-7-300.txt");
-})();
+// import { importAccountsFromTXT } from "./utils/db";
+// (async () => {
+//   await importAccountsFromTXT("data/accounts/accounts-7-300.txt");
+// })();
 
 /************* Reuse Unused Accounts *************/
 // import { reuseUnusedAccountsFromPreviousBatch } from "./utils/db";
