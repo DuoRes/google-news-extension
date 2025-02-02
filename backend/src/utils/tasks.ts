@@ -28,9 +28,10 @@ export const getClickStats = async (
   }
 
   // Fetch clicked contents sorted by timestamp in ascending order
-  const contents = await Content.find({ user: user._id, clicked: true })
-    .sort({ timestamp: 1 })
-    .exec();
+  // const contents = await Content.find({ user: user._id, clicked: true })
+  //   .sort({ timestamp: 1 })
+  //   .exec();
+  const contents = await Recommendation.find({ user: user._id }).sort({ timestamp: 1 }).exec();
 
   let count = 0;
   let lastClickTime = 0;
