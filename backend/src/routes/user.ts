@@ -10,7 +10,6 @@ import { extractGoogleEmail, allowedMimeTypes } from "../utils/ocr";
 import { uploadImages } from "../middleware/multer";
 import aws from "aws-sdk";
 import fs from "fs";
-import { fileTypeFromBuffer } from "file-type";
 import {
   chatBotNames,
   getRandomLeftOpening,
@@ -18,6 +17,7 @@ import {
   getSystemPrompt,
 } from "./chat";
 import { EXPERIMENT_BATCH } from "../config";
+const FileType = require("file-type");
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -181,7 +181,7 @@ router.post(
     try {
       // Read the file buffer and detect its true file type
       const fileBuffer = await fsPromises.readFile(localImagePath);
-      const fileType = await fileTypeFromBuffer(fileBuffer);
+      const fileType = await FileType.fileTypeFromBuffer(fileBuffer);
 
       if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
         await safeDeleteFile(localImagePath);
