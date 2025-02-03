@@ -67,14 +67,20 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       console.log('Progress: ', progress)
 
+      const j2 = await progress.json()
+
+      console.log('Progress JSON: ', j2)
+
       sendMessageToCurrentTab(
         {
           linkClicked: 'success',
-          ok: progress.ok,
-          completionCode: progress.completionCode,
+          ok: j2.ok,
+          completionCode: j2.completionCode,
         },
         'linkClicked',
       )
+
+      sendResponse({ linkClicked: 'success' })
       break
     case 'logPageContents':
       console.log(message.contents)
@@ -133,7 +139,7 @@ const getToken = async () => {
 const sendMessageToCurrentTab = (obj, type, retryCount = 0) => {
   try {
     obj.type = type
-    chrome.tabs.query({}, function (tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs.length === 0 || !tabs[0]) {
         if (retryCount < 3) {
           // Retry up to 3 times

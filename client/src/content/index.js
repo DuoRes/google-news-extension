@@ -202,19 +202,14 @@ const disableLinks = async (user_id) => {
       e.stopPropagation() // Don't bubble the event up
       // Send messages to the background script
       await sendLogPageContents(user_id)
-      await chrome.runtime.sendMessage(
-        {
-          type: 'linkClicked',
-          href: e.target.href,
-          id: e.target.id,
-          class: e.target.className,
-          target: e.target,
-          user_id: user_id,
-        },
-        (response) => {
-          location.reload()
-        },
-      )
+      await chrome.runtime.sendMessage({
+        type: 'linkClicked',
+        href: e.target.href,
+        id: e.target.id,
+        class: e.target.className,
+        user_id: user_id,
+      })
+      location.reload()
     })
   })
 }
