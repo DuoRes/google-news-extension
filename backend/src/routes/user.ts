@@ -10,7 +10,7 @@ import { extractGoogleEmail, allowedMimeTypes } from "../utils/ocr";
 import { uploadImages } from "../middleware/multer";
 import aws from "aws-sdk";
 import fs from "fs";
-import FileType from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 import {
   chatBotNames,
   getRandomLeftOpening,
@@ -181,7 +181,7 @@ router.post(
     try {
       // Read the file buffer and detect its true file type
       const fileBuffer = await fsPromises.readFile(localImagePath);
-      const fileType = await FileType.fileTypeFromBuffer(fileBuffer);
+      const fileType = await fileTypeFromBuffer(fileBuffer);
 
       if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
         await safeDeleteFile(localImagePath);
