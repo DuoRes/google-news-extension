@@ -54,14 +54,12 @@ const processPageContents = async (sections, user_id) => {
     // the geolocation based suggestion section
     const newSection = section.querySelector('.YRegrc')
     if (newSection) {
-      console.log('newSection', newSection)
       currIndex += 1
       const sources = newSection.querySelectorAll('.TPqh7b')
       sources.forEach((source, a_idx) => {
         const press = source.querySelector('.UiDffd').alt
         const timestamp = source.querySelector('.xsHp8').innerText
         const innerSources = source.querySelectorAll('.sLwsDb')
-        console.log('innerSources', innerSources)
         innerSources.forEach((source, i_idx) => {
           const title = source.querySelector('.kEAYTc').innerText
           const link = source.querySelector('.kEAYTc').href
@@ -76,7 +74,6 @@ const processPageContents = async (sections, user_id) => {
             timestamp,
           })
         })
-        console.log('pageContents', pageContents)
       })
     }
 
@@ -248,7 +245,6 @@ console.log('referenceForYouNode', referenceForYouNode)
 
 chrome.storage.local.get(null, function (items) {
   var allKeys = Object.keys(items)
-  console.info(allKeys)
 })
 
 chrome.storage.local.get(
