@@ -17,7 +17,7 @@ import {
   getSystemPrompt,
 } from "./chat";
 import { EXPERIMENT_BATCH } from "../config";
-const FileType = require("file-type");
+import { fromBuffer } from "file-type";
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -181,7 +181,7 @@ router.post(
     try {
       // Read the file buffer and detect its true file type
       const fileBuffer = await fsPromises.readFile(localImagePath);
-      const fileType = await FileType.fileTypeFromBuffer(fileBuffer);
+      const fileType = await fromBuffer(fileBuffer);
 
       if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
         await safeDeleteFile(localImagePath);
