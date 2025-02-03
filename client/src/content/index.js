@@ -2,6 +2,7 @@ console.info('content script')
 
 import { createChatBox, createMessageBubble } from './chatbox'
 import { checkLoggedInAndLogout } from './login'
+import { showLoadingScreen, hideLoadingScreen } from './loading'
 
 const sections2remove = []
 const sections2disable = ['.EctEBd', '.brSCsc']
@@ -200,6 +201,9 @@ const disableLinks = async (user_id) => {
     link.addEventListener('click', async (e) => {
       e.preventDefault() // Disable the link
       e.stopPropagation() // Don't bubble the event up
+
+      showLoadingScreen()
+
       // Send messages to the background script
       await sendLogPageContents(user_id)
       await chrome.runtime.sendMessage({
@@ -209,7 +213,7 @@ const disableLinks = async (user_id) => {
         class: e.target.className,
         user_id: user_id,
       })
-      location.reload()
+      return false
     })
   })
 }
@@ -351,10 +355,15 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     // Scroll to the bottom of the chat box
     chatBox.scrollTop = chatBox.scrollHeight
   } else if (request.type === 'linkClicked' && request.ok) {
-    console.log('OK', request.ok)
+    hideLoadingScreen()
     chrome.storage.local.set({ completed: true })
     completionCode()
+  } else if (request.type === 'linkClicked' && !request.ok) {
+    chrome.storage.local.set({ completed: false })
+    hideLoadingScreen()
+    location.reload()
   }
+  return true
 })
 
 function completionCode() {

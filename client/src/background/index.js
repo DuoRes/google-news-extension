@@ -79,8 +79,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         },
         'linkClicked',
       )
-
-      sendResponse({ linkClicked: 'success' })
       break
     case 'logPageContents':
       console.log(message.contents)
