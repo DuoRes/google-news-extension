@@ -230,6 +230,87 @@ export const reuseAndReassignAccountsWithControl = async () => {
   }
 };
 
+export const markUnusedOldAccounts = async () => {
+  console.log("Marking unused old accounts (not present in the TXT files) as 'unused-old-accounts'...");
+
+  try {
+    // List of TXT files to read from.
+    const filePaths = [
+      "data/accounts/accounts-7-300.txt",
+      "data/accounts/accounts-7-500.txt",
+      "data/accounts/accounts-7-1000.txt",
+      "data/accounts/accounts-7-1800.txt",
+      "data/accounts/accounts-7-2000.txt",
+    ];
+
+    // Read all files concurrently.
+    // Note: No individual try/catch here so that any file read error will cause the entire Promise.all to reject.
+    const emailArrays = await Promise.all(
+      filePaths.map(async (filePath) => {
+        const fileContent = await fsp.readFile(filePath, "utf-8");
+        return fileContent
+          .trim()
+          .split("\n")
+          .map((line) => {
+            const parts = line.split("----");
+            return parts[0].trim();
+          })
+          .filter((email) => email); // Remove any empty strings.
+      })
+    );
+
+    // Flatten the arrays into a single array of emails and convert to a Set for fast lookup.
+    const allEmails = emailArrays.flat();
+    const validEmails = new Set(allEmails);
+    console.log(`Total valid emails imported: ${validEmails.size}`);
+
+    // Query for all accounts that are in the current experiment batch.
+    const currentBatchAccounts = await GAccount.find({ batch: EXPERIMENT_BATCH });
+    console.log(`Found ${currentBatchAccounts.length} accounts in the current batch.`);
+
+    // Identify accounts whose email is NOT in the validEmails set.
+    const accountsToMark = currentBatchAccounts.filter(
+      (account) => !validEmails.has(account.email)
+    );
+    console.log(`Marking ${accountsToMark.length} account(s) as 'unused-old-accounts' because they're not in the TXT files.`);
+
+    // Update each account.
+    const updatePromises = accountsToMark.map(async (account) => {
+      account.batch = "unused-old-accounts";
+      await account.save();
+      console.log(`Marked account ${account.email} as 'unused-old-accounts'.`);
+    });
+    await Promise.all(updatePromises);
+
+    console.log("Successfully updated the batch for all non-listed accounts.");
+  } catch (error) {
+    console.error("Error marking unused old accounts:", error);
+    // Halt the entire process if any error occurs (e.g. reading a file)
+    process.exit(1);
+  }
+};
+
+export const rollbackOldAccounts = async () => {
+  console.log("Rolling back 'unused-old-accounts' to 'main-1'...");
+
+  try {
+    // Find all accounts with the batch "unused-old-accounts".
+    const accounts = await GAccount.find({ batch: "unused-old-accounts" });
+    console.log(`Found ${accounts.length} accounts to roll back.`);
+    
+    // Update each account's batch to "main-1".
+    const updatePromises = accounts.map(async (account) => {
+      account.batch = "main-1";
+      await account.save();
+      console.log(`Rolled back account ${account.email} to 'main-1'.`);
+    });
+    await Promise.all(updatePromises);
+    console.log("Rollback successful. All 'unused-old-accounts' have been set to 'main-1'.");
+  } catch (error) {
+    console.error("Error during rollback:", error);
+  }
+};
+
 // export all collections to csv
 export const exportAllToCSV = async () => {
   console.log("Exporting all collections to CSV...");

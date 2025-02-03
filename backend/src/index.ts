@@ -33,6 +33,29 @@ import Config from "./config";
 //   await exportAllToCSV();
 // })();
 
+
+/******* Mark unused old accounts ***********/
+// import { markUnusedOldAccounts } from "./utils/db";
+// (async () => {
+//   try {
+//     await markUnusedOldAccounts();
+//     console.log("Unused old accounts have been marked successfully.");
+//   } catch (error) {
+//     console.error("Error marking unused old accounts:", error);
+//   }
+// })();
+
+/******* Roll back unused old accounts ***********/
+// import { rollbackOldAccounts } from "./utils/db";
+// (async () => {
+//   try {
+//     await rollbackOldAccounts();
+//     console.log("Rollback completed successfully.");
+//   } catch (error) {
+//     console.error("Error during rollback:", error);
+//   }
+// })();
+
 const port = Config.port || 6000;
 const server = app.listen(port, () => {
   console.log(`Listening on port ${port}...`);

@@ -122,7 +122,7 @@ router.post("/link-clicked", async (req, res) => {
     ).exec();
 
     if (!content) {
-      return res.status(400).send("Content not found");
+      return res.status(400).json({ success: false, error: "Content not found" });
     }
 
     return res.status(200).json({ success: true });

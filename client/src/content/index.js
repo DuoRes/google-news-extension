@@ -52,18 +52,16 @@ const processPageContents = async (sections, user_id) => {
 
   sections.forEach((section, s_idx) => {
     // the geolocation based suggestion section
-    const newSection = section.querySelector('.wwh0Hb')
+    const newSection = section.querySelector('.YRegrc')
     if (newSection) {
+      console.log('newSection', newSection)
       currIndex += 1
-      const sources = newSection.querySelectorAll('.YRegrc')
-      const sectionName =
-        newSection.querySelector('.Pe8HEe').innerText +
-        '|' +
-        newSection.querySelector('.EdjnGc').innerText
+      const sources = newSection.querySelectorAll('.TPqh7b')
       sources.forEach((source, a_idx) => {
         const press = source.querySelector('.UiDffd').alt
         const timestamp = source.querySelector('.xsHp8').innerText
-        const innerSources = source.querySelectorAll('.TPqh7b')
+        const innerSources = source.querySelectorAll('.sLwsDb')
+        console.log('innerSources', innerSources)
         innerSources.forEach((source, i_idx) => {
           const title = source.querySelector('.kEAYTc').innerText
           const link = source.querySelector('.kEAYTc').href
@@ -75,11 +73,10 @@ const processPageContents = async (sections, user_id) => {
             link,
             img,
             press,
-            type,
             timestamp,
-            section: sectionName,
           })
         })
+        console.log('pageContents', pageContents)
       })
     }
 
@@ -186,7 +183,7 @@ const observePageChanges = (user_id) => {
 }
 
 const logPageContents = async (user_id, isControl = false) => {
-  const sections = document.querySelectorAll('.Ccj79')
+  const sections = document.querySelectorAll('.kUVvS')
   if (sections.length === 0) {
     console.log('No sections found.')
     isControl ? redirectToHeadlines() : redirectToForYou()
@@ -199,22 +196,40 @@ const disableLinks = async (user_id) => {
 
   links.forEach((link) => {
     link.addEventListener('click', async (e) => {
-      e.preventDefault() // Disable the link
-      e.stopPropagation() // Don't bubble the event up
+      e.preventDefault();      // Prevent the default link behavior.
+      e.stopPropagation();     // Stop event bubbling.
 
-      showLoadingScreen()
+      // Show the loading overlay immediately.
+      showLoadingScreen();
 
-      // Send messages to the background script
-      await sendLogPageContents(user_id)
-      await chrome.runtime.sendMessage({
+      // Set a fail-safe timer: after 1 second, if the loading overlay is still present,
+      // remove it and reload the page.
+      const failSafeTimer = setTimeout(() => {
+        if (document.getElementById('loading-overlay')) {
+          hideLoadingScreen();
+          location.reload();
+        }
+      }, 1000);
+
+      // Optional: Send the page contents if needed.
+      await sendLogPageContents(user_id);
+
+      // Use chrome.runtime.sendMessage with a callback.
+      // The callback is invoked when the background script responds.
+      chrome.runtime.sendMessage({
         type: 'linkClicked',
+        // Using e.currentTarget ensures you get the <a> element even if a child was clicked.
         href: e.target.href,
         id: e.target.id,
         class: e.target.className,
         user_id: user_id,
-      })
-      return false
-    })
+      }, (response) => {
+        // If the response comes back, clear the fail-safe timer.
+        clearTimeout(failSafeTimer);
+      });
+
+      return false;
+    });
   })
 }
 
