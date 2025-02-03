@@ -25,6 +25,7 @@ aws.config.update({
 });
 
 const s3 = new aws.S3();
+const fsPromises = fs.promises;
 
 const PROLIFIC_COMPLETION_CODE = "yay_you_did_it";
 const PREPROMPT = `You are an assistant researcher that can help with validating whether a research participant has successfully logged into the following google account: $name$; validate the screenshot image the user has uploaded that they have logged into the designated account. if the user has not logged in, ask them to log in and upload a new screenshot image; make sure that the username matches the one in the screenshot. If the user has indeed logged in, then reply "YES", otherwise reply "NO".`;
@@ -163,47 +164,65 @@ router.post(
       return res.status(400).send("No file uploaded.");
     }
 
+    const localImagePath = req.file.path;
+
+    // Helper function to safely delete the file without throwing errors
+    const safeDeleteFile = async (path) => {
+      try {
+        await fsPromises.unlink(path);
+      } catch (err) {
+        console.warn(`Failed to delete file at ${path}:`, err);
+      }
+    };
+
     try {
+      // Look up the user based on the provided token
       const user = await User.findOne({ token: req.body.token });
       if (!user) {
+        await safeDeleteFile(localImagePath);
         return res.status(400).send("User not found");
       }
       const assignedEmail = user.assignedEmail;
-      const localImagePath = req.file.path; // Path to the locally stored file
 
+      // Extract email and confidence using OCR
       const [extractedEmail, confidence] = await extractGoogleEmail(
         localImagePath,
         assignedEmail
       );
 
       if (confidence < 80) {
-        fs.unlinkSync(localImagePath); // Delete the local file
+        await safeDeleteFile(localImagePath);
         return res
           .status(400)
-          .send("Low confidence in OCR processing: " + confidence.toString());
+          .send("Low confidence in OCR processing: " + confidence);
       }
 
-      // Upload file to S3
-      const fileContent = fs.readFileSync(localImagePath);
+      // Read the file asynchronously
+      const fileContent = await fsPromises.readFile(localImagePath);
       const params = {
         Bucket: "duo-research-storage",
-        Key: `screenshots/${Date.now().toString()}-${req.file.originalname}`,
+        Key: `screenshots/${Date.now()}-${req.file.originalname}`,
         Body: fileContent,
       };
-      const uploadResult = await s3.upload(params).promise();
-      fs.unlinkSync(localImagePath); // Delete the local file after upload
 
-      user.loginScreenshot = uploadResult.Location; // S3 URL
+      // Upload file to S3
+      const uploadResult = await s3.upload(params).promise();
+
+      // Delete the local file after upload
+      await safeDeleteFile(localImagePath);
+
+      // Update the user record with the S3 file location and save
+      user.loginScreenshot = uploadResult.Location;
       await user.save();
 
       return res.json({
         message: "File uploaded and processed successfully.",
-        extractedEmail: extractedEmail,
-        confidence: confidence,
+        extractedEmail,
+        confidence,
       });
     } catch (error) {
-      console.error(error);
-      fs.unlinkSync(req.file.path); // Ensure to delete local file in case of error
+      console.error("Error processing file:", error);
+      await safeDeleteFile(localImagePath);
       return res.status(500).send("Error processing the file.");
     }
   }
