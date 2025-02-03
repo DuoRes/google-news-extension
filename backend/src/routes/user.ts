@@ -287,7 +287,7 @@ router.post("/validatePreSurveyCompletion", async (req, res) => {
 
 router.get("/unused-accounts", async (req, res) => {
   try {
-    const accounts_length = await GAccount.countDocuments({ isAssigned: false });
+    const accounts_length = await GAccount.countDocuments({ isAssigned: false, batch: EXPERIMENT_BATCH });
     res.json({ accounts_length });
   } catch (error) {
     console.trace(error);
