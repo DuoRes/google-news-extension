@@ -285,4 +285,14 @@ router.post("/validatePreSurveyCompletion", async (req, res) => {
   }
 });
 
+router.get("/unused-accounts", async (req, res) => {
+  try {
+    const accounts_length = await GAccount.count({ isAssigned: false });
+    res.send(accounts_length);
+  } catch (error) {
+    console.trace(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 export default router;

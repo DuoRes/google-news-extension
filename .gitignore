@@ -5,3 +5,6 @@
 */**/dist/
 
 backend/data/dataset/**/*
+backend/data/dump/**/*
+
+client/vite.config.js.*

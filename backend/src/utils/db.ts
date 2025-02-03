@@ -195,17 +195,12 @@ export const reuseAndReassignAccountsWithControl = async () => {
   console.log("Reusing and reassigning accounts into Experiment and Control groups...");
 
   try {
-    // Determine the previous batch identifier
-    const currentBatchNumber = parseInt(EXPERIMENT_BATCH.split("-")[1], 10);
-    const previousBatchNumber = currentBatchNumber - 1;
-    const previousBatch = `pilot-${previousBatchNumber}`;
-
-    console.log(`Fetching unused accounts from previous batch: ${previousBatch}`);
+    console.log(`Fetching unused accounts from all previous batches`);
 
     // Fetch unused accounts from the previous batch
     const unusedAccounts = await GAccount.find({
-      batch: previousBatch,
       isAssigned: false,
+      batch: { $ne: EXPERIMENT_BATCH },
     });
 
     console.log(`Found ${unusedAccounts.length} unused accounts to reuse.`);
