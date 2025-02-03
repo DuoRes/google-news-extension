@@ -6,5 +6,6 @@
 
 backend/data/dataset/**/*
 backend/data/dump/**/*
+backend/data/accounts/**/*
 
 client/vite.config.js.*
