@@ -6,10 +6,11 @@ import GAccount from "../models/GAccount";
 import { getClickStats } from "../utils/tasks";
 import OpenAI from "openai";
 import Config from "../config";
-import { extractGoogleEmail } from "../utils/ocr";
+import { extractGoogleEmail, allowedMimeTypes } from "../utils/ocr";
 import { uploadImages } from "../middleware/multer";
 import aws from "aws-sdk";
 import fs from "fs";
+import FileType from "file-type";
 import {
   chatBotNames,
   getRandomLeftOpening,
@@ -37,6 +38,9 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
   try {
     const token = req.body.token;
+    if (!token) {
+      return res.status(400).send("Token is required");
+    }
     const user = await User.findOne({ token });
     if (!user) {
       const randomGAccounts = await GAccount.aggregate([
@@ -149,6 +153,14 @@ router.get("/status/:id", async (req, res) => {
   }
 });
 
+const safeDeleteFile = async (path) => {
+  try {
+    await fsPromises.unlink(path);
+  } catch (err) {
+    console.warn(`Failed to delete file at ${path}:`, err);
+  }
+};
+
 /**
  * @route POST /user/validateImageOCR
  * @desc Validate the screenshot image the user has uploaded that they have logged into the designated account using OCR
@@ -166,17 +178,21 @@ router.post(
 
     const localImagePath = req.file.path;
 
-    // Helper function to safely delete the file without throwing errors
-    const safeDeleteFile = async (path) => {
-      try {
-        await fsPromises.unlink(path);
-      } catch (err) {
-        console.warn(`Failed to delete file at ${path}:`, err);
-      }
-    };
-
     try {
-      // Look up the user based on the provided token
+      // Read the file buffer and detect its true file type
+      const fileBuffer = await fsPromises.readFile(localImagePath);
+      const fileType = await FileType.fileTypeFromBuffer(fileBuffer);
+
+      if (!fileType || !allowedMimeTypes.includes(fileType.mime)) {
+        await safeDeleteFile(localImagePath);
+        return res
+          .status(400)
+          .send(
+            "Unsupported file type. Please upload a valid image (JPEG, PNG, or GIF)."
+          );
+      }
+
+      // Find the user by token
       const user = await User.findOne({ token: req.body.token });
       if (!user) {
         await safeDeleteFile(localImagePath);
@@ -184,7 +200,7 @@ router.post(
       }
       const assignedEmail = user.assignedEmail;
 
-      // Extract email and confidence using OCR
+      // Perform OCR using the provided function
       const [extractedEmail, confidence] = await extractGoogleEmail(
         localImagePath,
         assignedEmail
@@ -197,21 +213,18 @@ router.post(
           .send("Low confidence in OCR processing: " + confidence);
       }
 
-      // Read the file asynchronously
-      const fileContent = await fsPromises.readFile(localImagePath);
+      // Upload the file to S3 using the previously read buffer
       const params = {
         Bucket: "duo-research-storage",
         Key: `screenshots/${Date.now()}-${req.file.originalname}`,
-        Body: fileContent,
+        Body: fileBuffer,
       };
-
-      // Upload file to S3
       const uploadResult = await s3.upload(params).promise();
 
-      // Delete the local file after upload
+      // Delete the local file after successful upload
       await safeDeleteFile(localImagePath);
 
-      // Update the user record with the S3 file location and save
+      // Update the user record with the S3 file URL
       user.loginScreenshot = uploadResult.Location;
       await user.save();
 

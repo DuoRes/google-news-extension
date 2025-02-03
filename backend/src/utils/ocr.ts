@@ -1,5 +1,7 @@
 import Tesseract from "tesseract.js";
 
+export const allowedMimeTypes = ["image/jpeg", "image/png"];
+
 export async function extractGoogleEmail(
   imagePath: string,
   email: string

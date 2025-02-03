@@ -3,7 +3,6 @@ import express from "express";
 import Content from "../models/Content";
 import Recommendation from "../models/Recommendation";
 import User from "../models/User";
-import * as cheerio from "cheerio";
 import { ratePressesPoliticalStanceIfNotExists } from "../utils/scorer";
 import { EXPERIMENT_BATCH } from "../config";
 
