@@ -7,5 +7,6 @@
 backend/data/dataset/**/*
 backend/data/dump/**/*
 backend/data/accounts/**/*
+backend/data/gmail_check.txt
 
 client/vite.config.js.*

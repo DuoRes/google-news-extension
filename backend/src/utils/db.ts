@@ -49,13 +49,15 @@ export const importAccountsFromTXT = async (filePath: string) => {
       .trim()
       .split("\n")
       .map((line) => {
-        const parts = line.split("----");
+        // Determine which delimiter is used in the line
+        const delimiter = line.includes("----") ? "----" : "｜";
+        const parts = line.split(delimiter);
         return {
           email: parts[0].trim(),
           password: parts[1].trim(),
           recovery: parts[2].trim(),
-          recoveryCode: parts[3]?.trim(), // This assumes the recovery code is optional
-          countryCode: parts[4]?.trim() || "", // This assumes the country code is optional
+          recoveryCode: parts[3]?.trim(), // Optional recovery code
+          countryCode: parts[4]?.trim() || "", // Optional country code
         };
       });
 
@@ -116,6 +118,7 @@ export const importAccountsFromTXT = async (filePath: string) => {
     console.error("Error reading the file:", err);
   }
 };
+
 
 export const importAccountsFromJSON = async (accounts: any) => {
   console.log("Importing accounts...");
@@ -290,6 +293,44 @@ export const markUnusedOldAccounts = async () => {
   }
 };
 
+
+export const validateGmailAccounts = async (checkFilePath: string) => {
+  try {
+    console.log("Validating Gmail accounts...");
+    // Read the check file content
+    const fileContent = await fsp.readFile(checkFilePath, "utf-8");
+
+    // Split the file into lines and map each line into a status/email pair
+    const validations = fileContent
+      .trim()
+      .split("\n")
+      .map((line) => {
+        const [status, email] = line.split("|").map((s) => s.trim());
+        return { status, email };
+      });
+
+    // Process each validation entry
+    await Promise.all(
+      validations.map(async (entry) => {
+        if (entry.status.toLowerCase() !== "live") {
+          // Remove the account only if it's unassigned (isAssigned is false)
+          const result = await GAccount.deleteOne({ email: entry.email, isAssigned: false });
+          if (result.deletedCount && result.deletedCount > 0) {
+            console.log(`Removed unassigned account: ${entry.email}`);
+          } else {
+            console.log(`Account ${entry.email} not found, already removed, or assigned.`);
+          }
+        }
+      })
+    );
+    console.log("Gmail account validation complete.");
+  } catch (err) {
+    console.error("Error validating Gmail accounts:", err);
+  }
+};
+
+
+
 export const rollbackOldAccounts = async () => {
   console.log("Rolling back 'unused-old-accounts' to 'main-1'...");
 
@@ -297,7 +338,7 @@ export const rollbackOldAccounts = async () => {
     // Find all accounts with the batch "unused-old-accounts".
     const accounts = await GAccount.find({ batch: "unused-old-accounts" });
     console.log(`Found ${accounts.length} accounts to roll back.`);
-    
+
     // Update each account's batch to "main-1".
     const updatePromises = accounts.map(async (account) => {
       account.batch = "main-1";
